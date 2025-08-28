@@ -1237,7 +1237,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	@Override
 	public void registerBeanDefinition(String beanName, BeanDefinition beanDefinition)
 			throws BeanDefinitionStoreException {
-		logger.info("自定义日志【重要】---注册Bean定义：" + beanName);
+		logger.info("[SPRING] 自定义日志【重要】---注册Bean定义：" + beanName);
 		Assert.hasText(beanName, "Bean name must not be empty");
 		Assert.notNull(beanDefinition, "BeanDefinition must not be null");
 
