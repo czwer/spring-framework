@@ -1403,6 +1403,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * @param bw the BeanWrapper with bean instance
 	 */
 	protected void populateBean(String beanName, RootBeanDefinition mbd, @Nullable BeanWrapper bw) {
+		logger.info("[SPRING] 自定义日志【重要】---setter注入：" + beanName);
 		if (bw == null) {
 			if (mbd.hasPropertyValues()) {
 				throw new BeanCreationException(
