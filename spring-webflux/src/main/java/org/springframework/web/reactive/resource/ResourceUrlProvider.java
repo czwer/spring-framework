@@ -93,6 +93,7 @@ public class ResourceUrlProvider implements ApplicationListener<ContextRefreshed
 
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent event) {
+		logger.info("[SPRING] 自定义日志---监听到事件：ContextRefreshedEvent");
 		if (this.applicationContext == event.getApplicationContext() && this.handlerMap.isEmpty()) {
 			detectResourceHandlers(event.getApplicationContext());
 		}

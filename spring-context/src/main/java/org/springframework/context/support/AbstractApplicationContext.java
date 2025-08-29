@@ -1006,6 +1006,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		getLifecycleProcessor().onRefresh();
 
 		// Publish the final event.
+		logger.info("[SPRING] 自定义日志---发布事件：ContextRefreshedEvent");
 		publishEvent(new ContextRefreshedEvent(this));
 	}
 

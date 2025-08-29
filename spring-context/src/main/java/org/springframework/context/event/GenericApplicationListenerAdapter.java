@@ -18,6 +18,8 @@ package org.springframework.context.event;
 
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
@@ -37,7 +39,7 @@ import org.springframework.util.ConcurrentReferenceHashMap;
  * @see org.springframework.context.ApplicationListener#onApplicationEvent
  */
 public class GenericApplicationListenerAdapter implements GenericApplicationListener {
-
+	private static final Log logger = LogFactory.getLog(GenericApplicationListenerAdapter.class);
 	private static final Map<Class<?>, ResolvableType> eventTypeCache = new ConcurrentReferenceHashMap<>();
 
 
@@ -61,6 +63,7 @@ public class GenericApplicationListenerAdapter implements GenericApplicationList
 
 	@Override
 	public void onApplicationEvent(ApplicationEvent event) {
+		logger.info("自定义日志---监听到事件：ApplicationEvent");
 		this.delegate.onApplicationEvent(event);
 	}
 

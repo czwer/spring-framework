@@ -340,6 +340,7 @@ public abstract class AbstractBrokerMessageHandler
 			if (logger.isInfoEnabled()) {
 				logger.info(this.availableEvent);
 			}
+			logger.info("[SPRING] 自定义日志---发布事件：BrokerAvailabilityEvent");
 			this.eventPublisher.publishEvent(this.availableEvent);
 		}
 	}
@@ -350,6 +351,7 @@ public abstract class AbstractBrokerMessageHandler
 			if (logger.isInfoEnabled()) {
 				logger.info(this.notAvailableEvent);
 			}
+			logger.info("[SPRING] 自定义日志---发布事件：BrokerAvailabilityEvent");
 			this.eventPublisher.publishEvent(this.notAvailableEvent);
 		}
 	}

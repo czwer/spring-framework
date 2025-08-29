@@ -445,6 +445,7 @@ public class StompSubProtocolHandler implements SubProtocolHandler, ApplicationE
 
 	private void publishEvent(ApplicationEventPublisher publisher, ApplicationEvent event) {
 		try {
+			logger.info("[SPRING] 自定义日志---发布事件：ApplicationEvent");
 			publisher.publishEvent(event);
 		}
 		catch (Throwable ex) {

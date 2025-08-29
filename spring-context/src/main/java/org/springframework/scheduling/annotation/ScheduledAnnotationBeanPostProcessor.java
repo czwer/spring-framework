@@ -662,12 +662,14 @@ public class ScheduledAnnotationBeanPostProcessor
 	public void onApplicationEvent(ApplicationContextEvent event) {
 		if (event.getApplicationContext() == this.applicationContext) {
 			if (event instanceof ContextRefreshedEvent) {
+				logger.info("[SPRING] 自定义日志---监听到事件：ApplicationContextEvent(ContextRefreshedEvent)");
 				// Running in an ApplicationContext -> register tasks this late...
 				// giving other ContextRefreshedEvent listeners a chance to perform
 				// their work at the same time (for example, Spring Batch's job registration).
 				finishRegistration();
 			}
 			else if (event instanceof ContextClosedEvent) {
+				logger.info("[SPRING] 自定义日志---监听到事件：ApplicationContextEvent(ContextClosedEvent)");
 				for (Object bean : this.manualCancellationOnContextClose) {
 					cancelScheduledTasks(bean);
 				}

@@ -50,6 +50,7 @@ import org.springframework.util.ErrorHandler;
  * @see #setTaskExecutor
  */
 public class SimpleApplicationEventMulticaster extends AbstractApplicationEventMulticaster {
+	private static final Log logger = LogFactory.getLog(SimpleApplicationEventMulticaster.class);
 
 	@Nullable
 	private Executor taskExecutor;
@@ -182,6 +183,7 @@ public class SimpleApplicationEventMulticaster extends AbstractApplicationEventM
 	@SuppressWarnings({"rawtypes", "unchecked"})
 	private void doInvokeListener(ApplicationListener listener, ApplicationEvent event) {
 		try {
+			logger.info("自定义日志---监听到事件：ApplicationEvent");
 			listener.onApplicationEvent(event);
 		}
 		catch (ClassCastException ex) {

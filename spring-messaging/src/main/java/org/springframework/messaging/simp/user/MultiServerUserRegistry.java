@@ -28,7 +28,10 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationEvent;
+import org.springframework.context.event.GenericApplicationListenerAdapter;
 import org.springframework.context.event.SmartApplicationListener;
 import org.springframework.core.Ordered;
 import org.springframework.lang.Nullable;
@@ -50,6 +53,8 @@ import org.springframework.util.ObjectUtils;
  */
 @SuppressWarnings("serial")
 public class MultiServerUserRegistry implements SimpUserRegistry, SmartApplicationListener {
+
+	private static final Log logger = LogFactory.getLog(MultiServerUserRegistry.class);
 
 	private final String id;
 
@@ -108,6 +113,7 @@ public class MultiServerUserRegistry implements SimpUserRegistry, SmartApplicati
 
 	@Override
 	public void onApplicationEvent(ApplicationEvent event) {
+		logger.info("自定义日志---监听到事件：ApplicationEvent");
 		if (this.delegateApplicationEvents) {
 			((SmartApplicationListener) this.localRegistry).onApplicationEvent(event);
 		}

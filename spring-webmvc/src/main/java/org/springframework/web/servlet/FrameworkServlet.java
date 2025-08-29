@@ -841,6 +841,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 	 * @param event the incoming ApplicationContext event
 	 */
 	public void onApplicationEvent(ContextRefreshedEvent event) {
+		logger.info("[SPRING] 自定义日志---监听到事件：ContextRefreshedEvent");
 		this.refreshEventReceived = true;
 		synchronized (this.onRefreshMonitor) {
 			onRefresh(event.getApplicationContext());
@@ -1194,6 +1195,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 
 		@Override
 		public void onApplicationEvent(ContextRefreshedEvent event) {
+			logger.info("[SPRING] 自定义日志---监听到事件：ContextRefreshedEvent");
 			FrameworkServlet.this.onApplicationEvent(event);
 		}
 	}

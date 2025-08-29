@@ -16,6 +16,8 @@
 
 package org.springframework.context.event;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.core.Ordered;
@@ -35,7 +37,7 @@ import org.springframework.lang.Nullable;
  * @since 2.0.5
  */
 public class SourceFilteringListener implements GenericApplicationListener {
-
+	private static final Log logger = LogFactory.getLog(SourceFilteringListener.class);
 	private final Object source;
 
 	@Nullable
@@ -106,6 +108,7 @@ public class SourceFilteringListener implements GenericApplicationListener {
 			throw new IllegalStateException(
 					"Must specify a delegate object or override the onApplicationEventInternal method");
 		}
+		logger.info("自定义日志---监听到事件：ApplicationEvent");
 		this.delegate.onApplicationEvent(event);
 	}
 

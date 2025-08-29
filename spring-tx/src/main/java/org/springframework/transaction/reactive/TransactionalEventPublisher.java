@@ -18,6 +18,8 @@ package org.springframework.transaction.reactive;
 
 import java.util.function.Function;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import reactor.core.publisher.Mono;
 
 import org.springframework.context.ApplicationEvent;
@@ -47,7 +49,7 @@ import org.springframework.context.PayloadApplicationEvent;
  * @see ApplicationEventPublisher
  */
 public class TransactionalEventPublisher {
-
+	private static final Log logger = LogFactory.getLog(TransactionalEventPublisher.class);
 	private final ApplicationEventPublisher eventPublisher;
 
 
@@ -69,6 +71,7 @@ public class TransactionalEventPublisher {
 	 * @return the Reactor {@link Mono} for the transactional event publication
 	 */
 	public Mono<Void> publishEvent(Function<TransactionContext, ApplicationEvent> eventCreationFunction) {
+		logger.info("[SPRING] 自定义日志---发布事件：响应式事务事件");
 		return TransactionContextManager.currentContext().map(eventCreationFunction)
 				.doOnSuccess(this.eventPublisher::publishEvent).then();
 	}
