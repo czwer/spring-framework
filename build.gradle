@@ -116,3 +116,7 @@ configure([rootProject] + javaProjects) { project ->
 configure(moduleProjects) { project ->
 	apply from: "${rootDir}/gradle/spring-module.gradle"
 }
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
