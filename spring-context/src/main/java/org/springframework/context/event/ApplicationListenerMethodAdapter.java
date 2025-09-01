@@ -169,6 +169,7 @@ public class ApplicationListenerMethodAdapter implements GenericApplicationListe
 
 	@Override
 	public void onApplicationEvent(ApplicationEvent event) {
+		logger.info("[SPRING] 自定义日志---监听到事件：ApplicationEvent，timestamp："+event.getTimestamp());
 		if (isDefaultExecution()) {
 			processEvent(event);
 		}
@@ -355,6 +356,7 @@ public class ApplicationListenerMethodAdapter implements GenericApplicationListe
 	private void publishEvent(@Nullable Object event) {
 		if (event != null) {
 			Assert.notNull(this.applicationContext, "ApplicationContext must not be null");
+			logger.info("[SPRING] 自定义日志---发布事件："+event.getClass().getName());
 			this.applicationContext.publishEvent(event);
 		}
 	}

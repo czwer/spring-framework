@@ -841,7 +841,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 	 * @param event the incoming ApplicationContext event
 	 */
 	public void onApplicationEvent(ContextRefreshedEvent event) {
-		logger.info("[SPRING] 自定义日志---监听到事件：ContextRefreshedEvent");
+		logger.info("[SPRING] 自定义日志---监听到事件：ContextRefreshedEvent，timestamp："+event.getTimestamp());
 		this.refreshEventReceived = true;
 		synchronized (this.onRefreshMonitor) {
 			onRefresh(event.getApplicationContext());
@@ -1146,6 +1146,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 		if (this.publishEvents && this.webApplicationContext != null) {
 			// Whether or not we succeeded, publish an event.
 			long processingTime = System.currentTimeMillis() - startTime;
+			logger.info("[SPRING] 自定义日志---发布事件：ServletRequestHandledEvent");
 			this.webApplicationContext.publishEvent(
 					new ServletRequestHandledEvent(this,
 							request.getRequestURI(), request.getRemoteAddr(),
@@ -1195,7 +1196,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 
 		@Override
 		public void onApplicationEvent(ContextRefreshedEvent event) {
-			logger.info("[SPRING] 自定义日志---监听到事件：ContextRefreshedEvent");
+			logger.info("[SPRING] 自定义日志---监听到事件：ContextRefreshedEvent，timestamp："+event.getTimestamp());
 			FrameworkServlet.this.onApplicationEvent(event);
 		}
 	}

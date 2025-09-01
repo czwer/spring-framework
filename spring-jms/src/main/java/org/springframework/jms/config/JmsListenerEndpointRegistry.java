@@ -82,7 +82,7 @@ public class JmsListenerEndpointRegistry implements DisposableBean, SmartLifecyc
 
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent event) {
-		logger.info("[SPRING] 自定义日志---监听到事件：ContextRefreshedEvent");
+		logger.info("[SPRING] 自定义日志---监听到事件：ContextRefreshedEvent，timestamp："+event.getTimestamp());
 		if (event.getApplicationContext() == this.applicationContext) {
 			this.contextRefreshed = true;
 		}

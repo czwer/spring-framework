@@ -21,7 +21,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.event.SmartApplicationListener;
 import org.springframework.core.Ordered;
@@ -47,7 +48,7 @@ import org.springframework.util.Assert;
  * @since 4.2
  */
 public class DefaultSimpUserRegistry implements SimpUserRegistry, SmartApplicationListener {
-
+    private static final Log logger = LogFactory.getLog(DefaultSimpUserRegistry.class);
 	private int order = Ordered.LOWEST_PRECEDENCE;
 
 	/* Primary lookup that holds all users and their sessions */
@@ -83,6 +84,7 @@ public class DefaultSimpUserRegistry implements SimpUserRegistry, SmartApplicati
 
 	@Override
 	public void onApplicationEvent(ApplicationEvent event) {
+		logger.info("[SPRING] 自定义日志---监听到事件：ApplicationEvent，timestamp："+event.getTimestamp());
 		AbstractSubProtocolEvent subProtocolEvent = (AbstractSubProtocolEvent) event;
 		Message<?> message = subProtocolEvent.getMessage();
 		MessageHeaders headers = message.getHeaders();

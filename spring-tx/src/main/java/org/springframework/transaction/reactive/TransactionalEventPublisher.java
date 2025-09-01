@@ -86,6 +86,7 @@ public class TransactionalEventPublisher {
 			return Mono.error(new IllegalArgumentException("Cannot publish ApplicationEvent with transactional " +
 					"source - publish payload object or use publishEvent(Function<Object, ApplicationEvent>"));
 		}
+		logger.info("[SPRING] 自定义日志---发布事件：PayloadApplicationEvent");
 		return publishEvent(source -> new PayloadApplicationEvent<>(source, payload));
 	}
 

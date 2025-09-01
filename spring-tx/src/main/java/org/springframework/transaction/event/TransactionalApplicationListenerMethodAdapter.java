@@ -83,6 +83,7 @@ public class TransactionalApplicationListenerMethodAdapter extends ApplicationLi
 
 	@Override
 	public void onApplicationEvent(ApplicationEvent event) {
+		logger.info("[SPRING] 自定义日志---监听到事件：ApplicationEvent，timestamp："+event.getTimestamp());
 		if (TransactionalApplicationListenerSynchronization.register(event, this, this.callbacks)) {
 			if (logger.isDebugEnabled()) {
 				logger.debug("Registered transaction synchronization for " + event);

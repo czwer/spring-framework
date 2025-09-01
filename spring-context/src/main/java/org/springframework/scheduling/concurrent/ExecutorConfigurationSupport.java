@@ -506,6 +506,7 @@ public abstract class ExecutorConfigurationSupport extends CustomizableThreadFac
 	 */
 	@Override
 	public void onApplicationEvent(ContextClosedEvent event) {
+		logger.info("[SPRING] 自定义日志---监听到事件：ContextClosedEvent，timestamp："+event.getTimestamp());
 		if (event.getApplicationContext() == this.applicationContext) {
 			if (this.acceptTasksAfterContextClose || this.waitForTasksToCompleteOnShutdown) {
 				// Late shutdown without early stop lifecycle.

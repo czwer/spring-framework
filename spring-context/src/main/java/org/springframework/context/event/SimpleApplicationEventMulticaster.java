@@ -141,6 +141,7 @@ public class SimpleApplicationEventMulticaster extends AbstractApplicationEventM
 
 	@Override
 	public void multicastEvent(ApplicationEvent event, @Nullable ResolvableType eventType) {
+		logger.info("[SPRING] 自定义日志---发布事件中（广播）："+event.getClass().getName()+"，timestamp："+event.getTimestamp());
 		ResolvableType type = (eventType != null ? eventType : ResolvableType.forInstance(event));
 		Executor executor = getTaskExecutor();
 		for (ApplicationListener<?> listener : getApplicationListeners(event, type)) {
@@ -183,7 +184,7 @@ public class SimpleApplicationEventMulticaster extends AbstractApplicationEventM
 	@SuppressWarnings({"rawtypes", "unchecked"})
 	private void doInvokeListener(ApplicationListener listener, ApplicationEvent event) {
 		try {
-			logger.info("自定义日志---监听到事件：ApplicationEvent");
+			logger.info("[SPRING] 自定义日志---监听到事件：ApplicationEvent，timestamp："+event.getTimestamp());
 			listener.onApplicationEvent(event);
 		}
 		catch (ClassCastException ex) {

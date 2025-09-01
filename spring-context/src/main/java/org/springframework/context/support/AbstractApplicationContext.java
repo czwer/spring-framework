@@ -451,12 +451,14 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			this.earlyApplicationEvents.add(applicationEvent);
 		}
 		else if (this.applicationEventMulticaster != null) {
+			logger.info("[SPRING] 自定义日志---发布事件（广播）："+applicationEvent.getClass().getName()+",timestamp："+applicationEvent.getTimestamp());
 			this.applicationEventMulticaster.multicastEvent(applicationEvent, eventType);
 		}
 
 		// Publish event via parent context as well...
 		if (this.parent != null) {
 			if (this.parent instanceof AbstractApplicationContext abstractApplicationContext) {
+				logger.info("[SPRING] 自定义日志---发布事件："+event.getClass().getName()+",timestamp："+applicationEvent.getTimestamp());
 				abstractApplicationContext.publishEvent(event, typeHint);
 			}
 			else {
@@ -925,6 +927,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		this.earlyApplicationEvents = null;
 		if (!CollectionUtils.isEmpty(earlyEventsToProcess)) {
 			for (ApplicationEvent earlyEvent : earlyEventsToProcess) {
+				logger.info("[SPRING] 自定义日志---发布事件（广播）：ApplicationEvent，timestamp："+earlyEvent.getTimestamp());
 				getApplicationEventMulticaster().multicastEvent(earlyEvent);
 			}
 		}
@@ -1161,6 +1164,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 			try {
 				// Publish shutdown event.
+				logger.info("[SPRING] 自定义日志---发布事件：ContextClosedEvent");
 				publishEvent(new ContextClosedEvent(this));
 			}
 			catch (Throwable ex) {
@@ -1558,12 +1562,14 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	@Override
 	public void start() {
 		getLifecycleProcessor().start();
+		logger.info("[SPRING] 自定义日志---发布事件：ContextStartedEvent");
 		publishEvent(new ContextStartedEvent(this));
 	}
 
 	@Override
 	public void stop() {
 		getLifecycleProcessor().stop();
+		logger.info("[SPRING] 自定义日志---发布事件：ContextStoppedEvent");
 		publishEvent(new ContextStoppedEvent(this));
 	}
 

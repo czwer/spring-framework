@@ -71,6 +71,7 @@ public class SourceFilteringListener implements GenericApplicationListener {
 
 	@Override
 	public void onApplicationEvent(ApplicationEvent event) {
+		logger.info("[SPRING] 自定义日志---监听到事件：ApplicationEvent，timestamp："+event.getTimestamp());
 		if (event.getSource() == this.source) {
 			onApplicationEventInternal(event);
 		}
@@ -108,7 +109,7 @@ public class SourceFilteringListener implements GenericApplicationListener {
 			throw new IllegalStateException(
 					"Must specify a delegate object or override the onApplicationEventInternal method");
 		}
-		logger.info("自定义日志---监听到事件：ApplicationEvent");
+		logger.info("[SPRING] 自定义日志---监听到事件：ApplicationEvent，timestamp："+event.getTimestamp());
 		this.delegate.onApplicationEvent(event);
 	}
 

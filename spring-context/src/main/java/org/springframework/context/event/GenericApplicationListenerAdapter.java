@@ -63,7 +63,7 @@ public class GenericApplicationListenerAdapter implements GenericApplicationList
 
 	@Override
 	public void onApplicationEvent(ApplicationEvent event) {
-		logger.info("自定义日志---监听到事件：ApplicationEvent");
+		logger.info("[SPRING] 自定义日志---监听到事件：ApplicationEvent，timestamp："+event.getTimestamp());
 		this.delegate.onApplicationEvent(event);
 	}
 

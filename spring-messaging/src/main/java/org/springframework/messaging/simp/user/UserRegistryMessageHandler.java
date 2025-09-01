@@ -20,6 +20,8 @@ import java.time.Duration;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationListener;
 import org.springframework.lang.Nullable;
 import org.springframework.messaging.Message;
@@ -44,7 +46,7 @@ import org.springframework.util.Assert;
  * @since 4.2
  */
 public class UserRegistryMessageHandler implements MessageHandler, ApplicationListener<BrokerAvailabilityEvent> {
-
+	protected final Log logger = LogFactory.getLog(getClass());
 	private final MultiServerUserRegistry userRegistry;
 
 	private final SimpMessagingTemplate brokerTemplate;
@@ -111,6 +113,7 @@ public class UserRegistryMessageHandler implements MessageHandler, ApplicationLi
 
 	@Override
 	public void onApplicationEvent(BrokerAvailabilityEvent event) {
+		logger.info("[SPRING] 自定义日志---监听到事件：BrokerAvailabilityEvent，timestamp："+event.getTimestamp());
 		if (event.isBrokerAvailable()) {
 			Duration delay = Duration.ofMillis(getRegistryExpirationPeriod() / 2);
 			this.scheduledFuture = this.scheduler.scheduleWithFixedDelay(this.schedulerTask, delay);

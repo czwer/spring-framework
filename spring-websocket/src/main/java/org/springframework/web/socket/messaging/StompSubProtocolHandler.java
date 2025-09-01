@@ -346,12 +346,15 @@ public class StompSubProtocolHandler implements SubProtocolHandler, ApplicationE
 						if (this.eventPublisher != null) {
 							Principal user = getUser(session);
 							if (isConnect) {
+								logger.info("[SPRING] 自定义日志---发布事件：SessionConnectEvent");
 								publishEvent(this.eventPublisher, new SessionConnectEvent(this, message, user));
 							}
 							else if (StompCommand.SUBSCRIBE.equals(command)) {
+								logger.info("[SPRING] 自定义日志---发布事件：SessionSubscribeEvent");
 								publishEvent(this.eventPublisher, new SessionSubscribeEvent(this, message, user));
 							}
 							else if (StompCommand.UNSUBSCRIBE.equals(command)) {
+								logger.info("[SPRING] 自定义日志---发布事件：SessionUnsubscribeEvent");
 								publishEvent(this.eventPublisher, new SessionUnsubscribeEvent(this, message, user));
 							}
 						}
@@ -445,7 +448,7 @@ public class StompSubProtocolHandler implements SubProtocolHandler, ApplicationE
 
 	private void publishEvent(ApplicationEventPublisher publisher, ApplicationEvent event) {
 		try {
-			logger.info("[SPRING] 自定义日志---发布事件：ApplicationEvent");
+			logger.info("[SPRING] 自定义日志---发布事件：ApplicationEvent，timestamp："+event.getTimestamp());
 			publisher.publishEvent(event);
 		}
 		catch (Throwable ex) {
@@ -490,6 +493,7 @@ public class StompSubProtocolHandler implements SubProtocolHandler, ApplicationE
 					SimpAttributes simpAttributes = new SimpAttributes(session.getId(), session.getAttributes());
 					SimpAttributesContextHolder.setAttributes(simpAttributes);
 					Principal user = getUser(session);
+					logger.info("[SPRING] 自定义日志---发布事件：SessionConnectedEvent");
 					publishEvent(this.eventPublisher, new SessionConnectedEvent(this, (Message<byte[]>) message, user));
 				}
 				finally {
@@ -681,6 +685,7 @@ public class StompSubProtocolHandler implements SubProtocolHandler, ApplicationE
 			SimpAttributesContextHolder.setAttributes(simpAttributes);
 			if (this.eventPublisher != null) {
 				Principal user = getUser(session);
+				logger.info("[SPRING] 自定义日志---发布事件：SessionDisconnectEvent");
 				publishEvent(this.eventPublisher, new SessionDisconnectEvent(this, message, session.getId(), closeStatus, user));
 			}
 			outputChannel.send(message);

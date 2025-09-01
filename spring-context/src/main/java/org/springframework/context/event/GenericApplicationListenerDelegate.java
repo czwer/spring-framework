@@ -18,6 +18,8 @@ package org.springframework.context.event;
 
 import java.util.function.Consumer;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.core.ResolvableType;
 
@@ -29,7 +31,7 @@ import org.springframework.core.ResolvableType;
  * @param <E> the specific {@code ApplicationEvent} subclass to listen to
  */
 class GenericApplicationListenerDelegate<E extends ApplicationEvent> implements GenericApplicationListener {
-
+	protected final Log logger = LogFactory.getLog(getClass());
 	private final Class<E> supportedEventType;
 
 	private final Consumer<E> consumer;
@@ -43,6 +45,7 @@ class GenericApplicationListenerDelegate<E extends ApplicationEvent> implements 
 
 	@Override
 	public void onApplicationEvent(ApplicationEvent event) {
+		logger.info("[SPRING] 自定义日志---监听到事件：ApplicationEvent，timestamp："+event.getTimestamp());
 		this.consumer.accept(this.supportedEventType.cast(event));
 	}
 

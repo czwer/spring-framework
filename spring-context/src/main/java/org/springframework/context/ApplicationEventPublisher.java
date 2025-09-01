@@ -15,7 +15,8 @@
  */
 
 package org.springframework.context;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 /**
  * Interface that encapsulates event publication functionality.
  *
@@ -33,7 +34,7 @@ package org.springframework.context;
  */
 @FunctionalInterface
 public interface ApplicationEventPublisher {
-
+	Log logger2 = LogFactory.getLog(ApplicationEventPublisher.class);
 	/**
 	 * Notify all <strong>matching</strong> listeners registered with this
 	 * application of an application event. Events may be framework events
@@ -62,6 +63,7 @@ public interface ApplicationEventPublisher {
 	 * @see org.springframework.context.event.ContextClosedEvent
 	 */
 	default void publishEvent(ApplicationEvent event) {
+		logger2.info("[SPRING] 自定义日志---发布事件中："+event.getClass().getName()+"，timestamp："+event.getTimestamp());
 		publishEvent((Object) event);
 	}
 

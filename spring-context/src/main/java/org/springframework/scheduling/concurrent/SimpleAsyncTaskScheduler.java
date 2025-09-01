@@ -28,6 +28,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.springframework.context.ApplicationContext;
@@ -102,7 +103,7 @@ import org.springframework.util.ErrorHandler;
 @SuppressWarnings("serial")
 public class SimpleAsyncTaskScheduler extends SimpleAsyncTaskExecutor implements TaskScheduler,
 		ApplicationContextAware, SmartLifecycle, ApplicationListener<ContextClosedEvent> {
-
+	protected final Log logger = LogFactory.getLog(getClass());
 	/**
 	 * The default phase for an executor {@link SmartLifecycle}: {@code Integer.MAX_VALUE / 2}.
 	 * @since 6.2
@@ -381,6 +382,7 @@ public class SimpleAsyncTaskScheduler extends SimpleAsyncTaskExecutor implements
 
 	@Override
 	public void onApplicationEvent(ContextClosedEvent event) {
+		logger.info("[SPRING] 自定义日志---监听到事件：ContextClosedEvent，timestamp："+event.getTimestamp());
 		if (event.getApplicationContext() == this.applicationContext) {
 			this.triggerExecutor.shutdown();
 			this.fixedDelayExecutor.shutdown();

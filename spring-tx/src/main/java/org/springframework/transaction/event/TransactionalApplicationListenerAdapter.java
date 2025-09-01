@@ -132,7 +132,7 @@ public class TransactionalApplicationListenerAdapter<E extends ApplicationEvent>
 
 	@Override
 	public void onApplicationEvent(E event) {
-		logger.info("自定义日志---监听到事件："+event.getClass().getName());
+		logger.info("[SPRING] 自定义日志---监听到事件："+event.getClass().getName()+"，timestamp："+event.getTimestamp());
 		TransactionalApplicationListenerSynchronization.register(event, this, this.callbacks);
 	}
 
