@@ -120,3 +120,13 @@ configure(moduleProjects) { project ->
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
+
+// 直接排除不需要构建的模块
+def excludedProjects = [':framework-docs', ':integration-tests', ':spring-core-test']
+gradle.projectsLoaded {
+    subprojects.findAll { excludedProjects.forEach {excludedProject->it.name.contains(excludedProject)} }.each {
+        it.tasks.all { task ->
+            task.enabled = false // 禁用该项目的所有任务
+        }
+    }
+}
