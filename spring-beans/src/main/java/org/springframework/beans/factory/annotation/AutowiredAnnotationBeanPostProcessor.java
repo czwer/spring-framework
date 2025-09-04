@@ -163,7 +163,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 	private static final Constructor<?>[] EMPTY_CONSTRUCTOR_ARRAY = new Constructor<?>[0];
 
 
-	protected final Log logger = LogFactory.getLog(getClass());
+	protected final Log logger = LogFactory.getLog(AutowiredAnnotationBeanPostProcessor.class);
 
 	private final Set<Class<? extends Annotation>> autowiredAnnotationTypes = CollectionUtils.newLinkedHashSet(4);
 
@@ -290,6 +290,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 
 	@Override
 	public void postProcessMergedBeanDefinition(RootBeanDefinition beanDefinition, Class<?> beanType, String beanName) {
+		logger.info("[SPRING] 自定义日志---检查是否有 @Autowired 等注解，如果有，就创建一个 InjectionMetadata 对象（调用时机：Bean 定义合并后，实例化前）");
 		// Register externally managed config members on bean definition.
 		findInjectionMetadata(beanName, beanType, beanDefinition);
 
@@ -364,7 +365,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 	@Nullable
 	public Constructor<?>[] determineCandidateConstructors(Class<?> beanClass, final String beanName)
 			throws BeanCreationException {
-
+		logger.info("[SPRING] 自定义日志---判断使用哪个构造方法。如果有一个构造方法被 @Autowired 标注，则使用它来创建Bean；这对于构造器注入至关重要。（调用时机：Bean 实例化前）");
 		checkLookupMethods(beanClass, beanName);
 
 		// Quick check on the concurrent map first, with minimal locking.
@@ -504,6 +505,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 
 	@Override
 	public PropertyValues postProcessProperties(PropertyValues pvs, Object bean, String beanName) {
+		logger.info("[SPRING] 自定义日志---执行实际的注入操作，将依赖注入到字段或方法参数中（调用时机：Bean 实例化后，属性填充前）");
 		InjectionMetadata metadata = findAutowiringMetadata(beanName, bean.getClass(), pvs);
 		try {
 			metadata.inject(bean, beanName, pvs);

@@ -53,7 +53,7 @@ import org.springframework.web.util.UrlPathHelper;
  */
 public class ResourceUrlProvider implements ApplicationListener<ContextRefreshedEvent>, ApplicationContextAware {
 
-	protected final Log logger = LogFactory.getLog(getClass());
+	protected final Log logger = LogFactory.getLog(ResourceUrlProvider.class);
 
 	@Nullable
 	private ApplicationContext applicationContext;

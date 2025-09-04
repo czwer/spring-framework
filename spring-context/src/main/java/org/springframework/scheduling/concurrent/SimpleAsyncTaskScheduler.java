@@ -103,7 +103,7 @@ import org.springframework.util.ErrorHandler;
 @SuppressWarnings("serial")
 public class SimpleAsyncTaskScheduler extends SimpleAsyncTaskExecutor implements TaskScheduler,
 		ApplicationContextAware, SmartLifecycle, ApplicationListener<ContextClosedEvent> {
-	protected final Log logger = LogFactory.getLog(getClass());
+	protected final Log logger = LogFactory.getLog(SimpleAsyncTaskScheduler.class);
 	/**
 	 * The default phase for an executor {@link SmartLifecycle}: {@code Integer.MAX_VALUE / 2}.
 	 * @since 6.2

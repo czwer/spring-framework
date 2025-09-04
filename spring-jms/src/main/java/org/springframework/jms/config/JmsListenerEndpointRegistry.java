@@ -62,7 +62,7 @@ import org.springframework.util.Assert;
 public class JmsListenerEndpointRegistry implements DisposableBean, SmartLifecycle,
 		ApplicationContextAware, ApplicationListener<ContextRefreshedEvent> {
 
-	protected final Log logger = LogFactory.getLog(getClass());
+	protected final Log logger = LogFactory.getLog(JmsListenerEndpointRegistry.class);
 
 	private final Map<String, MessageListenerContainer> listenerContainers =
 			new ConcurrentHashMap<>();

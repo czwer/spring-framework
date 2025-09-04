@@ -49,7 +49,7 @@ import org.springframework.util.CollectionUtils;
 public abstract class AbstractBrokerMessageHandler
 		implements MessageHandler, ApplicationEventPublisherAware, SmartLifecycle {
 
-	protected final Log logger = SimpLogging.forLogName(getClass());
+	protected final Log logger = SimpLogging.forLogName(AbstractBrokerMessageHandler.class);
 
 	private final SubscribableChannel clientInboundChannel;
 

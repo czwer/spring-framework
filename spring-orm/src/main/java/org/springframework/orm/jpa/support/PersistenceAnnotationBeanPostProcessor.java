@@ -85,6 +85,8 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * BeanPostProcessor that processes {@link jakarta.persistence.PersistenceUnit}
@@ -190,7 +192,7 @@ import org.springframework.util.StringUtils;
 public class PersistenceAnnotationBeanPostProcessor implements InstantiationAwareBeanPostProcessor,
 		DestructionAwareBeanPostProcessor, MergedBeanDefinitionPostProcessor, BeanRegistrationAotProcessor,
 		PriorityOrdered, BeanFactoryAware, Serializable {
-
+	protected final Log logger = LogFactory.getLog(PersistenceAnnotationBeanPostProcessor.class);
 	@Nullable
 	private Object jndiEnvironment;
 
@@ -350,6 +352,7 @@ public class PersistenceAnnotationBeanPostProcessor implements InstantiationAwar
 
 	@Override
 	public void postProcessMergedBeanDefinition(RootBeanDefinition beanDefinition, Class<?> beanType, String beanName) {
+		logger.info("[SPRING] 自定义日志---检查是否有 @PersistenceUnit和 @PersistenceContext等注解信息等注解，如果有，就创建一个 InjectionMetadata 对象（调用时机：Bean 定义合并后，实例化前）");
 		findInjectionMetadata(beanDefinition, beanType, beanName);
 	}
 
@@ -381,6 +384,7 @@ public class PersistenceAnnotationBeanPostProcessor implements InstantiationAwar
 
 	@Override
 	public PropertyValues postProcessProperties(PropertyValues pvs, Object bean, String beanName) {
+		logger.info("[SPRING] 自定义日志---处理 @PersistenceUnit和 @PersistenceContext注解，执行实际的注入操作，将依赖注入到字段或方法参数中（调用时机：Bean 实例化后，属性填充前）");
 		InjectionMetadata metadata = findPersistenceMetadata(beanName, bean.getClass(), pvs);
 		try {
 			metadata.inject(bean, beanName, pvs);

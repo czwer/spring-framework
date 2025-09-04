@@ -70,7 +70,8 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.context.support.XmlWebApplicationContext;
 import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.util.WebUtils;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 /**
  * Base servlet for Spring's web framework. Provides integration with
  * a Spring application context, in a JavaBean-based overall solution.
@@ -142,7 +143,7 @@ import org.springframework.web.util.WebUtils;
  */
 @SuppressWarnings("serial")
 public abstract class FrameworkServlet extends HttpServletBean implements ApplicationContextAware {
-
+	protected final Log logger = LogFactory.getLog(FrameworkServlet.class);
 	/**
 	 * Suffix for WebApplicationContext namespaces. If a servlet of this class is
 	 * given the name "test" in a context, the namespace used by the servlet will

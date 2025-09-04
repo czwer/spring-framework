@@ -91,7 +91,8 @@ import org.springframework.util.CompositeIterator;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 /**
  * Spring's default implementation of the {@link ConfigurableListableBeanFactory}
  * and {@link BeanDefinitionRegistry} interfaces: a full-fledged bean factory
@@ -128,7 +129,7 @@ import org.springframework.util.StringUtils;
 @SuppressWarnings("serial")
 public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFactory
 		implements ConfigurableListableBeanFactory, BeanDefinitionRegistry, Serializable {
-
+	protected final Log logger = LogFactory.getLog(AbstractBeanFactory.class);
 	/**
 	 * System property that instructs Spring to enforce strict locking during bean creation,
 	 * rather than the mix of strict and lenient locking that 6.2 applies by default. Setting

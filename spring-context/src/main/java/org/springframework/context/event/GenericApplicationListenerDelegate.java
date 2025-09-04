@@ -31,7 +31,7 @@ import org.springframework.core.ResolvableType;
  * @param <E> the specific {@code ApplicationEvent} subclass to listen to
  */
 class GenericApplicationListenerDelegate<E extends ApplicationEvent> implements GenericApplicationListener {
-	protected final Log logger = LogFactory.getLog(getClass());
+	protected final Log logger = LogFactory.getLog(GenericApplicationListenerDelegate.class);
 	private final Class<E> supportedEventType;
 
 	private final Consumer<E> consumer;

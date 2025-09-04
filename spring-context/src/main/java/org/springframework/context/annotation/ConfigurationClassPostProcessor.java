@@ -147,7 +147,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 			ConfigurationClassPostProcessor.class.getName() + ".importRegistry";
 
 
-	private final Log logger = LogFactory.getLog(getClass());
+	private final Log logger = LogFactory.getLog(AnnotationBeanNameGenerator.class);
 
 	private SourceExtractor sourceExtractor = new PassThroughSourceExtractor();
 
@@ -276,6 +276,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 	 */
 	@Override
 	public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) {
+		logger.info("[SPRING] 自定义日志---配置类处理流程的触发入口");
 		int registryId = System.identityHashCode(registry);
 		if (this.registriesPostProcessed.contains(registryId)) {
 			throw new IllegalStateException(
@@ -296,6 +297,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 	 */
 	@Override
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) {
+		logger.info("[SPRING] 自定义日志---对标记为full的配置类进行CGLIB字节码增强");
 		int factoryId = System.identityHashCode(beanFactory);
 		if (this.factoriesPostProcessed.contains(factoryId)) {
 			throw new IllegalStateException(
@@ -361,6 +363,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 	 * {@link Configuration} classes.
 	 */
 	public void processConfigBeanDefinitions(BeanDefinitionRegistry registry) {
+		logger.info("[SPRING] 自定义日志---实际执行配置类解析和注册逻辑的核心方法");
 		List<BeanDefinitionHolder> configCandidates = new ArrayList<>();
 		String[] candidateNames = registry.getBeanDefinitionNames();
 
@@ -415,6 +418,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 		Set<ConfigurationClass> alreadyParsed = CollectionUtils.newHashSet(configCandidates.size());
 		do {
 			StartupStep processConfig = this.applicationStartup.start("spring.context.config-classes.parse");
+			logger.info("[SPRING] 自定义日志---开始解析启动类包路径中的bean定义");
 			parser.parse(candidates);
 			parser.validate();
 
@@ -663,7 +667,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 
 		private static final String RESOURCE_LOADER_VARIABLE = "resourceLoader";
 
-		private final Log logger = LogFactory.getLog(getClass());
+		private final Log logger = LogFactory.getLog(PropertySourcesAotContribution.class);
 
 		private final List<PropertySourceDescriptor> descriptors;
 

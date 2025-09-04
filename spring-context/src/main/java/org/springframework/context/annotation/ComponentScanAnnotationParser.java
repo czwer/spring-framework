@@ -33,7 +33,8 @@ import org.springframework.core.type.filter.AbstractTypeHierarchyTraversingFilte
 import org.springframework.core.type.filter.TypeFilter;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 /**
  * Parser for the @{@link ComponentScan} annotation.
  *
@@ -45,7 +46,7 @@ import org.springframework.util.StringUtils;
  * @see ComponentScanBeanDefinitionParser
  */
 class ComponentScanAnnotationParser {
-
+	private final Log logger = LogFactory.getLog(ComponentScanAnnotationParser.class);
 	private final Environment environment;
 
 	private final ResourceLoader resourceLoader;
@@ -125,6 +126,7 @@ class ComponentScanAnnotationParser {
 				return declaringClass.equals(className);
 			}
 		});
+		basePackages.forEach(p -> {logger.info("[SPRING] 自定义日志---开始解析启动类包路径中的bean定义，包名："+p);});
 		return scanner.doScan(StringUtils.toStringArray(basePackages));
 	}
 

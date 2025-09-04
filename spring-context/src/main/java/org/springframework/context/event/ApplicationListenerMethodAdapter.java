@@ -76,7 +76,7 @@ public class ApplicationListenerMethodAdapter implements GenericApplicationListe
 			"org.reactivestreams.Publisher", ApplicationListenerMethodAdapter.class.getClassLoader());
 
 
-	protected final Log logger = LogFactory.getLog(getClass());
+	protected final Log logger = LogFactory.getLog(ApplicationListenerMethodAdapter.class);
 
 	private final String beanName;
 
@@ -381,6 +381,7 @@ public class ApplicationListenerMethodAdapter implements GenericApplicationListe
 			if (KotlinDetector.isSuspendingFunction(this.method)) {
 				return CoroutinesUtils.invokeSuspendingFunction(this.method, bean, args);
 			}
+			logger.info("[SPRING] 自定义日志【核心】---反射调用：调用事件监听方法，类名："+bean.getClass().getName()+"，方法名："+this.method.getName());
 			return this.method.invoke(bean, args);
 		}
 		catch (IllegalArgumentException ex) {

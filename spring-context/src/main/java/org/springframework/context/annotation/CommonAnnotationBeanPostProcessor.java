@@ -76,7 +76,8 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.util.StringValueResolver;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 /**
  * {@link org.springframework.beans.factory.config.BeanPostProcessor} implementation
  * that supports common Java annotations out of the box, in particular the common
@@ -144,6 +145,8 @@ import org.springframework.util.StringValueResolver;
 @SuppressWarnings("serial")
 public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBeanPostProcessor
 		implements InstantiationAwareBeanPostProcessor, BeanFactoryAware, Serializable {
+
+	protected final Log logger = LogFactory.getLog(CommonAnnotationBeanPostProcessor.class);
 
 	// Defensive reference to JNDI API for JDK 9+ (optional java.naming module)
 	private static final boolean jndiPresent = ClassUtils.isPresent(
@@ -309,6 +312,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 
 	@Override
 	public void postProcessMergedBeanDefinition(RootBeanDefinition beanDefinition, Class<?> beanType, String beanName) {
+		logger.info("[SPRING] 自定义日志---检查是否有 @PostConstruct, @PreDestroy, @Resource等注解信息等注解，如果有，就创建一个 InjectionMetadata 对象（调用时机：Bean 定义合并后，实例化前）");
 		super.postProcessMergedBeanDefinition(beanDefinition, beanType, beanName);
 		InjectionMetadata metadata = findResourceMetadata(beanName, beanType, null);
 		metadata.checkConfigMembers(beanDefinition);
@@ -364,6 +368,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 
 	@Override
 	public PropertyValues postProcessProperties(PropertyValues pvs, Object bean, String beanName) {
+		logger.info("[SPRING] 自定义日志---处理 @Resource注解，执行实际的注入操作，将依赖注入到字段或方法参数中（调用时机：Bean 实例化后，属性填充前）");
 		InjectionMetadata metadata = findResourceMetadata(beanName, bean.getClass(), pvs);
 		try {
 			metadata.inject(bean, beanName, pvs);

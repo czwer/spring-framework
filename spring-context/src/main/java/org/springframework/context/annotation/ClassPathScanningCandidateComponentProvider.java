@@ -108,7 +108,7 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 			SpringProperties.getFlag(IGNORE_CLASSFORMAT_PROPERTY_NAME);
 
 
-	protected final Log logger = LogFactory.getLog(getClass());
+	protected final Log logger = LogFactory.getLog(ClassPathScanningCandidateComponentProvider.class);
 
 	private String resourcePattern = DEFAULT_RESOURCE_PATTERN;
 
@@ -514,6 +514,7 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 		catch (IOException ex) {
 			throw new BeanDefinitionStoreException("I/O failure during classpath scanning", ex);
 		}
+		candidates.forEach(b ->{logger.info("[SPRING] 自定义日志---包路径下："+basePackage+",找到Bean定义："+b.getBeanClassName());});
 		return candidates;
 	}
 

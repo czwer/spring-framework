@@ -35,7 +35,8 @@ import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.lang.Nullable;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 /**
  * Complete implementation of the
  * {@link org.springframework.beans.factory.support.AutowireCandidateResolver} strategy
@@ -46,7 +47,7 @@ import org.springframework.lang.Nullable;
  * @since 4.0
  */
 public class ContextAnnotationAutowireCandidateResolver extends QualifierAnnotationAutowireCandidateResolver {
-
+	protected static final Log logger = LogFactory.getLog(ContextAnnotationAutowireCandidateResolver.class);
 	@Override
 	@Nullable
 	public Object getLazyResolutionProxyIfNecessary(DependencyDescriptor descriptor, @Nullable String beanName) {
@@ -85,6 +86,7 @@ public class ContextAnnotationAutowireCandidateResolver extends QualifierAnnotat
 
 	private Object buildLazyResolutionProxy(
 			DependencyDescriptor descriptor, @Nullable String beanName, boolean classOnly) {
+		logger.info("[SPRING] 自定义日志---标记有 @Lazy注解，返回一个代理对象");
 
 		if (!(getBeanFactory() instanceof DefaultListableBeanFactory dlbf)) {
 			throw new IllegalStateException("Lazy resolution only supported with DefaultListableBeanFactory");

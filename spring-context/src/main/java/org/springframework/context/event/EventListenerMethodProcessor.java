@@ -65,7 +65,7 @@ import org.springframework.util.CollectionUtils;
 public class EventListenerMethodProcessor
 		implements SmartInitializingSingleton, ApplicationContextAware, BeanFactoryPostProcessor {
 
-	protected final Log logger = LogFactory.getLog(getClass());
+	protected final Log logger = LogFactory.getLog(EventListenerMethodProcessor.class);
 
 	@Nullable
 	private ConfigurableApplicationContext applicationContext;
@@ -104,12 +104,14 @@ public class EventListenerMethodProcessor
 		Map<String, EventListenerFactory> beans = beanFactory.getBeansOfType(EventListenerFactory.class, false, false);
 		List<EventListenerFactory> factories = new ArrayList<>(beans.values());
 		AnnotationAwareOrderComparator.sort(factories);
+		factories.forEach( e -> {logger.info("[SPRING] 自定义日志---获取到EventListenerFactory："+e.getClass().getName());});
 		this.eventListenerFactories = factories;
 	}
 
 
 	@Override
 	public void afterSingletonsInstantiated() {
+		logger.info("[SPRING] 自定义日志---用于扫描 Bean 和方法、创建并注册监听器（调用时机：所有单例 Bean 初始化完成之后，容器刷新末尾阶段）");
 		ConfigurableListableBeanFactory beanFactory = this.beanFactory;
 		Assert.state(beanFactory != null, "No ConfigurableListableBeanFactory set");
 		String[] beanNames = beanFactory.getBeanNamesForType(Object.class);

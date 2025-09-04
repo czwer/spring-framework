@@ -76,7 +76,8 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.util.StringValueResolver;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 /**
  * Abstract base class for {@link org.springframework.beans.factory.BeanFactory}
  * implementations, providing the full capabilities of the
@@ -113,7 +114,7 @@ import org.springframework.util.StringValueResolver;
  * @see DefaultListableBeanFactory#getBeanDefinition
  */
 public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport implements ConfigurableBeanFactory {
-
+	protected final Log logger = LogFactory.getLog(AbstractBeanFactory.class);
 	/** Parent bean factory, for bean inheritance support. */
 	@Nullable
 	private BeanFactory parentBeanFactory;
@@ -242,7 +243,11 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	protected <T> T doGetBean(
 			String name, @Nullable Class<T> requiredType, @Nullable Object[] args, boolean typeCheckOnly)
 			throws BeansException {
-
+		if (requiredType != null){
+			logger.info("[SPRING] 自定义日志---获取Bean：beanName："+name+",beanType："+requiredType.getName());
+		}else {
+			logger.info("[SPRING] 自定义日志---获取Bean：beanName："+name);
+		}
 		String beanName = transformedBeanName(name);
 		Object beanInstance;
 

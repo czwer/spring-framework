@@ -46,7 +46,7 @@ import org.springframework.util.Assert;
  * @since 4.2
  */
 public class UserRegistryMessageHandler implements MessageHandler, ApplicationListener<BrokerAvailabilityEvent> {
-	protected final Log logger = LogFactory.getLog(getClass());
+	protected final Log logger = LogFactory.getLog(UserRegistryMessageHandler.class);
 	private final MultiServerUserRegistry userRegistry;
 
 	private final SimpMessagingTemplate brokerTemplate;

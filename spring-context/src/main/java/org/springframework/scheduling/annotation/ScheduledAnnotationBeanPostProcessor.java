@@ -130,7 +130,7 @@ public class ScheduledAnnotationBeanPostProcessor
 	private static final boolean reactiveStreamsPresent = ClassUtils.isPresent(
 			"org.reactivestreams.Publisher", ScheduledAnnotationBeanPostProcessor.class.getClassLoader());
 
-	protected final Log logger = LogFactory.getLog(getClass());
+	protected final Log logger = LogFactory.getLog(ScheduledAnnotationBeanPostProcessor.class);
 
 	private final ScheduledTaskRegistrar registrar;
 

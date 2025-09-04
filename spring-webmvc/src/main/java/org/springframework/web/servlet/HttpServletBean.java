@@ -82,7 +82,7 @@ import org.springframework.web.context.support.StandardServletEnvironment;
 public abstract class HttpServletBean extends HttpServlet implements EnvironmentCapable, EnvironmentAware {
 
 	/** Logger available to subclasses. */
-	protected final Log logger = LogFactory.getLog(getClass());
+	protected final Log logger = LogFactory.getLog(HttpServletBean.class);
 
 	@Nullable
 	private ConfigurableEnvironment environment;

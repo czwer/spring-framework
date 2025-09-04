@@ -75,7 +75,7 @@ public abstract class ExecutorConfigurationSupport extends CustomizableThreadFac
 	public static final int DEFAULT_PHASE = Integer.MAX_VALUE / 2;
 
 
-	protected final Log logger = LogFactory.getLog(getClass());
+	protected final Log logger = LogFactory.getLog(ExecutorConfigurationSupport.class);
 
 	private boolean virtualThreads = false;
 

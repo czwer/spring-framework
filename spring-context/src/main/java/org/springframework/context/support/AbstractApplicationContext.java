@@ -180,7 +180,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 
 	/** Logger used by this class. Available to subclasses. */
-	protected final Log logger = LogFactory.getLog(getClass());
+	protected final Log logger = LogFactory.getLog(AbstractApplicationContext.class);
 
 	/** Unique id for this context, if any. */
 	private String id = ObjectUtils.identityToString(this);
@@ -790,6 +790,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * <p>Must be called before singleton instantiation.
 	 */
 	protected void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory) {
+		logger.info("[SPRING] 自定义日志---开始调用：invokeBeanFactoryPostProcessors");
 		PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors(beanFactory, getBeanFactoryPostProcessors());
 
 		// Detect a LoadTimeWeaver and prepare for weaving, if found in the meantime
