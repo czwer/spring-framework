@@ -122,9 +122,32 @@ tasks.withType(JavaCompile) {
 }
 
 // 直接排除不需要构建的模块
-def excludedProjects = [':framework-docs', ':integration-tests', ':spring-core-test']
+def excludedProjects = [':framework-docs',
+                        ':integration-tests',
+                        ':spring-core-test',
+                        ':dokkaHtmlPartial',
+                        ':spring-test:dokkaHtmlPartial',
+                        ':spring-webflux:dokkaHtmlPartial',
+                        ':spring-webmvc:dokkaHtmlPartial',
+                        ':spring-web:dokkaHtmlPartial',
+                        ':spring-messaging:dokkaHtmlPartial',
+                        ':spring-tx:dokkaHtmlPartial',
+                        ':spring-jdbc:dokkaHtmlPartial',
+                        ':spring-r2dbc:dokkaHtmlPartial',
+                        ':spring-messaging:dokkaHtmlPartial',
+                        ':spring-context:dokkaHtmlPartial',
+                        ':spring-beans:dokkaHtmlPartial',
+                        ':spring-aop:dokkaHtmlPartial',
+                        ':dokkaHtmlMultiModule']
+//gradle.projectsLoaded {
+//    subprojects.findAll { excludedProjects.forEach {excludedProject->it.name.contains(excludedProject)} }.each {
+//        it.tasks.all { task ->
+//            task.enabled = false // 禁用该项目的所有任务
+//        }
+//    }
+//}
 gradle.projectsLoaded {
-    subprojects.findAll { excludedProjects.forEach {excludedProject->it.name.contains(excludedProject)} }.each {
+    subprojects.findAll { excludedProjects.contains(it.name) }.each {
         it.tasks.all { task ->
             task.enabled = false // 禁用该项目的所有任务
         }
