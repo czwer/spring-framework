@@ -35,7 +35,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.context.ConfigurableWebApplicationContext;
 import org.springframework.web.context.ConfigurableWebEnvironment;
 import org.springframework.web.context.ServletContextAware;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 /**
  * Subclass of {@link GenericApplicationContext}, suitable for web environments.
  *
@@ -81,7 +82,7 @@ import org.springframework.web.context.ServletContextAware;
 @SuppressWarnings("deprecation")
 public class GenericWebApplicationContext extends GenericApplicationContext
 		implements ConfigurableWebApplicationContext, ThemeSource {
-
+	protected final Log logger = LogFactory.getLog(GenericWebApplicationContext.class);
 	@Nullable
 	private ServletContext servletContext;
 
@@ -197,6 +198,7 @@ public class GenericWebApplicationContext extends GenericApplicationContext
 	 */
 	@Override
 	protected void onRefresh() {
+		logger.info("[SPRING] 自定义日志---实现AbstractApplicationContext.onRefresh：它的核心作用是在应用上下文刷新（refresh）的生命周期中，初始化Web环境相关的特定组件，其中最典型的就是主题资源（ThemeSource）");
 		this.themeSource = UiApplicationContextUtils.initThemeSource(this);
 	}
 

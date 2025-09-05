@@ -67,7 +67,7 @@ final class PostProcessorRegistrationDelegate {
 
 	public static void invokeBeanFactoryPostProcessors(
 			ConfigurableListableBeanFactory beanFactory, List<BeanFactoryPostProcessor> beanFactoryPostProcessors) {
-		beanFactoryPostProcessors.forEach(b->{logger.info("[SPRING] 自定义日志---开始执行：invokeBeanFactoryPostProcessors，存在的BeanFactoryPostProcessor："+b.getClass().getName());});
+		beanFactoryPostProcessors.forEach(b->{logger.info("[SPRING] 自定义日志---传入invokeBeanFactoryPostProcessors的BeanFactoryPostProcessor有："+b.getClass().getName());});
 
 		// WARNING: Although it may appear that the body of this method can be easily
 		// refactored to avoid the use of multiple loops and multiple lists, the use

@@ -19,7 +19,10 @@ package org.springframework.web.context.support;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.AbstractRefreshableConfigApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.io.Resource;
@@ -81,7 +84,7 @@ import org.springframework.web.context.ServletContextAware;
 @SuppressWarnings("deprecation")
 public abstract class AbstractRefreshableWebApplicationContext extends AbstractRefreshableConfigApplicationContext
 		implements ConfigurableWebApplicationContext, ThemeSource {
-
+	protected final Log logger = LogFactory.getLog(AbstractRefreshableWebApplicationContext.class);
 	/** Servlet context that this context runs in. */
 	@Nullable
 	private ServletContext servletContext;
@@ -200,6 +203,7 @@ public abstract class AbstractRefreshableWebApplicationContext extends AbstractR
 	 */
 	@Override
 	protected void onRefresh() {
+		logger.info("[SPRING] 自定义日志---实现AbstractApplicationContext.onRefresh：在应用上下文刷新过程中，提供一个专用于Web环境的扩展点，允许子类在此时执行Web相关的初始化工作");
 		this.themeSource = UiApplicationContextUtils.initThemeSource(this);
 	}
 

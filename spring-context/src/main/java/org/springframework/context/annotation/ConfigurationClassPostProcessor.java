@@ -276,7 +276,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 	 */
 	@Override
 	public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) {
-		logger.info("[SPRING] 自定义日志---配置类处理流程的触发入口");
+		logger.info("[SPRING] 自定义日志---配置解析过程的入口");
 		int registryId = System.identityHashCode(registry);
 		if (this.registriesPostProcessed.contains(registryId)) {
 			throw new IllegalStateException(

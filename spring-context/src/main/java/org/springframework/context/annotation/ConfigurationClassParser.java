@@ -112,7 +112,7 @@ class ConfigurationClassParser {
 			(o1, o2) -> AnnotationAwareOrderComparator.INSTANCE.compare(o1.getImportSelector(), o2.getImportSelector());
 
 
-	private final Log logger = LogFactory.getLog(getClass());
+	private final Log logger = LogFactory.getLog(ConfigurationClassParser.class);
 
 	private final MetadataReaderFactory metadataReaderFactory;
 
@@ -304,6 +304,8 @@ class ConfigurationClassParser {
 			throws IOException {
 
 		if (configClass.getMetadata().isAnnotated(Component.class.getName())) {
+			AnnotationMetadata metadata = sourceClass.getMetadata();
+			logger.info("[SPRING] 自定义日志---含注解@Component或其子注解："+sourceClass.getMetadata().getClassName());
 			// Recursively process any member (nested) classes first
 			processMemberClasses(configClass, sourceClass, filter);
 		}
@@ -312,6 +314,7 @@ class ConfigurationClassParser {
 		for (AnnotationAttributes propertySource : AnnotationConfigUtils.attributesForRepeatable(
 				sourceClass.getMetadata(), org.springframework.context.annotation.PropertySource.class,
 				PropertySources.class, true)) {
+			logger.info("[SPRING] 自定义日志---含注解@PropertySource："+sourceClass.getMetadata().getClassName());
 			if (this.propertySourceRegistry != null) {
 				this.propertySourceRegistry.processPropertySource(propertySource);
 			}
@@ -334,6 +337,7 @@ class ConfigurationClassParser {
 		}
 
 		if (!componentScans.isEmpty()) {
+			logger.info("[SPRING] 自定义日志---含注解@ComponentScans："+sourceClass.getMetadata().getClassName());
 			List<Condition> registerBeanConditions = collectRegisterBeanConditions(configClass);
 			if (!registerBeanConditions.isEmpty()) {
 				throw new ApplicationContextException(
@@ -364,6 +368,7 @@ class ConfigurationClassParser {
 		AnnotationAttributes importResource =
 				AnnotationConfigUtils.attributesFor(sourceClass.getMetadata(), ImportResource.class);
 		if (importResource != null) {
+			logger.info("[SPRING] 自定义日志---含注解@ImportResource："+sourceClass.getMetadata().getClassName());
 			String[] resources = importResource.getStringArray("locations");
 			Class<? extends BeanDefinitionReader> readerClass = importResource.getClass("reader");
 			for (String resource : resources) {
@@ -378,6 +383,7 @@ class ConfigurationClassParser {
 			if (methodMetadata.isAnnotated("kotlin.jvm.JvmStatic") && !methodMetadata.isStatic()) {
 				continue;
 			}
+			logger.info("[SPRING] 自定义日志---含注解@Bean（方法）："+sourceClass.getMetadata().getClassName());
 			configClass.addBeanMethod(new BeanMethod(methodMetadata, configClass));
 		}
 
@@ -574,7 +580,7 @@ class ConfigurationClassParser {
 		if (importCandidates.isEmpty()) {
 			return;
 		}
-
+		logger.info("[SPRING] 自定义日志---含注解@Import："+currentSourceClass.getMetadata().getClassName());
 		if (checkForCircularImports && isChainedImportOnStack(configClass)) {
 			this.problemReporter.error(new CircularImportProblem(configClass, this.importStack));
 		}

@@ -190,6 +190,7 @@ public class StaticWebApplicationContext extends StaticApplicationContext
 	 */
 	@Override
 	protected void onRefresh() {
+		logger.info("[SPRING] 自定义日志---实现AbstractApplicationContext.onRefresh：在一个独立的、非基于Servlet容器环境的Web应用上下文中，执行一套最小化的、模拟的Web环境初始化流程。");
 		this.themeSource = UiApplicationContextUtils.initThemeSource(this);
 	}
 

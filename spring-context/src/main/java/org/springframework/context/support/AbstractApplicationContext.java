@@ -792,7 +792,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	protected void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory) {
 		logger.info("[SPRING] 自定义日志---开始调用：invokeBeanFactoryPostProcessors");
 		PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors(beanFactory, getBeanFactoryPostProcessors());
-
+		logger.info("[SPRING] 自定义日志---完成调用：invokeBeanFactoryPostProcessors");
 		// Detect a LoadTimeWeaver and prepare for weaving, if found in the meantime
 		// (for example, through an @Bean method registered by ConfigurationClassPostProcessor)
 		if (!NativeDetector.inNativeImage() && beanFactory.getTempClassLoader() == null &&
