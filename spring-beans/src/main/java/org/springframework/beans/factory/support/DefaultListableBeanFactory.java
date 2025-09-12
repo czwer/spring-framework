@@ -129,7 +129,7 @@ import org.apache.commons.logging.LogFactory;
 @SuppressWarnings("serial")
 public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFactory
 		implements ConfigurableListableBeanFactory, BeanDefinitionRegistry, Serializable {
-	protected final Log logger = LogFactory.getLog(AbstractBeanFactory.class);
+	protected final Log logger = LogFactory.getLog(DefaultListableBeanFactory.class);
 	/**
 	 * System property that instructs Spring to enforce strict locking during bean creation,
 	 * rather than the mix of strict and lenient locking that 6.2 applies by default. Setting
@@ -1121,6 +1121,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			for (String beanName : beanNames) {
 				RootBeanDefinition mbd = getMergedLocalBeanDefinition(beanName);
 				if (!mbd.isAbstract() && mbd.isSingleton()) {
+					logger.info("[SPRING] 自定义日志【重要】---提前实例化所有非懒加载的单例Bean：" + beanName);
 					CompletableFuture<?> future = preInstantiateSingleton(beanName, mbd);
 					if (future != null) {
 						futures.add(future);
@@ -1359,7 +1360,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	@Override
 	public void removeBeanDefinition(String beanName) throws NoSuchBeanDefinitionException {
 		Assert.hasText(beanName, "'beanName' must not be empty");
-
+		logger.info("[SPRING] 自定义日志【重要】---移除指定名称的Bean定义：" + beanName);
 		BeanDefinition bd = this.beanDefinitionMap.remove(beanName);
 		if (bd == null) {
 			if (logger.isTraceEnabled()) {
@@ -1458,6 +1459,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 	@Override
 	public void registerSingleton(String beanName, Object singletonObject) throws IllegalStateException {
+		logger.info("[SPRING] 自定义日志【重要】---动态地向BeanFactory注册一个已经实例化好的对象作为一个单例Bean,beanName：" + beanName+",beanClass："+singletonObject.getClass().getName());
 		super.registerSingleton(beanName, singletonObject);
 		updateManualSingletonNames(set -> set.add(beanName), set -> !this.beanDefinitionMap.containsKey(beanName));
 		clearByTypeCache();
@@ -1465,6 +1467,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 	@Override
 	public void destroySingletons() {
+		logger.info("[SPRING] 自定义日志【重要】---销毁所有已创建的单例Bean");
 		super.destroySingletons();
 		updateManualSingletonNames(Set::clear, set -> !set.isEmpty());
 		clearByTypeCache();
@@ -1472,6 +1475,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 	@Override
 	public void destroySingleton(String beanName) {
+		logger.info("[SPRING] 自定义日志【重要】---销毁单例Bean："+beanName);
 		super.destroySingleton(beanName);
 		removeManualSingletonName(beanName);
 		clearByTypeCache();
@@ -1607,6 +1611,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	@Nullable
 	public Object resolveDependency(DependencyDescriptor descriptor, @Nullable String requestingBeanName,
 			@Nullable Set<String> autowiredBeanNames, @Nullable TypeConverter typeConverter) throws BeansException {
+		logger.info("[SPRING] 自定义日志【重要】---解析特定的依赖描述符，用于自动装配：" + requestingBeanName);
 
 		descriptor.initParameterNameDiscovery(getParameterNameDiscoverer());
 		if (Optional.class == descriptor.getDependencyType()) {

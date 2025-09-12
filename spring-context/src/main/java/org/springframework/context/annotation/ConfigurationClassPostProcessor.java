@@ -311,6 +311,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 		}
 
 		enhanceConfigurationClasses(beanFactory);
+		logger.info("[SPRING] 自定义日志【重要】---添加BeanPostProcessor：ImportAwareBeanPostProcessor");
 		beanFactory.addBeanPostProcessor(new ImportAwareBeanPostProcessor(beanFactory));
 	}
 
@@ -554,6 +555,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 
 
 	private static class ImportAwareBeanPostProcessor implements InstantiationAwareBeanPostProcessor {
+		protected final Log logger = LogFactory.getLog(ImportAwareBeanPostProcessor.class);
 
 		private final BeanFactory beanFactory;
 
@@ -575,6 +577,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 		@Override
 		public Object postProcessBeforeInitialization(Object bean, String beanName) {
 			if (bean instanceof ImportAware importAware) {
+				logger.info("[SPRING] 自定义日志---：在Bean初始化之前，为那些通过 @Import导入且实现了ImportAware接口的Bean注入导入源的注解元数据：" + beanName);
 				ImportRegistry ir = this.beanFactory.getBean(IMPORT_REGISTRY_BEAN_NAME, ImportRegistry.class);
 				AnnotationMetadata importingClass = ir.getImportingClassFor(ClassUtils.getUserClass(bean).getName());
 				if (importingClass != null) {

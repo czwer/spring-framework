@@ -67,7 +67,7 @@ final class PostProcessorRegistrationDelegate {
 
 	public static void invokeBeanFactoryPostProcessors(
 			ConfigurableListableBeanFactory beanFactory, List<BeanFactoryPostProcessor> beanFactoryPostProcessors) {
-		beanFactoryPostProcessors.forEach(b->{logger.info("[SPRING] 自定义日志---传入invokeBeanFactoryPostProcessors的BeanFactoryPostProcessor有："+b.getClass().getName());});
+		beanFactoryPostProcessors.forEach(b->{logger.info("[SPRING] 自定义日志---000传入invokeBeanFactoryPostProcessors的BeanFactoryPostProcessor有："+b.getClass().getName());});
 
 		// WARNING: Although it may appear that the body of this method can be easily
 		// refactored to avoid the use of multiple loops and multiple lists, the use
@@ -91,7 +91,7 @@ final class PostProcessorRegistrationDelegate {
 
 			for (BeanFactoryPostProcessor postProcessor : beanFactoryPostProcessors) {
 				if (postProcessor instanceof BeanDefinitionRegistryPostProcessor registryProcessor) {
-					logger.info("[SPRING] 自定义日志---开始调用postProcessBeanDefinitionRegistry："+postProcessor.getClass().getName());
+					logger.info("[SPRING] 自定义日志---001BeanDefinitionRegistryPostProcessor，开始调用postProcessBeanDefinitionRegistry："+postProcessor.getClass().getName());
 					registryProcessor.postProcessBeanDefinitionRegistry(registry);
 					registryProcessors.add(registryProcessor);
 				}
@@ -110,8 +110,9 @@ final class PostProcessorRegistrationDelegate {
 			String[] postProcessorNames =
 					beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false);
 			for (String ppName : postProcessorNames) {
+				logger.info("[SPRING] 自定义日志---002BeanDefinitionRegistryPostProcessor类型："+ppName);
 				if (beanFactory.isTypeMatch(ppName, PriorityOrdered.class)) {
-					logger.info("[SPRING] 自定义日志---获取Bean（BeanDefinitionRegistryPostProcessor，PriorityOrdered）："+ppName);
+					logger.info("[SPRING] 自定义日志---002BeanDefinitionRegistryPostProcessor类型，PriorityOrdered，获取Bean："+ppName);
 					currentRegistryProcessors.add(beanFactory.getBean(ppName, BeanDefinitionRegistryPostProcessor.class));
 					processedBeans.add(ppName);
 				}
@@ -125,7 +126,7 @@ final class PostProcessorRegistrationDelegate {
 			postProcessorNames = beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false);
 			for (String ppName : postProcessorNames) {
 				if (!processedBeans.contains(ppName) && beanFactory.isTypeMatch(ppName, Ordered.class)) {
-					logger.info("[SPRING] 自定义日志---获取Bean（BeanDefinitionRegistryPostProcessor，Ordered）："+ppName);
+					logger.info("[SPRING] 自定义日志---004BeanDefinitionRegistryPostProcessor类型，Ordered，获取Bean："+ppName);
 					currentRegistryProcessors.add(beanFactory.getBean(ppName, BeanDefinitionRegistryPostProcessor.class));
 					processedBeans.add(ppName);
 				}
@@ -142,7 +143,7 @@ final class PostProcessorRegistrationDelegate {
 				postProcessorNames = beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false);
 				for (String ppName : postProcessorNames) {
 					if (!processedBeans.contains(ppName)) {
-						logger.info("[SPRING] 自定义日志---获取Bean（BeanDefinitionRegistryPostProcessor）："+ppName);
+						logger.info("[SPRING] 自定义日志---005BeanDefinitionRegistryPostProcessor类型，获取Bean："+ppName);
 						currentRegistryProcessors.add(beanFactory.getBean(ppName, BeanDefinitionRegistryPostProcessor.class));
 						processedBeans.add(ppName);
 						reiterate = true;
@@ -179,7 +180,7 @@ final class PostProcessorRegistrationDelegate {
 				// skip - already processed in first phase above
 			}
 			else if (beanFactory.isTypeMatch(ppName, PriorityOrdered.class)) {
-				logger.info("[SPRING] 自定义日志---获取Bean（BeanFactoryPostProcessor，PriorityOrdered）："+ppName);
+				logger.info("[SPRING] 自定义日志---007BeanDefinitionRegistryPostProcessor类型，PriorityOrdered，获取Bean："+ppName);
 				priorityOrderedPostProcessors.add(beanFactory.getBean(ppName, BeanFactoryPostProcessor.class));
 			}
 			else if (beanFactory.isTypeMatch(ppName, Ordered.class)) {
@@ -197,7 +198,7 @@ final class PostProcessorRegistrationDelegate {
 		// Next, invoke the BeanFactoryPostProcessors that implement Ordered.
 		List<BeanFactoryPostProcessor> orderedPostProcessors = new ArrayList<>(orderedPostProcessorNames.size());
 		for (String postProcessorName : orderedPostProcessorNames) {
-			logger.info("[SPRING] 自定义日志---获取Bean（BeanFactoryPostProcessor，Ordered）："+postProcessorName);
+			logger.info("[SPRING] 自定义日志---008BeanDefinitionRegistryPostProcessor类型，Ordered，获取Bean："+postProcessorName);
 			orderedPostProcessors.add(beanFactory.getBean(postProcessorName, BeanFactoryPostProcessor.class));
 		}
 		sortPostProcessors(orderedPostProcessors, beanFactory);
@@ -206,7 +207,7 @@ final class PostProcessorRegistrationDelegate {
 		// Finally, invoke all other BeanFactoryPostProcessors.
 		List<BeanFactoryPostProcessor> nonOrderedPostProcessors = new ArrayList<>(nonOrderedPostProcessorNames.size());
 		for (String postProcessorName : nonOrderedPostProcessorNames) {
-			logger.info("[SPRING] 自定义日志---获取Bean（BeanFactoryPostProcessor，nonOrderedPostProcessorNames）："+postProcessorName);
+			logger.info("[SPRING] 自定义日志---009BeanDefinitionRegistryPostProcessor类型，获取Bean："+postProcessorName);
 			nonOrderedPostProcessors.add(beanFactory.getBean(postProcessorName, BeanFactoryPostProcessor.class));
 		}
 		invokeBeanFactoryPostProcessors(nonOrderedPostProcessors, beanFactory);
@@ -238,6 +239,7 @@ final class PostProcessorRegistrationDelegate {
 		// a bean is created during BeanPostProcessor instantiation, i.e. when
 		// a bean is not eligible for getting processed by all BeanPostProcessors.
 		int beanProcessorTargetCount = beanFactory.getBeanPostProcessorCount() + 1 + postProcessorNames.length;
+		logger.info("[SPRING] 自定义日志【重要】---添加BeanPostProcessor：BeanPostProcessorChecker");
 		beanFactory.addBeanPostProcessor(
 				new BeanPostProcessorChecker(beanFactory, postProcessorNames, beanProcessorTargetCount));
 
@@ -354,7 +356,7 @@ final class PostProcessorRegistrationDelegate {
 		for (BeanDefinitionRegistryPostProcessor postProcessor : postProcessors) {
 			StartupStep postProcessBeanDefRegistry = applicationStartup.start("spring.context.beandef-registry.post-process")
 					.tag("postProcessor", postProcessor::toString);
-			logger.info("[SPRING] 自定义日志---开始调用：postProcessBeanDefinitionRegistry："+postProcessor.getClass().getName());
+			logger.info("[SPRING] 自定义日志---003开始调用postProcessBeanDefinitionRegistry："+postProcessor.getClass().getName());
 			postProcessor.postProcessBeanDefinitionRegistry(registry);
 			postProcessBeanDefRegistry.end();
 		}
@@ -369,7 +371,7 @@ final class PostProcessorRegistrationDelegate {
 		for (BeanFactoryPostProcessor postProcessor : postProcessors) {
 			StartupStep postProcessBeanFactory = beanFactory.getApplicationStartup().start("spring.context.bean-factory.post-process")
 					.tag("postProcessor", postProcessor::toString);
-			logger.info("[SPRING] 自定义日志---开始调用：postProcessBeanFactory："+postProcessor.getClass().getName());
+			logger.info("[SPRING] 自定义日志---006开始调用postProcessBeanFactory："+postProcessor.getClass().getName());
 			postProcessor.postProcessBeanFactory(beanFactory);
 			postProcessBeanFactory.end();
 		}
@@ -418,6 +420,7 @@ final class PostProcessorRegistrationDelegate {
 
 		@Override
 		public Object postProcessBeforeInitialization(Object bean, String beanName) {
+			logger.info("[SPRING] 自定义日志---实现BeanPostProcessor：目前是空方法："+beanName);
 			return bean;
 		}
 
@@ -425,6 +428,7 @@ final class PostProcessorRegistrationDelegate {
 		public Object postProcessAfterInitialization(Object bean, String beanName) {
 			if (!(bean instanceof BeanPostProcessor) && !isInfrastructureBean(beanName) &&
 					this.beanFactory.getBeanPostProcessorCount() < this.beanPostProcessorTargetCount) {
+				logger.info("[SPRING] 自定义日志---实现BeanPostProcessor：一个监控和诊断工具，它在Bean的初始化过程中检查BeanPostProcessor的应用情况，并在检测到潜在问题时（通常是配置错误）记录警告或信息日志："+beanName);
 				if (logger.isWarnEnabled()) {
 					Set<String> bppsInCreation = new LinkedHashSet<>(2);
 					for (String bppName : this.postProcessorNames) {

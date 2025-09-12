@@ -30,7 +30,8 @@ import org.springframework.context.MessageSourceAware;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.lang.Nullable;
 import org.springframework.util.StringValueResolver;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 /**
  * {@link BeanPostProcessor} implementation that supplies the
  * {@link org.springframework.context.ApplicationContext ApplicationContext},
@@ -63,6 +64,7 @@ import org.springframework.util.StringValueResolver;
  * @see org.springframework.context.support.AbstractApplicationContext#refresh()
  */
 class ApplicationContextAwareProcessor implements BeanPostProcessor {
+	protected final Log logger = LogFactory.getLog(ApplicationContextAwareProcessor.class);
 
 	private final ConfigurableApplicationContext applicationContext;
 
@@ -82,6 +84,7 @@ class ApplicationContextAwareProcessor implements BeanPostProcessor {
 	@Nullable
 	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
 		if (bean instanceof Aware) {
+			logger.info("[SPRING] 自定义日志【非常重要】---实现BeanPostProcessor：负责回调一系列特定的Aware接口："+beanName);
 			invokeAwareInterfaces(bean);
 		}
 		return bean;
@@ -89,24 +92,31 @@ class ApplicationContextAwareProcessor implements BeanPostProcessor {
 
 	private void invokeAwareInterfaces(Object bean) {
 		if (bean instanceof EnvironmentAware environmentAware) {
+			logger.info("[SPRING] 自定义日志---负责回调一系列特定的Aware接口，设置EnvironmentAware");
 			environmentAware.setEnvironment(this.applicationContext.getEnvironment());
 		}
 		if (bean instanceof EmbeddedValueResolverAware embeddedValueResolverAware) {
+			logger.info("[SPRING] 自定义日志---负责回调一系列特定的Aware接口，设置EmbeddedValueResolverAware");
 			embeddedValueResolverAware.setEmbeddedValueResolver(this.embeddedValueResolver);
 		}
 		if (bean instanceof ResourceLoaderAware resourceLoaderAware) {
+			logger.info("[SPRING] 自定义日志---负责回调一系列特定的Aware，设置ResourceLoaderAware");
 			resourceLoaderAware.setResourceLoader(this.applicationContext);
 		}
 		if (bean instanceof ApplicationEventPublisherAware applicationEventPublisherAware) {
+			logger.info("[SPRING] 自定义日志---负责回调一系列特定的Aware，设置ApplicationEventPublisherAware");
 			applicationEventPublisherAware.setApplicationEventPublisher(this.applicationContext);
 		}
 		if (bean instanceof MessageSourceAware messageSourceAware) {
+			logger.info("[SPRING] 自定义日志---负责回调一系列特定的Aware，设置MessageSourceAware");
 			messageSourceAware.setMessageSource(this.applicationContext);
 		}
 		if (bean instanceof ApplicationStartupAware applicationStartupAware) {
+			logger.info("[SPRING] 自定义日志---负责回调一系列特定的Aware，设置ApplicationStartupAware");
 			applicationStartupAware.setApplicationStartup(this.applicationContext.getApplicationStartup());
 		}
 		if (bean instanceof ApplicationContextAware applicationContextAware) {
+			logger.info("[SPRING] 自定义日志---负责回调一系列特定的Aware，设置ApplicationContextAware");
 			applicationContextAware.setApplicationContext(this.applicationContext);
 		}
 	}

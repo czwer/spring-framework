@@ -24,7 +24,8 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.instrument.classloading.LoadTimeWeaver;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 /**
  * {@link org.springframework.beans.factory.config.BeanPostProcessor}
  * implementation that passes the context's default {@link LoadTimeWeaver}
@@ -42,6 +43,7 @@ import org.springframework.util.Assert;
  * @see org.springframework.context.ConfigurableApplicationContext#LOAD_TIME_WEAVER_BEAN_NAME
  */
 public class LoadTimeWeaverAwareProcessor implements BeanPostProcessor, BeanFactoryAware {
+	protected final Log logger = LogFactory.getLog(LoadTimeWeaverAwareProcessor.class);
 
 	@Nullable
 	private LoadTimeWeaver loadTimeWeaver;
@@ -93,6 +95,7 @@ public class LoadTimeWeaverAwareProcessor implements BeanPostProcessor, BeanFact
 	@Override
 	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
 		if (bean instanceof LoadTimeWeaverAware loadTimeWeaverAware) {
+			logger.info("[SPRING] 自定义日志---实现BeanPostProcessor：在Bean初始化之前，检查并回调实现了LoadTimeWeaverAware接口的Bean，将Spring容器中的LoadTimeWeaver实例注入给它们："+beanName);
 			LoadTimeWeaver ltw = this.loadTimeWeaver;
 			if (ltw == null) {
 				Assert.state(this.beanFactory != null,
@@ -107,6 +110,7 @@ public class LoadTimeWeaverAwareProcessor implements BeanPostProcessor, BeanFact
 
 	@Override
 	public Object postProcessAfterInitialization(Object bean, String name) {
+		logger.info("[SPRING] 自定义日志---实现BeanPostProcessor：目前是空方法："+name);
 		return bean;
 	}
 

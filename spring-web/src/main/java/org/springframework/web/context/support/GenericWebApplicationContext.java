@@ -166,7 +166,9 @@ public class GenericWebApplicationContext extends GenericApplicationContext
 	 */
 	@Override
 	protected void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) {
+		logger.info("[SPRING] 自定义日志---执行postProcessBeanFactory方法");
 		if (this.servletContext != null) {
+			logger.info("[SPRING] 自定义日志---执行postProcessBeanFactory方法，添加BeanPostProcessor：ServletContextAwareProcessor");
 			beanFactory.addBeanPostProcessor(new ServletContextAwareProcessor(this.servletContext));
 			beanFactory.ignoreDependencyInterface(ServletContextAware.class);
 		}

@@ -18,6 +18,8 @@ package org.springframework.context.support;
 
 import java.io.IOException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
@@ -63,6 +65,7 @@ import org.springframework.lang.Nullable;
  * @see org.springframework.context.annotation.AnnotationConfigApplicationContext
  */
 public abstract class AbstractRefreshableApplicationContext extends AbstractApplicationContext {
+	protected final Log logger = LogFactory.getLog(AbstractRefreshableApplicationContext.class);
 
 	@Nullable
 	private Boolean allowBeanDefinitionOverriding;
@@ -122,8 +125,10 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 		if (hasBeanFactory()) {
 			destroyBeans();
 			closeBeanFactory();
+			logger.info("[SPRING] 自定义日志【非常重要】---destroyBeans & closeBeanFactory");
 		}
 		try {
+			logger.info("[SPRING] 自定义日志【非常重要】---创建DefaultListableBeanFactory");
 			DefaultListableBeanFactory beanFactory = createBeanFactory();
 			beanFactory.setSerializationId(getId());
 			beanFactory.setApplicationStartup(getApplicationStartup());
@@ -169,6 +174,7 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 			throw new IllegalStateException("BeanFactory not initialized or already closed - " +
 					"call 'refresh' before accessing beans via the ApplicationContext");
 		}
+		logger.info("[SPRING] 自定义日志【非常重要】---返回ConfigurableListableBeanFactory");
 		return beanFactory;
 	}
 

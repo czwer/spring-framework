@@ -66,12 +66,14 @@ class ApplicationListenerDetector implements DestructionAwareBeanPostProcessor, 
 
 	@Override
 	public Object postProcessBeforeInitialization(Object bean, String beanName) {
+		logger.info("[SPRING] 自定义日志---实现BeanPostProcessor：目前是空方法："+beanName);
 		return bean;
 	}
 
 	@Override
 	public Object postProcessAfterInitialization(Object bean, String beanName) {
 		if (bean instanceof ApplicationListener<?> applicationListener) {
+			logger.info("[SPRING] 自定义日志---实现BeanPostProcessor：检测那些实现了ApplicationListener接口的Bean，并将它们注册到Spring应用上下文的事件监听器列表中："+beanName);
 			// potentially not detected as a listener by getBeanNamesForType retrieval
 			Boolean flag = this.singletonNames.get(beanName);
 			if (Boolean.TRUE.equals(flag)) {

@@ -97,7 +97,7 @@ public class JmsListenerAnnotationBeanPostProcessor
 	static final String DEFAULT_JMS_LISTENER_CONTAINER_FACTORY_BEAN_NAME = "jmsListenerContainerFactory";
 
 
-	protected final Log logger = LogFactory.getLog(getClass());
+	protected final Log logger = LogFactory.getLog(JmsListenerAnnotationBeanPostProcessor.class);
 
 	@Nullable
 	private String containerFactoryBeanName = DEFAULT_JMS_LISTENER_CONTAINER_FACTORY_BEAN_NAME;
@@ -216,11 +216,13 @@ public class JmsListenerAnnotationBeanPostProcessor
 
 	@Override
 	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+		logger.info("[SPRING] 自定义日志---实现BeanPostProcessor：目前是空方法："+beanName);
 		return bean;
 	}
 
 	@Override
 	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+		logger.info("[SPRING] 自定义日志---实现BeanPostProcessor：扫描Bean中的方法是否标注了@JmsListener注解，并为这些方法创建并注册相应的JMS监听端点（Endpoint），从而实现对JMS消息的监听和处理："+beanName);
 		if (bean instanceof AopInfrastructureBean || bean instanceof JmsListenerContainerFactory ||
 				bean instanceof JmsListenerEndpointRegistry) {
 			// Ignore AOP infrastructure such as scoped proxies.

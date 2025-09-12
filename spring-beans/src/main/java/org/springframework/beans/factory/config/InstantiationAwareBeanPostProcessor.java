@@ -19,7 +19,8 @@ package org.springframework.beans.factory.config;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.PropertyValues;
 import org.springframework.lang.Nullable;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 /**
  * Subinterface of {@link BeanPostProcessor} that adds a before-instantiation callback,
  * and a callback after instantiation but before explicit properties are set or
@@ -41,7 +42,7 @@ import org.springframework.lang.Nullable;
  * @see org.springframework.aop.framework.autoproxy.target.LazyInitTargetSourceCreator
  */
 public interface InstantiationAwareBeanPostProcessor extends BeanPostProcessor {
-
+	Log logger = LogFactory.getLog(InstantiationAwareBeanPostProcessor.class);
 	/**
 	 * Apply this BeanPostProcessor <i>before the target bean gets instantiated</i>.
 	 * The returned bean object may be a proxy to use instead of the target bean,
@@ -87,6 +88,7 @@ public interface InstantiationAwareBeanPostProcessor extends BeanPostProcessor {
 	 * @see #postProcessBeforeInstantiation
 	 */
 	default boolean postProcessAfterInstantiation(Object bean, String beanName) throws BeansException {
+		logger.info("[SPRING] 自定义日志【非常重要】---在实例化之后、属性填充之前进行干预（仅仅返回true，空方法）："+beanName);
 		return true;
 	}
 
@@ -105,7 +107,7 @@ public interface InstantiationAwareBeanPostProcessor extends BeanPostProcessor {
 	@Nullable
 	default PropertyValues postProcessProperties(PropertyValues pvs, Object bean, String beanName)
 			throws BeansException {
-
+		logger.info("[SPRING] 自定义日志【非常重要】---处理属性注入（如 @Autowired, @Value, @Resource）："+beanName);
 		return pvs;
 	}
 

@@ -20,7 +20,8 @@ import java.lang.reflect.Constructor;
 
 import org.springframework.beans.BeansException;
 import org.springframework.lang.Nullable;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 /**
  * Extension of the {@link InstantiationAwareBeanPostProcessor} interface,
  * adding a callback for predicting the eventual type of a processed bean.
@@ -34,7 +35,7 @@ import org.springframework.lang.Nullable;
  * @since 2.0.3
  */
 public interface SmartInstantiationAwareBeanPostProcessor extends InstantiationAwareBeanPostProcessor {
-
+	Log logger = LogFactory.getLog(SmartInstantiationAwareBeanPostProcessor.class);
 	/**
 	 * Predict the type of the bean to be eventually returned from this
 	 * processor's {@link #postProcessBeforeInstantiation} callback.
@@ -78,7 +79,7 @@ public interface SmartInstantiationAwareBeanPostProcessor extends InstantiationA
 	@Nullable
 	default Constructor<?>[] determineCandidateConstructors(Class<?> beanClass, String beanName)
 			throws BeansException {
-
+		logger.info("[SPRING] 自定义日志【非常重要】---探测Bean的构造器："+beanName);
 		return null;
 	}
 

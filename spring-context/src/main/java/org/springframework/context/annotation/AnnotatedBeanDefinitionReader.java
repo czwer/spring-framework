@@ -32,7 +32,8 @@ import org.springframework.core.env.EnvironmentCapable;
 import org.springframework.core.env.StandardEnvironment;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 /**
  * Convenient adapter for programmatic registration of bean classes.
  *
@@ -48,6 +49,8 @@ import org.springframework.util.Assert;
  * @see AnnotationConfigApplicationContext#register
  */
 public class AnnotatedBeanDefinitionReader {
+
+	protected final Log logger = LogFactory.getLog(AnnotatedBeanDefinitionReader.class);
 
 	private final BeanDefinitionRegistry registry;
 
@@ -86,6 +89,7 @@ public class AnnotatedBeanDefinitionReader {
 		Assert.notNull(environment, "Environment must not be null");
 		this.registry = registry;
 		this.conditionEvaluator = new ConditionEvaluator(registry, environment, null);
+		logger.info("[SPRING] 自定义日志---AnnotatedBeanDefinitionReader构造方法，调用AnnotationConfigUtils.registerAnnotationConfigProcessors");
 		AnnotationConfigUtils.registerAnnotationConfigProcessors(this.registry);
 	}
 

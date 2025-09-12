@@ -16,6 +16,8 @@
 
 package org.springframework.beans.factory;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Mode;
@@ -45,6 +47,7 @@ public class DefaultListableBeanFactoryBenchmark {
 
 	@State(Scope.Benchmark)
 	public static class PrototypeCreationState extends Shared {
+		protected final Log logger = LogFactory.getLog(PrototypeCreationState.class);
 
 		@Param({"simple", "dependencyCheck", "constructor", "constructorArgument", "properties", "resolvedProperties"})
 		public String mode;
@@ -60,6 +63,7 @@ public class DefaultListableBeanFactoryBenchmark {
 				case "dependencyCheck" -> {
 					rbd = new RootBeanDefinition(LifecycleBean.class);
 					rbd.setDependencyCheck(RootBeanDefinition.DEPENDENCY_CHECK_OBJECTS);
+					logger.info("[SPRING] 自定义日志【重要】---添加BeanPostProcessor：LifecycleBean.PostProcessor");
 					this.beanFactory.addBeanPostProcessor(new LifecycleBean.PostProcessor());
 				}
 				case "constructor" -> {

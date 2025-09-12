@@ -19,6 +19,8 @@ package org.springframework.beans.factory.support;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.BeanCurrentlyInCreationException;
@@ -39,7 +41,7 @@ import org.springframework.lang.Nullable;
  * @since 2.5.1
  */
 public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanRegistry {
-
+	protected final Log logger = LogFactory.getLog(FactoryBeanRegistrySupport.class);
 	/** Cache of singleton objects created by FactoryBeans: FactoryBean name to object. */
 	private final Map<String, Object> factoryBeanObjectCache = new ConcurrentHashMap<>(16);
 
@@ -197,6 +199,7 @@ public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanReg
 	private Object doGetObjectFromFactoryBean(FactoryBean<?> factory, String beanName) throws BeanCreationException {
 		Object object;
 		try {
+			logger.info("[SPRING] 自定义日志【非常重要】---调用factory.getObject()方法，factory："+factory.getClass().getName()+",beanName："+beanName);
 			object = factory.getObject();
 		}
 		catch (FactoryBeanNotInitializedException ex) {

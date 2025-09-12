@@ -24,7 +24,8 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.lang.Nullable;
 import org.springframework.web.context.ServletConfigAware;
 import org.springframework.web.context.ServletContextAware;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 /**
  * {@link org.springframework.beans.factory.config.BeanPostProcessor}
  * implementation that passes the ServletContext to beans that implement
@@ -41,6 +42,7 @@ import org.springframework.web.context.ServletContextAware;
  */
 public class ServletContextAwareProcessor implements BeanPostProcessor {
 
+	protected final Log logger = LogFactory.getLog(ServletContextAwareProcessor.class);
 	@Nullable
 	private ServletContext servletContext;
 
@@ -106,15 +108,18 @@ public class ServletContextAwareProcessor implements BeanPostProcessor {
 	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
 		if (getServletContext() != null && bean instanceof ServletContextAware servletContextAware) {
 			servletContextAware.setServletContext(getServletContext());
+			logger.info("[SPRING] 自定义日志---实现BeanPostProcessor：将Servlet环境的核心对象：ServletContext自动注入给那些声明需要它们的Bean："+beanName);
 		}
 		if (getServletConfig() != null && bean instanceof ServletConfigAware servletConfigAware) {
 			servletConfigAware.setServletConfig(getServletConfig());
+			logger.info("[SPRING] 自定义日志---实现BeanPostProcessor：将Servlet环境的核心对象：ServletConfig自动注入给那些声明需要它们的Bean："+beanName);
 		}
 		return bean;
 	}
 
 	@Override
 	public Object postProcessAfterInitialization(Object bean, String beanName) {
+		logger.info("[SPRING] 自定义日志---实现BeanPostProcessor：目前是空方法："+beanName);
 		return bean;
 	}
 

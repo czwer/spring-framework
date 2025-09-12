@@ -26,6 +26,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.BeanFactoryUtils;
@@ -66,6 +68,7 @@ import org.springframework.util.StringUtils;
  * @see DefaultListableBeanFactory
  */
 public class StaticListableBeanFactory implements ListableBeanFactory {
+	protected final Log logger = LogFactory.getLog(StaticListableBeanFactory.class);
 
 	/** Map from bean name to bean instance. */
 	private final Map<String, Object> beans;
@@ -128,6 +131,7 @@ public class StaticListableBeanFactory implements ListableBeanFactory {
 
 		if (bean instanceof FactoryBean<?> factoryBean && !BeanFactoryUtils.isFactoryDereference(name)) {
 			try {
+				logger.info("[SPRING] 自定义日志【非常重要】---调用factory.getObject()方法，factory："+factoryBean.getClass().getName()+",beanName："+beanName);
 				Object exposedObject = factoryBean.getObject();
 				if (exposedObject == null) {
 					throw new BeanCreationException(beanName, "FactoryBean exposed null object");

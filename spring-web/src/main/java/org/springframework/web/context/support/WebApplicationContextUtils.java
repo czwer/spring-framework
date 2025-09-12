@@ -30,6 +30,8 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.core.env.MutablePropertySources;
@@ -64,6 +66,7 @@ import org.springframework.web.context.request.WebRequest;
  * @see org.springframework.web.jsf.el.SpringBeanFacesELResolver
  */
 public abstract class WebApplicationContextUtils {
+	protected static final Log logger = LogFactory.getLog(WebApplicationContextUtils.class);
 
 	private static final boolean jsfPresent =
 			ClassUtils.isPresent("jakarta.faces.context.FacesContext", RequestContextHolder.class.getClassLoader());
@@ -222,10 +225,12 @@ public abstract class WebApplicationContextUtils {
 			@Nullable ServletContext servletContext, @Nullable ServletConfig servletConfig) {
 
 		if (servletContext != null && !bf.containsBean(WebApplicationContext.SERVLET_CONTEXT_BEAN_NAME)) {
+			logger.info("[SPRING_BOOT] 自定义日志---注册单例Bean："+WebApplicationContext.SERVLET_CONTEXT_BEAN_NAME);
 			bf.registerSingleton(WebApplicationContext.SERVLET_CONTEXT_BEAN_NAME, servletContext);
 		}
 
 		if (servletConfig != null && !bf.containsBean(ConfigurableWebApplicationContext.SERVLET_CONFIG_BEAN_NAME)) {
+			logger.info("[SPRING_BOOT] 自定义日志---注册单例Bean："+ConfigurableWebApplicationContext.SERVLET_CONFIG_BEAN_NAME);
 			bf.registerSingleton(ConfigurableWebApplicationContext.SERVLET_CONFIG_BEAN_NAME, servletConfig);
 		}
 
@@ -245,6 +250,7 @@ public abstract class WebApplicationContextUtils {
 					parameterMap.put(paramName, servletConfig.getInitParameter(paramName));
 				}
 			}
+			logger.info("[SPRING_BOOT] 自定义日志---注册单例Bean："+WebApplicationContext.CONTEXT_PARAMETERS_BEAN_NAME);
 			bf.registerSingleton(WebApplicationContext.CONTEXT_PARAMETERS_BEAN_NAME,
 					Collections.unmodifiableMap(parameterMap));
 		}
@@ -258,6 +264,7 @@ public abstract class WebApplicationContextUtils {
 					attributeMap.put(attrName, servletContext.getAttribute(attrName));
 				}
 			}
+			logger.info("[SPRING_BOOT] 自定义日志---注册单例Bean："+WebApplicationContext.CONTEXT_ATTRIBUTES_BEAN_NAME);
 			bf.registerSingleton(WebApplicationContext.CONTEXT_ATTRIBUTES_BEAN_NAME,
 					Collections.unmodifiableMap(attributeMap));
 		}

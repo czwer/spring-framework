@@ -19,6 +19,8 @@ package org.springframework.test.context.bean.override;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.config.SmartInstantiationAwareBeanPostProcessor;
@@ -36,6 +38,7 @@ import org.springframework.util.StringUtils;
  * @since 6.2
  */
 class WrapEarlyBeanPostProcessor implements SmartInstantiationAwareBeanPostProcessor, PriorityOrdered {
+	Log logger = LogFactory.getLog(WrapEarlyBeanPostProcessor.class);
 
 	private final Map<String, Object> earlyReferences = new ConcurrentHashMap<>(16);
 
@@ -61,6 +64,7 @@ class WrapEarlyBeanPostProcessor implements SmartInstantiationAwareBeanPostProce
 
 	@Override
 	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+		logger.info("[SPRING] 自定义日志---实现BeanPostProcessor：在测试环境中，为了支持如@MockBean等注解，它介入Spring容器的早期初始化阶段，将原始Bean的定义或实例包装或替换为测试所需的特殊版本（如Mock对象），从而实现对特定Bean的模拟或覆盖："+beanName);
 		if (bean instanceof FactoryBean) {
 			return bean;
 		}

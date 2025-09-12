@@ -31,7 +31,8 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 /**
  * Simple {@link BeanPostProcessor} that checks JSR-303 constraint annotations
  * in Spring-managed beans, throwing an initialization exception in case of
@@ -41,6 +42,7 @@ import org.springframework.util.Assert;
  * @since 3.0
  */
 public class BeanValidationPostProcessor implements BeanPostProcessor, InitializingBean {
+	protected final Log logger = LogFactory.getLog(BeanValidationPostProcessor.class);
 
 	@Nullable
 	private Validator validator;
@@ -88,16 +90,20 @@ public class BeanValidationPostProcessor implements BeanPostProcessor, Initializ
 	@Override
 	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
 		if (!this.afterInitialization) {
+			logger.info("[SPRING] 自定义日志---实现BeanPostProcessor：执行JSR-303/JSR-349 Bean Validation规范验证："+beanName);
 			doValidate(bean);
 		}
+		logger.info("[SPRING] 自定义日志---实现BeanPostProcessor：目前是空方法："+beanName);
 		return bean;
 	}
 
 	@Override
 	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
 		if (this.afterInitialization) {
+			logger.info("[SPRING] 自定义日志---实现BeanPostProcessor：执行JSR-303/JSR-349 Bean Validation规范验证："+beanName);
 			doValidate(bean);
 		}
+		logger.info("[SPRING] 自定义日志---实现BeanPostProcessor：目前是空方法："+beanName);
 		return bean;
 	}
 

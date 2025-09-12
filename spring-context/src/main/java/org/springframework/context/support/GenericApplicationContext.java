@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.aot.hint.RuntimeHints;
 import org.springframework.aot.hint.support.ClassHintUtils;
 import org.springframework.beans.BeanUtils;
@@ -105,6 +107,8 @@ import org.springframework.util.Assert;
  */
 public class GenericApplicationContext extends AbstractApplicationContext implements BeanDefinitionRegistry {
 
+	protected final Log logger = LogFactory.getLog(GenericApplicationContext.class);
+
 	private final DefaultListableBeanFactory beanFactory;
 
 	@Nullable
@@ -121,6 +125,7 @@ public class GenericApplicationContext extends AbstractApplicationContext implem
 	 * @see #refresh
 	 */
 	public GenericApplicationContext() {
+		logger.info("[SPRING] 自定义日志【非常重要】---GenericApplicationContext构造方法中，创建DefaultListableBeanFactory");
 		this.beanFactory = new DefaultListableBeanFactory();
 	}
 

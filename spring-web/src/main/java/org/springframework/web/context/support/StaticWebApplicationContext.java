@@ -19,7 +19,10 @@ package org.springframework.web.context.support;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.StaticApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.io.Resource;
@@ -59,6 +62,7 @@ import org.springframework.web.context.ServletContextAware;
 @SuppressWarnings("deprecation")
 public class StaticWebApplicationContext extends StaticApplicationContext
 		implements ConfigurableWebApplicationContext, ThemeSource {
+	protected final Log logger = LogFactory.getLog(StaticWebApplicationContext.class);
 
 	@Nullable
 	private ServletContext servletContext;
@@ -150,6 +154,7 @@ public class StaticWebApplicationContext extends StaticApplicationContext
 	 */
 	@Override
 	protected void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) {
+		logger.info("[SPRING] 自定义日志---执行postProcessBeanFactory方法，添加BeanPostProcessor：ServletContextAwareProcessor");
 		beanFactory.addBeanPostProcessor(new ServletContextAwareProcessor(this.servletContext, this.servletConfig));
 		beanFactory.ignoreDependencyInterface(ServletContextAware.class);
 		beanFactory.ignoreDependencyInterface(ServletConfigAware.class);

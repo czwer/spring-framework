@@ -22,6 +22,8 @@ import groovy.lang.GroovyObject;
 import groovy.lang.GroovySystem;
 import groovy.lang.MetaClass;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.BeansException;
@@ -68,6 +70,7 @@ import org.springframework.lang.Nullable;
  * @see org.springframework.web.servlet.FrameworkServlet#initWebApplicationContext
  */
 public class GroovyWebApplicationContext extends AbstractRefreshableWebApplicationContext implements GroovyObject {
+	protected final Log logger = LogFactory.getLog(GroovyWebApplicationContext.class);
 
 	/** Default config location for the root context. */
 	public static final String DEFAULT_CONFIG_LOCATION = "/WEB-INF/applicationContext.groovy";
@@ -92,6 +95,7 @@ public class GroovyWebApplicationContext extends AbstractRefreshableWebApplicati
 	 */
 	@Override
 	protected void loadBeanDefinitions(DefaultListableBeanFactory beanFactory) throws BeansException, IOException {
+		logger.info("[SPRING] 自定义日志【非常重要】---加载Bean定义");
 		// Create a new XmlBeanDefinitionReader for the given BeanFactory.
 		GroovyBeanDefinitionReader beanDefinitionReader = new GroovyBeanDefinitionReader(beanFactory);
 

@@ -27,7 +27,8 @@ import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.lang.Nullable;
 import org.springframework.util.ClassUtils;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 /**
  * A {@link BeanPostProcessor} that honours {@link ImportAware} callback using
  * a mapping computed at build time.
@@ -36,6 +37,7 @@ import org.springframework.util.ClassUtils;
  * @since 6.0
  */
 public final class ImportAwareAotBeanPostProcessor implements BeanPostProcessor, PriorityOrdered {
+	protected final Log logger = LogFactory.getLog(ImportAwareAotBeanPostProcessor.class);
 
 	private final MetadataReaderFactory metadataReaderFactory;
 
@@ -51,6 +53,7 @@ public final class ImportAwareAotBeanPostProcessor implements BeanPostProcessor,
 	@Override
 	public Object postProcessBeforeInitialization(Object bean, String beanName) {
 		if (bean instanceof ImportAware importAware) {
+			logger.info("[SPRING] 自定义日志---实现BeanPostProcessor：SpringFramework为支持AOT（Ahead-Of-Time）编译模式而设计的一个专用BeanPostProcessor方法。在AOT（Ahead-Of-Time）模式下，专门处理实现了ImportAware接口的Bean，确保其能正确获取AnnotationMetadata："+beanName);
 			setAnnotationMetadata(importAware);
 		}
 		return bean;

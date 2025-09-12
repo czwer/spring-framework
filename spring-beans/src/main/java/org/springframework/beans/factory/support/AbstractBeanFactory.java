@@ -983,6 +983,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
 	@Override
 	public void addBeanPostProcessor(BeanPostProcessor beanPostProcessor) {
+		logger.info("[SPRING] 自定义日志【重要】---添加一个Bean后置处理器（BeanPostProcessor），它可以在Bean初始化前后执行自定义逻辑：" + beanPostProcessor.getClass().getName());
 		Assert.notNull(beanPostProcessor, "BeanPostProcessor must not be null");
 		synchronized (this.beanPostProcessors) {
 			// Remove from old position, if any

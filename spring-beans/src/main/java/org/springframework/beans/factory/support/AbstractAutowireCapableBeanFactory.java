@@ -35,6 +35,7 @@ import java.util.function.Supplier;
 
 import org.apache.commons.logging.Log;
 
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
@@ -120,6 +121,7 @@ import org.springframework.util.function.ThrowingSupplier;
  */
 public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory
 		implements AutowireCapableBeanFactory {
+	protected final Log logger = LogFactory.getLog(AbstractAutowireCapableBeanFactory.class);
 
 	/** Strategy for creating bean instances. */
 	private InstantiationStrategy instantiationStrategy;
@@ -423,7 +425,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	@Override
 	public Object applyBeanPostProcessorsBeforeInitialization(Object existingBean, String beanName)
 			throws BeansException {
-
+		logger.info("[SPRING] 自定义日志---调用所有BeanPostProcessor的postProcessBeforeInitialization方法："+beanName);
 		Object result = existingBean;
 		for (BeanPostProcessor processor : getBeanPostProcessors()) {
 			Object current = processor.postProcessBeforeInitialization(result, beanName);
@@ -439,7 +441,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	@Override
 	public Object applyBeanPostProcessorsAfterInitialization(Object existingBean, String beanName)
 			throws BeansException {
-
+		logger.info("[SPRING] 自定义日志---调用所有BeanPostProcessor的postProcessAfterInitialization方法："+beanName);
 		Object result = existingBean;
 		for (BeanPostProcessor processor : getBeanPostProcessors()) {
 			Object current = processor.postProcessAfterInitialization(result, beanName);
@@ -515,6 +517,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		try {
 			// Give BeanPostProcessors a chance to return a proxy instead of the target bean instance.
+			logger.info("[SPRING] 自定义日志---调用所有BeanPostProcessor的postProcessAfterInitialization方法："+beanName);
 			Object bean = resolveBeforeInstantiation(beanName, mbdToUse);
 			if (bean != null) {
 				return bean;
@@ -1029,6 +1032,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				// Mark this bean as currently in creation, even if just partially.
 				beforeSingletonCreation(beanName);
 				// Give BeanPostProcessors a chance to return a proxy instead of the target bean instance.
+				logger.info("[SPRING] 自定义日志---调用所有BeanPostProcessor的postProcessAfterInitialization方法："+beanName);
 				instance = resolveBeforeInstantiation(beanName, mbd);
 				if (instance == null) {
 					bw = createBeanInstance(beanName, mbd, null);
@@ -1084,6 +1088,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			// Mark this bean as currently in creation, even if just partially.
 			beforePrototypeCreation(beanName);
 			// Give BeanPostProcessors a chance to return a proxy instead of the target bean instance.
+			logger.info("[SPRING] 自定义日志---调用所有BeanPostProcessor的postProcessAfterInitialization方法："+beanName);
 			instance = resolveBeforeInstantiation(beanName, mbd);
 			if (instance == null) {
 				BeanWrapper bw = createBeanInstance(beanName, mbd, null);
@@ -1142,6 +1147,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				if (targetType != null) {
 					bean = applyBeanPostProcessorsBeforeInstantiation(targetType, beanName);
 					if (bean != null) {
+						logger.info("[SPRING] 自定义日志---调用所有BeanPostProcessor的postProcessAfterInitialization方法："+beanName);
 						bean = applyBeanPostProcessorsAfterInitialization(bean, beanName);
 					}
 				}
@@ -1828,6 +1834,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					(mbd != null ? mbd.getResourceDescription() : null), beanName, ex.getMessage(), ex);
 		}
 		if (mbd == null || !mbd.isSynthetic()) {
+			logger.info("[SPRING] 自定义日志---调用所有BeanPostProcessor的postProcessAfterInitialization方法："+beanName);
 			wrappedBean = applyBeanPostProcessorsAfterInitialization(wrappedBean, beanName);
 		}
 
@@ -1946,6 +1953,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	@SuppressWarnings("deprecation")
 	@Override
 	protected Object postProcessObjectFromFactoryBean(Object object, String beanName) {
+		logger.info("[SPRING] 自定义日志---调用所有BeanPostProcessor的postProcessAfterInitialization方法："+beanName);
 		return applyBeanPostProcessorsAfterInitialization(object, beanName);
 	}
 

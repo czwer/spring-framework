@@ -30,7 +30,8 @@ import org.springframework.beans.factory.config.DestructionAwareBeanPostProcesso
 import org.springframework.lang.Nullable;
 import org.springframework.web.context.ServletConfigAware;
 import org.springframework.web.context.ServletContextAware;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 /**
  * {@link org.springframework.beans.factory.config.BeanPostProcessor}
  * that applies initialization and destruction callbacks to beans that
@@ -68,6 +69,8 @@ import org.springframework.web.context.ServletContextAware;
 public class SimpleServletPostProcessor implements
 		DestructionAwareBeanPostProcessor, ServletContextAware, ServletConfigAware {
 
+	protected final Log logger = LogFactory.getLog(SimpleServletPostProcessor.class);
+
 	private boolean useSharedServletConfig = true;
 
 	@Nullable
@@ -102,11 +105,13 @@ public class SimpleServletPostProcessor implements
 
 	@Override
 	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+		logger.info("[SPRING] 自定义日志---实现BeanPostProcessor：目前是空方法："+beanName);
 		return bean;
 	}
 
 	@Override
 	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+		logger.info("[SPRING] 自定义日志---将Spring容器中实现了javax.servlet.Servlet接口的Bean显式注册为真正的Servlet："+beanName);
 		if (bean instanceof Servlet servlet) {
 			ServletConfig config = this.servletConfig;
 			if (config == null || !this.useSharedServletConfig) {

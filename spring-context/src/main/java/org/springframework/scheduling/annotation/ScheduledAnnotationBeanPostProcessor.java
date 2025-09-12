@@ -276,11 +276,13 @@ public class ScheduledAnnotationBeanPostProcessor
 
 	@Override
 	public Object postProcessBeforeInitialization(Object bean, String beanName) {
+		logger.info("[SPRING] 自定义日志---实现BeanPostProcessor：目前是空方法："+beanName);
 		return bean;
 	}
 
 	@Override
 	public Object postProcessAfterInitialization(Object bean, String beanName) {
+		logger.info("[SPRING] 自定义日志【重要】---实现BeanPostProcessor：在Bean初始化完成后，扫描其方法上的@Scheduled注解，解析注解中的定时规则（如cron表达式、固定延迟、固定速率），并将该方法注册到Spring的任务调度器（TaskScheduler）中，从而使其成为定时执行的任务："+beanName);
 		if (bean instanceof AopInfrastructureBean || bean instanceof TaskScheduler ||
 				bean instanceof ScheduledExecutorService) {
 			// Ignore AOP infrastructure such as scoped proxies.
