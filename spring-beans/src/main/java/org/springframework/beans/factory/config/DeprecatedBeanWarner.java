@@ -35,7 +35,7 @@ public class DeprecatedBeanWarner implements BeanFactoryPostProcessor {
 	/**
 	 * Logger available to subclasses.
 	 */
-	protected transient Log logger = LogFactory.getLog(getClass());
+	protected transient Log logger = LogFactory.getLog(DeprecatedBeanWarner.class);
 
 	/**
 	 * Set the name of the logger to use.
@@ -53,6 +53,7 @@ public class DeprecatedBeanWarner implements BeanFactoryPostProcessor {
 
 	@Override
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+		logger.info("[SPRING] 自定义日志---执行实现BeanFactoryPostProcessor接口方法postProcessBeanFactory");
 		if (isLogEnabled()) {
 			String[] beanNames = beanFactory.getBeanDefinitionNames();
 			for (String beanName : beanNames) {

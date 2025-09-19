@@ -24,6 +24,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanMetadataAttributeAccessor;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
@@ -59,6 +61,7 @@ import org.springframework.util.StringUtils;
 @SuppressWarnings("serial")
 public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccessor
 		implements BeanDefinition, Cloneable {
+	protected final Log logger = LogFactory.getLog(AbstractBeanDefinition.class);
 
 	/**
 	 * Constant for the default scope name: {@code ""}, equivalent to singleton
@@ -251,6 +254,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	protected AbstractBeanDefinition(@Nullable ConstructorArgumentValues cargs, @Nullable MutablePropertyValues pvs) {
 		this.constructorArgumentValues = cargs;
 		this.propertyValues = pvs;
+
 	}
 
 	/**
@@ -982,6 +986,9 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 * Specify property values for this bean, if any.
 	 */
 	public void setPropertyValues(MutablePropertyValues propertyValues) {
+		if (propertyValues != null){
+			propertyValues.getPropertyValueList().forEach( p -> {logger.info("[SPRING] 自定义日志---setPropertyValues："+p.getName());});
+		}
 		this.propertyValues = propertyValues;
 	}
 

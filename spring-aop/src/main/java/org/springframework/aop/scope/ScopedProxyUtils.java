@@ -16,6 +16,8 @@
 
 package org.springframework.aop.scope;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.aop.framework.autoproxy.AutoProxyUtils;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
@@ -38,6 +40,7 @@ import org.springframework.util.Assert;
  * @since 2.5
  */
 public abstract class ScopedProxyUtils {
+	protected static final Log logger = LogFactory.getLog(ScopedProxyUtils.class);
 
 	private static final String TARGET_NAME_PREFIX = "scopedTarget.";
 
@@ -90,6 +93,7 @@ public abstract class ScopedProxyUtils {
 		targetDefinition.setPrimary(false);
 
 		// Register the target bean as separate bean in the factory.
+		logger.info("[SPRING] 自定义日志---准备注册Bean定义："+targetBeanName);
 		registry.registerBeanDefinition(targetBeanName, targetDefinition);
 
 		// Return the scoped proxy definition as primary bean definition

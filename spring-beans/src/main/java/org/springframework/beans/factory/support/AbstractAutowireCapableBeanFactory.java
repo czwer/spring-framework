@@ -16,72 +16,26 @@
 
 package org.springframework.beans.factory.support;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.*;
+import org.springframework.beans.factory.*;
+import org.springframework.beans.factory.config.*;
+import org.springframework.core.*;
+import org.springframework.lang.Nullable;
+import org.springframework.util.*;
+import org.springframework.util.ReflectionUtils.MethodCallback;
+import org.springframework.util.function.ThrowingSupplier;
+
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Supplier;
-
-import org.apache.commons.logging.Log;
-
-import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.BeanWrapperImpl;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.InvalidPropertyException;
-import org.springframework.beans.MutablePropertyValues;
-import org.springframework.beans.PropertyAccessorUtils;
-import org.springframework.beans.PropertyValue;
-import org.springframework.beans.PropertyValues;
-import org.springframework.beans.TypeConverter;
-import org.springframework.beans.factory.Aware;
-import org.springframework.beans.factory.BeanClassLoaderAware;
-import org.springframework.beans.factory.BeanCreationException;
-import org.springframework.beans.factory.BeanCurrentlyInCreationException;
-import org.springframework.beans.factory.BeanDefinitionStoreException;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
-import org.springframework.beans.factory.BeanNameAware;
-import org.springframework.beans.factory.FactoryBean;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.InjectionPoint;
-import org.springframework.beans.factory.UnsatisfiedDependencyException;
-import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
-import org.springframework.beans.factory.config.AutowiredPropertyMarker;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.beans.factory.config.ConstructorArgumentValues;
-import org.springframework.beans.factory.config.DependencyDescriptor;
-import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor;
-import org.springframework.beans.factory.config.SmartInstantiationAwareBeanPostProcessor;
-import org.springframework.beans.factory.config.TypedStringValue;
-import org.springframework.core.DefaultParameterNameDiscoverer;
-import org.springframework.core.MethodParameter;
-import org.springframework.core.NamedThreadLocal;
-import org.springframework.core.ParameterNameDiscoverer;
-import org.springframework.core.PriorityOrdered;
-import org.springframework.core.ResolvableType;
-import org.springframework.lang.Nullable;
-import org.springframework.util.ClassUtils;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.ObjectUtils;
-import org.springframework.util.ReflectionUtils;
-import org.springframework.util.ReflectionUtils.MethodCallback;
-import org.springframework.util.StringUtils;
-import org.springframework.util.function.ThrowingSupplier;
 
 /**
  * Abstract bean factory superclass that implements default bean creation,
@@ -327,6 +281,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		RootBeanDefinition bd = new CreateFromClassBeanDefinition(beanClass);
 		bd.setScope(SCOPE_PROTOTYPE);
 		bd.allowCaching = ClassUtils.isCacheSafe(beanClass, getBeanClassLoader());
+		logger.info("[SPRING] 自定义日志---createBean中，调用createBean方法："+beanClass.getName());
 		return (T) createBean(beanClass.getName(), bd, null);
 	}
 
@@ -359,6 +314,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		BeanWrapper bw = new BeanWrapperImpl(existingBean);
 		initBeanWrapper(bw);
 		populateBean(beanName, bd, bw);
+		logger.info("[SPRING] 自定义日志---configureBean中，调用initializeBean方法："+beanName);
 		return initializeBean(beanName, existingBean, bd);
 	}
 
@@ -373,6 +329,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// Use non-singleton bean definition, to avoid registering bean as dependent bean.
 		RootBeanDefinition bd = new RootBeanDefinition(beanClass, autowireMode, dependencyCheck);
 		bd.setScope(SCOPE_PROTOTYPE);
+		logger.info("[SPRING] 自定义日志---createBean中，调用createBean方法："+beanClass.getName());
 		return createBean(beanClass.getName(), bd, null);
 	}
 
@@ -418,6 +375,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 	@Override
 	public Object initializeBean(Object existingBean, String beanName) {
+		logger.info("[SPRING] 自定义日志---initializeBean中，调用initializeBean方法："+beanName);
 		return initializeBean(beanName, existingBean, null);
 	}
 
@@ -428,6 +386,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		logger.info("[SPRING] 自定义日志---调用所有BeanPostProcessor的postProcessBeforeInitialization方法："+beanName);
 		Object result = existingBean;
 		for (BeanPostProcessor processor : getBeanPostProcessors()) {
+			logger.info("[SPRING] 自定义日志---调用所有BeanPostProcessor的postProcessBeforeInitialization方法："+beanName+",BeanPostProcessor："+processor.getClass().getName());
 			Object current = processor.postProcessBeforeInitialization(result, beanName);
 			if (current == null) {
 				return result;
@@ -441,9 +400,10 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	@Override
 	public Object applyBeanPostProcessorsAfterInitialization(Object existingBean, String beanName)
 			throws BeansException {
-		logger.info("[SPRING] 自定义日志---调用所有BeanPostProcessor的postProcessAfterInitialization方法："+beanName);
+		logger.info("[SPRING] 自定义日志---applyBeanPostProcessorsAfterInitialization中，postProcessAfterInitialization方法："+beanName);
 		Object result = existingBean;
 		for (BeanPostProcessor processor : getBeanPostProcessors()) {
+			logger.info("[SPRING] 自定义日志---applyBeanPostProcessorsAfterInitialization中，postProcessAfterInitialization方法："+beanName+",BeanPostProcessor："+processor.getClass().getName());
 			Object current = processor.postProcessAfterInitialization(result, beanName);
 			if (current == null) {
 				return result;
@@ -507,6 +467,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			mbdToUse = new RootBeanDefinition(mbd);
 			mbdToUse.setBeanClass(resolvedClass);
 			try {
+				logger.info("[SPRING] 自定义日志---【获取Bean】createBean步骤：1，调用prepareMethodOverrides方法："+beanName);
 				mbdToUse.prepareMethodOverrides();
 			}
 			catch (BeanDefinitionValidationException ex) {
@@ -517,7 +478,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		try {
 			// Give BeanPostProcessors a chance to return a proxy instead of the target bean instance.
-			logger.info("[SPRING] 自定义日志---调用所有BeanPostProcessor的postProcessAfterInitialization方法："+beanName);
+			logger.info("[SPRING] 自定义日志---【获取Bean】createBean步骤：2，调用resolveBeforeInstantiation方法："+beanName);
 			Object bean = resolveBeforeInstantiation(beanName, mbdToUse);
 			if (bean != null) {
 				return bean;
@@ -529,6 +490,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		try {
+			logger.info("[SPRING] 自定义日志---【获取Bean】createBean步骤：3，调用doCreateBean方法："+beanName);
 			Object beanInstance = doCreateBean(beanName, mbdToUse, args);
 			if (logger.isTraceEnabled()) {
 				logger.trace("Finished creating instance of bean '" + beanName + "'");
@@ -569,9 +531,11 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			instanceWrapper = this.factoryBeanInstanceCache.remove(beanName);
 		}
 		if (instanceWrapper == null) {
+			logger.info("[SPRING] 自定义日志---【获取Bean】doCreateBean步骤：1-0，调用createBeanInstance方法："+beanName);
 			instanceWrapper = createBeanInstance(beanName, mbd, args);
 		}
 		Object bean = instanceWrapper.getWrappedInstance();
+		logger.info("[SPRING] 自定义日志---【获取Bean】doCreateBean步骤：1-1，调用instanceWrapper.getWrappedInstance()方法："+beanName+",返回类型："+bean.getClass().getName());
 		Class<?> beanType = instanceWrapper.getWrappedClass();
 		if (beanType != NullBean.class) {
 			mbd.resolvedTargetType = beanType;
@@ -581,6 +545,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		synchronized (mbd.postProcessingLock) {
 			if (!mbd.postProcessed) {
 				try {
+					logger.info("[SPRING] 自定义日志---【获取Bean】doCreateBean步骤：2，doCreateBean中，调用applyMergedBeanDefinitionPostProcessors方法："+beanName);
 					applyMergedBeanDefinitionPostProcessors(mbd, beanType, beanName);
 				}
 				catch (Throwable ex) {
@@ -600,13 +565,16 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				logger.trace("Eagerly caching bean '" + beanName +
 						"' to allow for resolving potential circular references");
 			}
+			logger.info("[SPRING] 自定义日志---【获取Bean】doCreateBean步骤：3，doCreateBean中，调用getEarlyBeanReference方法 & 调用addSingletonFactory方法 ："+beanName);
 			addSingletonFactory(beanName, () -> getEarlyBeanReference(beanName, mbd, bean));
 		}
 
 		// Initialize the bean instance.
 		Object exposedObject = bean;
 		try {
+			logger.info("[SPRING] 自定义日志---【获取Bean】doCreateBean步骤：4-0，doCreateBean中，调用populateBean方法："+beanName);
 			populateBean(beanName, mbd, instanceWrapper);
+			logger.info("[SPRING] 自定义日志---【获取Bean】doCreateBean步骤：4-1，doCreateBean中，调用initializeBean方法："+beanName);
 			exposedObject = initializeBean(beanName, exposedObject, mbd);
 		}
 		catch (Throwable ex) {
@@ -619,12 +587,14 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		if (earlySingletonExposure) {
+			logger.info("[SPRING] 自定义日志---【获取Bean】doCreateBean步骤：5-0，doCreateBean中，调用getSingleton方法："+beanName);
 			Object earlySingletonReference = getSingleton(beanName, false);
 			if (earlySingletonReference != null) {
 				if (exposedObject == bean) {
 					exposedObject = earlySingletonReference;
 				}
 				else if (!this.allowRawInjectionDespiteWrapping && hasDependentBean(beanName)) {
+					logger.info("[SPRING] 自定义日志---【获取Bean】doCreateBean步骤：5-1，doCreateBean中，调用getDependentBeans方法："+beanName);
 					String[] dependentBeans = getDependentBeans(beanName);
 					Set<String> actualDependentBeans = CollectionUtils.newLinkedHashSet(dependentBeans.length);
 					for (String dependentBean : dependentBeans) {
@@ -647,6 +617,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		// Register bean as disposable.
 		try {
+			logger.info("[SPRING] 自定义日志---【获取Bean】doCreateBean步骤：5-2，doCreateBean中，调用registerDisposableBeanIfNecessary方法："+beanName);
 			registerDisposableBeanIfNecessary(beanName, bean, mbd);
 		}
 		catch (BeanDefinitionValidationException ex) {
@@ -926,6 +897,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				}
 				// No type found for shortcut FactoryBean instance:
 				// fall back to full creation of the FactoryBean instance.
+				logger.info("[SPRING] 自定义日志---getTypeForFactoryBean中，调用getTypeForFactoryBean方法：beanName："+beanName);
 				return super.getTypeForFactoryBean(beanName, mbd, true);
 			}
 		}
@@ -1032,7 +1004,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				// Mark this bean as currently in creation, even if just partially.
 				beforeSingletonCreation(beanName);
 				// Give BeanPostProcessors a chance to return a proxy instead of the target bean instance.
-				logger.info("[SPRING] 自定义日志---调用所有BeanPostProcessor的postProcessAfterInitialization方法："+beanName);
+				logger.info("[SPRING] 自定义日志---getSingletonFactoryBeanForTypeCheck中，调用resolveBeforeInstantiation方法："+beanName);
 				instance = resolveBeforeInstantiation(beanName, mbd);
 				if (instance == null) {
 					bw = createBeanInstance(beanName, mbd, null);
@@ -1088,7 +1060,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			// Mark this bean as currently in creation, even if just partially.
 			beforePrototypeCreation(beanName);
 			// Give BeanPostProcessors a chance to return a proxy instead of the target bean instance.
-			logger.info("[SPRING] 自定义日志---调用所有BeanPostProcessor的postProcessAfterInitialization方法："+beanName);
+			logger.info("[SPRING] 自定义日志---getNonSingletonFactoryBeanForTypeCheck中，调用resolveBeforeInstantiation方法："+beanName);
 			instance = resolveBeforeInstantiation(beanName, mbd);
 			if (instance == null) {
 				BeanWrapper bw = createBeanInstance(beanName, mbd, null);
@@ -1145,9 +1117,10 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			if (!mbd.isSynthetic() && hasInstantiationAwareBeanPostProcessors()) {
 				Class<?> targetType = determineTargetType(beanName, mbd);
 				if (targetType != null) {
+					logger.info("[SPRING] 自定义日志---resolveBeforeInstantiation中，调用applyBeanPostProcessorsBeforeInstantiation方法："+beanName);
 					bean = applyBeanPostProcessorsBeforeInstantiation(targetType, beanName);
 					if (bean != null) {
-						logger.info("[SPRING] 自定义日志---调用所有BeanPostProcessor的postProcessAfterInitialization方法："+beanName);
+						logger.info("[SPRING] 自定义日志---resolveBeforeInstantiation中，调用applyBeanPostProcessorsAfterInitialization方法："+beanName);
 						bean = applyBeanPostProcessorsAfterInitialization(bean, beanName);
 					}
 				}
@@ -1170,7 +1143,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 */
 	@Nullable
 	protected Object applyBeanPostProcessorsBeforeInstantiation(Class<?> beanClass, String beanName) {
+		logger.info("[SPRING] 自定义日志---applyBeanPostProcessorsBeforeInstantiation中，调用postProcessBeforeInstantiation方法："+beanName);
 		for (InstantiationAwareBeanPostProcessor bp : getBeanPostProcessorCache().instantiationAware) {
+			logger.info("[SPRING] 自定义日志---applyBeanPostProcessorsBeforeInstantiation中，调用postProcessBeforeInstantiation方法："+beanName+",InstantiationAwareBeanPostProcessor："+bp.getClass().getName());
 			Object result = bp.postProcessBeforeInstantiation(beanClass, beanName);
 			if (result != null) {
 				return result;
@@ -1193,7 +1168,6 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 */
 	protected BeanWrapper createBeanInstance(String beanName, RootBeanDefinition mbd, @Nullable Object[] args) {
 		// Make sure bean class is actually resolved at this point.
-		logger.info("[SPRING] 自定义日志【重要】---创建Bean实例：" + beanName);
 		Class<?> beanClass = resolveBeanClass(mbd, beanName);
 
 		if (beanClass != null && !Modifier.isPublic(beanClass.getModifiers()) && !mbd.isNonPublicAccessAllowed()) {
@@ -1204,11 +1178,13 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		if (args == null) {
 			Supplier<?> instanceSupplier = mbd.getInstanceSupplier();
 			if (instanceSupplier != null) {
+				logger.info("[SPRING] 自定义日志【重要】---【获取Bean】【创建bean实例】：方式1：obtainFromSupplier：" + beanName);
 				return obtainFromSupplier(instanceSupplier, beanName, mbd);
 			}
 		}
 
 		if (mbd.getFactoryMethodName() != null) {
+			logger.info("[SPRING] 自定义日志【重要】---【获取Bean】【创建bean实例】：方式2：instantiateUsingFactoryMethod：" + beanName);
 			return instantiateUsingFactoryMethod(beanName, mbd, args);
 		}
 
@@ -1225,9 +1201,11 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 		if (resolved) {
 			if (autowireNecessary) {
+				logger.info("[SPRING] 自定义日志【重要】---【获取Bean】【创建bean实例】：方式3，autowireConstructor：" + beanName);
 				return autowireConstructor(beanName, mbd, null, null);
 			}
 			else {
+				logger.info("[SPRING] 自定义日志【重要】---【获取Bean】【创建bean实例】：方式4，instantiateBean：" + beanName);
 				return instantiateBean(beanName, mbd);
 			}
 		}
@@ -1236,16 +1214,19 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		Constructor<?>[] ctors = determineConstructorsFromBeanPostProcessors(beanClass, beanName);
 		if (ctors != null || mbd.getResolvedAutowireMode() == AUTOWIRE_CONSTRUCTOR ||
 				mbd.hasConstructorArgumentValues() || !ObjectUtils.isEmpty(args)) {
+			logger.info("[SPRING] 自定义日志【重要】---【获取Bean】【创建bean实例】：方式5，autowireConstructor：" + beanName);
 			return autowireConstructor(beanName, mbd, ctors, args);
 		}
 
 		// Preferred constructors for default construction?
 		ctors = mbd.getPreferredConstructors();
 		if (ctors != null) {
+			logger.info("[SPRING] 自定义日志【重要】---【获取Bean】【创建bean实例】：方式6，autowireConstructor：" + beanName);
 			return autowireConstructor(beanName, mbd, ctors, null);
 		}
 
 		// No special handling: simply use no-arg constructor.
+		logger.info("[SPRING] 自定义日志【重要】---【获取Bean】【创建bean实例】：方式7，instantiateBean：" + beanName);
 		return instantiateBean(beanName, mbd);
 	}
 
@@ -1437,6 +1418,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// to support styles of field injection.
 		if (!mbd.isSynthetic() && hasInstantiationAwareBeanPostProcessors()) {
 			for (InstantiationAwareBeanPostProcessor bp : getBeanPostProcessorCache().instantiationAware) {
+				logger.info("[SPRING] 自定义日志---【获取Bean】populateBean步骤：1，调用InstantiationAwareBeanPostProcessor.postProcessAfterInstantiation方法："+beanName);
 				if (!bp.postProcessAfterInstantiation(bw.getWrappedInstance(), beanName)) {
 					return;
 				}
@@ -1450,10 +1432,12 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			MutablePropertyValues newPvs = new MutablePropertyValues(pvs);
 			// Add property values based on autowire by name if applicable.
 			if (resolvedAutowireMode == AUTOWIRE_BY_NAME) {
+				logger.info("[SPRING] 自定义日志---【获取Bean】populateBean步骤：2，调用autowireByName方法："+beanName);
 				autowireByName(beanName, mbd, bw, newPvs);
 			}
 			// Add property values based on autowire by type if applicable.
 			if (resolvedAutowireMode == AUTOWIRE_BY_TYPE) {
+				logger.info("[SPRING] 自定义日志---【获取Bean】populateBean步骤：3，调用autowireByType方法："+beanName);
 				autowireByType(beanName, mbd, bw, newPvs);
 			}
 			pvs = newPvs;
@@ -1463,6 +1447,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				pvs = mbd.getPropertyValues();
 			}
 			for (InstantiationAwareBeanPostProcessor bp : getBeanPostProcessorCache().instantiationAware) {
+				logger.info("[SPRING] 自定义日志---【获取Bean】populateBean步骤：4，调用InstantiationAwareBeanPostProcessor.postProcessProperties方法："+beanName);
 				PropertyValues pvsToUse = bp.postProcessProperties(pvs, bw.getWrappedInstance(), beanName);
 				if (pvsToUse == null) {
 					return;
@@ -1478,6 +1463,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		if (pvs != null) {
+			logger.info("[SPRING] 自定义日志---【获取Bean】populateBean步骤：5，调用applyPropertyValues方法："+beanName);
 			applyPropertyValues(beanName, mbd, bw, pvs);
 		}
 	}
@@ -1729,6 +1715,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					}
 					originalValue = new DependencyDescriptor(new MethodParameter(writeMethod, 0), true);
 				}
+				logger.info("[SPRING] 自定义日志---【获取Bean】applyPropertyValues步骤：1，调用valueResolver.resolveValueIfNecessary方法："+beanName);
 				Object resolvedValue = valueResolver.resolveValueIfNecessary(pv, originalValue);
 				Object convertedValue = resolvedValue;
 				boolean convertible = isConvertibleProperty(propertyName, bw);
@@ -1761,7 +1748,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		// Set our (possibly massaged) deep copy.
 		try {
-			logger.info("[SPRING] 自定义日志【重要】---setter注入：" + beanName);
+			deepCopy.forEach( d -> {logger.info("[SPRING] 自定义日志【重要】---【获取Bean】"+beanName+",setter注入：" + d.getName());});
 			bw.setPropertyValues(new MutablePropertyValues(deepCopy));
 		}
 		catch (BeansException ex) {
@@ -1823,10 +1810,12 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		Object wrappedBean = bean;
 		if (mbd == null || !mbd.isSynthetic()) {
+			logger.info("[SPRING] 自定义日志---initializeBean中，调用applyBeanPostProcessorsBeforeInitialization方法："+beanName);
 			wrappedBean = applyBeanPostProcessorsBeforeInitialization(wrappedBean, beanName);
 		}
 
 		try {
+			logger.info("[SPRING] 自定义日志---initializeBean中，调用invokeInitMethods方法："+beanName);
 			invokeInitMethods(beanName, wrappedBean, mbd);
 		}
 		catch (Throwable ex) {
@@ -1834,7 +1823,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					(mbd != null ? mbd.getResourceDescription() : null), beanName, ex.getMessage(), ex);
 		}
 		if (mbd == null || !mbd.isSynthetic()) {
-			logger.info("[SPRING] 自定义日志---调用所有BeanPostProcessor的postProcessAfterInitialization方法："+beanName);
+			logger.info("[SPRING] 自定义日志---initializeBean中，调用applyBeanPostProcessorsAfterInitialization方法："+beanName);
 			wrappedBean = applyBeanPostProcessorsAfterInitialization(wrappedBean, beanName);
 		}
 
@@ -1889,6 +1878,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					if (StringUtils.hasLength(initMethodName) &&
 							!(isInitializingBean && "afterPropertiesSet".equals(initMethodName)) &&
 							!mbd.hasAnyExternallyManagedInitMethod(initMethodName)) {
+						logger.info("[SPRING] 自定义日志---invokeInitMethods中，调用invokeCustomInitMethod方法："+beanName);
 						invokeCustomInitMethod(beanName, bean, mbd, initMethodName);
 					}
 				}
@@ -1936,6 +1926,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		try {
 			ReflectionUtils.makeAccessible(methodToInvoke);
+			logger.info("[SPRING] 自定义日志---invokeCustomInitMethod中，调用methodToInvoke.invoke方法："+beanName);
 			methodToInvoke.invoke(bean);
 		}
 		catch (InvocationTargetException ex) {
@@ -1953,7 +1944,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	@SuppressWarnings("deprecation")
 	@Override
 	protected Object postProcessObjectFromFactoryBean(Object object, String beanName) {
-		logger.info("[SPRING] 自定义日志---调用所有BeanPostProcessor的postProcessAfterInitialization方法："+beanName);
+		logger.info("[SPRING] 自定义日志---postProcessObjectFromFactoryBean中，调用applyBeanPostProcessorsAfterInitialization方法："+beanName);
 		return applyBeanPostProcessorsAfterInitialization(object, beanName);
 	}
 

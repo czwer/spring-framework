@@ -333,6 +333,7 @@ public abstract class WebApplicationContextUtils {
 
 		@Override
 		public ServletRequest getObject() {
+			logger.info("[SPRING] 自定义日志---getObject步骤：返回ServletRequest");
 			return currentRequestAttributes().getRequest();
 		}
 
@@ -351,6 +352,7 @@ public abstract class WebApplicationContextUtils {
 
 		@Override
 		public ServletResponse getObject() {
+			logger.info("[SPRING] 自定义日志---getObject步骤：返回ServletResponse");
 			ServletResponse response = currentRequestAttributes().getResponse();
 			if (response == null) {
 				throw new IllegalStateException("Current servlet response not available - " +
@@ -374,6 +376,7 @@ public abstract class WebApplicationContextUtils {
 
 		@Override
 		public HttpSession getObject() {
+			logger.info("[SPRING] 自定义日志---getObject步骤：返回HttpSession");
 			return currentRequestAttributes().getRequest().getSession();
 		}
 
@@ -392,6 +395,7 @@ public abstract class WebApplicationContextUtils {
 
 		@Override
 		public WebRequest getObject() {
+			logger.info("[SPRING] 自定义日志---getObject步骤：返回WebRequest");
 			ServletRequestAttributes requestAttr = currentRequestAttributes();
 			return new ServletWebRequest(requestAttr.getRequest(), requestAttr.getResponse());
 		}
@@ -412,6 +416,7 @@ public abstract class WebApplicationContextUtils {
 			beanFactory.registerResolvableDependency(FacesContext.class, new ObjectFactory<FacesContext>() {
 				@Override
 				public FacesContext getObject() {
+					logger.info("[SPRING] 自定义日志---getObject步骤：返回FacesContext");
 					return FacesContext.getCurrentInstance();
 				}
 				@Override
@@ -422,6 +427,7 @@ public abstract class WebApplicationContextUtils {
 			beanFactory.registerResolvableDependency(ExternalContext.class, new ObjectFactory<ExternalContext>() {
 				@Override
 				public ExternalContext getObject() {
+					logger.info("[SPRING] 自定义日志---getObject步骤：返回ExternalContext");
 					return FacesContext.getCurrentInstance().getExternalContext();
 				}
 				@Override

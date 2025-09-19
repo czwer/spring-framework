@@ -16,6 +16,8 @@
 
 package org.springframework.context.annotation;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -44,7 +46,7 @@ import org.springframework.util.Assert;
 @Configuration(proxyBeanMethods = false)
 @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 public class LoadTimeWeavingConfiguration implements ImportAware, BeanClassLoaderAware {
-
+	protected static final Log logger = LogFactory.getLog(LoadTimeWeavingConfiguration.class);
 	@Nullable
 	private AnnotationAttributes enableLTW;
 
@@ -78,6 +80,7 @@ public class LoadTimeWeavingConfiguration implements ImportAware, BeanClassLoade
 	@Bean(name = ConfigurableApplicationContext.LOAD_TIME_WEAVER_BEAN_NAME)
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public LoadTimeWeaver loadTimeWeaver() {
+		logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE，通过@Bean声明Bean：LoadTimeWeaver");
 		Assert.state(this.beanClassLoader != null, "No ClassLoader set");
 		LoadTimeWeaver loadTimeWeaver = null;
 

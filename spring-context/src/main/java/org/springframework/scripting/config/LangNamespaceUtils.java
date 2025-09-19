@@ -16,6 +16,8 @@
 
 package org.springframework.scripting.config;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.RootBeanDefinition;
@@ -29,7 +31,7 @@ import org.springframework.scripting.support.ScriptFactoryPostProcessor;
  * @since 2.5
  */
 public abstract class LangNamespaceUtils {
-
+	private static final Log logger = LogFactory.getLog(LangNamespaceUtils.class);
 	/**
 	 * The unique name under which the internally managed {@link ScriptFactoryPostProcessor} is
 	 * registered in the {@link BeanDefinitionRegistry}.
@@ -52,6 +54,7 @@ public abstract class LangNamespaceUtils {
 		}
 		else {
 			beanDefinition = new RootBeanDefinition(ScriptFactoryPostProcessor.class);
+			logger.info("[SPRING] 自定义日志---准备注册Bean定义："+SCRIPT_FACTORY_POST_PROCESSOR_BEAN_NAME);
 			registry.registerBeanDefinition(SCRIPT_FACTORY_POST_PROCESSOR_BEAN_NAME, beanDefinition);
 		}
 		return beanDefinition;

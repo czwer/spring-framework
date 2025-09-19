@@ -16,10 +16,8 @@
 
 package org.springframework.scheduling.config;
 
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.parsing.BeanComponentDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
@@ -27,6 +25,9 @@ import org.springframework.beans.factory.support.ManagedList;
 import org.springframework.beans.factory.xml.AbstractSingleBeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.util.StringUtils;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * Parser for the 'scheduled-tasks' element of the scheduling namespace.
@@ -36,7 +37,7 @@ import org.springframework.util.StringUtils;
  * @since 3.0
  */
 public class ScheduledTasksBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
-
+	protected static final Log logger = LogFactory.getLog(ScheduledTasksBeanDefinitionParser.class);
 	private static final String ELEMENT_SCHEDULED = "scheduled";
 
 	private static final long ZERO_INITIAL_DELAY = 0;
@@ -177,6 +178,7 @@ public class ScheduledTasksBeanDefinitionParser extends AbstractSingleBeanDefini
 		// Extract the source of the current task
 		builder.getRawBeanDefinition().setSource(parserContext.extractSource(taskElement));
 		String generatedName = parserContext.getReaderContext().generateBeanName(builder.getRawBeanDefinition());
+		logger.info("[SPRING] 自定义日志---准备注册bean组件："+generatedName);
 		parserContext.registerBeanComponent(new BeanComponentDefinition(builder.getBeanDefinition(), generatedName));
 		return new RuntimeBeanReference(generatedName);
 	}

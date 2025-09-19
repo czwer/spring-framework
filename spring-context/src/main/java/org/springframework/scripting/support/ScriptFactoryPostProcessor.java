@@ -16,12 +16,8 @@
 
 package org.springframework.scripting.support;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.aop.TargetSource;
 import org.springframework.aop.framework.AopInfrastructureBean;
 import org.springframework.aop.framework.ProxyFactory;
@@ -30,14 +26,7 @@ import org.springframework.asm.Type;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.PropertyValue;
 import org.springframework.beans.PropertyValues;
-import org.springframework.beans.factory.BeanClassLoaderAware;
-import org.springframework.beans.factory.BeanCreationException;
-import org.springframework.beans.factory.BeanCurrentlyInCreationException;
-import org.springframework.beans.factory.BeanDefinitionStoreException;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
-import org.springframework.beans.factory.DisposableBean;
-import org.springframework.beans.factory.FactoryBean;
+import org.springframework.beans.factory.*;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.beans.factory.config.SmartInstantiationAwareBeanPostProcessor;
@@ -58,6 +47,9 @@ import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * {@link org.springframework.beans.factory.config.BeanPostProcessor} that
@@ -172,7 +164,7 @@ public class ScriptFactoryPostProcessor implements SmartInstantiationAwareBeanPo
 
 
 	/** Logger available to subclasses. */
-	protected final Log logger = LogFactory.getLog(getClass());
+	protected final Log logger = LogFactory.getLog(ScriptFactoryPostProcessor.class);
 
 	private long defaultRefreshCheckDelay = -1;
 
@@ -366,7 +358,7 @@ public class ScriptFactoryPostProcessor implements SmartInstantiationAwareBeanPo
 		// Avoid recreation of the script bean definition in case of a prototype.
 		synchronized (this.scriptBeanFactory) {
 			if (!this.scriptBeanFactory.containsBeanDefinition(scriptedObjectBeanName)) {
-
+				logger.info("[SPRING] 自定义日志---准备注册Bean定义："+scriptFactoryBeanName);
 				this.scriptBeanFactory.registerBeanDefinition(
 						scriptFactoryBeanName, createScriptFactoryBeanDefinition(bd));
 				ScriptFactory scriptFactory =

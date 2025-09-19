@@ -95,7 +95,7 @@ import org.springframework.util.ClassUtils;
  */
 public class CustomEditorConfigurer implements BeanFactoryPostProcessor, Ordered {
 
-	protected final Log logger = LogFactory.getLog(getClass());
+	protected final Log logger = LogFactory.getLog(CustomEditorConfigurer.class);
 
 	private int order = Ordered.LOWEST_PRECEDENCE;  // default: same as non-Ordered
 
@@ -142,6 +142,7 @@ public class CustomEditorConfigurer implements BeanFactoryPostProcessor, Ordered
 
 	@Override
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+		logger.info("[SPRING] 自定义日志---执行实现BeanFactoryPostProcessor接口方法postProcessBeanFactory");
 		if (this.propertyEditorRegistrars != null) {
 			for (PropertyEditorRegistrar propertyEditorRegistrar : this.propertyEditorRegistrars) {
 				beanFactory.addPropertyEditorRegistrar(propertyEditorRegistrar);

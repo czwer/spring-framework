@@ -16,7 +16,10 @@
 
 package org.springframework.scheduling.aspectj;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.cache.aspectj.AspectJJCacheConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Role;
@@ -39,10 +42,13 @@ import org.springframework.scheduling.config.TaskManagementConfigUtils;
 @Configuration(proxyBeanMethods = false)
 @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 public class AspectJAsyncConfiguration extends AbstractAsyncConfiguration {
+	protected static final Log logger = LogFactory.getLog(AspectJAsyncConfiguration.class);
+
 
 	@Bean(name = TaskManagementConfigUtils.ASYNC_EXECUTION_ASPECT_BEAN_NAME)
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public AnnotationAsyncExecutionAspect asyncAdvisor() {
+		logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE，通过@Bean声明Bean：AnnotationAsyncExecutionAspect");
 		AnnotationAsyncExecutionAspect asyncAspect = AnnotationAsyncExecutionAspect.aspectOf();
 		asyncAspect.configure(this.executor, this.exceptionHandler);
 		return asyncAspect;

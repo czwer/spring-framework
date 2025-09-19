@@ -19,6 +19,8 @@ package org.springframework.beans.factory.config;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanClassLoaderAware;
@@ -45,7 +47,7 @@ import org.springframework.util.ClassUtils;
  * @see ConfigurableBeanFactory#registerScope
  */
 public class CustomScopeConfigurer implements BeanFactoryPostProcessor, BeanClassLoaderAware, Ordered {
-
+	protected final Log logger = LogFactory.getLog(CustomScopeConfigurer.class);
 	@Nullable
 	private Map<String, Object> scopes;
 
@@ -96,6 +98,7 @@ public class CustomScopeConfigurer implements BeanFactoryPostProcessor, BeanClas
 
 	@Override
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+		logger.info("[SPRING] 自定义日志---执行实现BeanFactoryPostProcessor接口方法postProcessBeanFactory");
 		if (this.scopes != null) {
 			this.scopes.forEach((scopeKey, value) -> {
 				if (value instanceof Scope scope) {

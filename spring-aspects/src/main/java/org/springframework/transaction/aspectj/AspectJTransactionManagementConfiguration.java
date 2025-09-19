@@ -16,6 +16,8 @@
 
 package org.springframework.transaction.aspectj;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -41,10 +43,12 @@ import org.springframework.transaction.interceptor.TransactionAttributeSource;
 @Configuration(proxyBeanMethods = false)
 @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 public class AspectJTransactionManagementConfiguration extends AbstractTransactionManagementConfiguration {
+	protected static final Log logger = LogFactory.getLog(AspectJTransactionManagementConfiguration.class);
 
 	@Bean(name = TransactionManagementConfigUtils.TRANSACTION_ASPECT_BEAN_NAME)
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public AnnotationTransactionAspect transactionAspect(TransactionAttributeSource transactionAttributeSource) {
+		logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE，通过@Bean声明Bean：AnnotationTransactionAspect");
 		AnnotationTransactionAspect txAspect = AnnotationTransactionAspect.aspectOf();
 		txAspect.setTransactionAttributeSource(transactionAttributeSource);
 		if (this.txManager != null) {

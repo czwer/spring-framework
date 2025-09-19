@@ -16,6 +16,8 @@
 
 package org.springframework.cache.annotation;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.cache.config.CacheManagementConfigUtils;
 import org.springframework.cache.interceptor.BeanFactoryCacheOperationSourceAdvisor;
@@ -38,12 +40,13 @@ import org.springframework.context.annotation.Role;
 @Configuration(proxyBeanMethods = false)
 @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 public class ProxyCachingConfiguration extends AbstractCachingConfiguration {
+	protected static final Log logger = LogFactory.getLog(ProxyCachingConfiguration.class);
 
 	@Bean(name = CacheManagementConfigUtils.CACHE_ADVISOR_BEAN_NAME)
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public BeanFactoryCacheOperationSourceAdvisor cacheAdvisor(
 			CacheOperationSource cacheOperationSource, CacheInterceptor cacheInterceptor) {
-
+		logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE，通过@Bean声明Bean：BeanFactoryCacheOperationSourceAdvisor");
 		BeanFactoryCacheOperationSourceAdvisor advisor = new BeanFactoryCacheOperationSourceAdvisor();
 		advisor.setCacheOperationSource(cacheOperationSource);
 		advisor.setAdvice(cacheInterceptor);
@@ -57,12 +60,14 @@ public class ProxyCachingConfiguration extends AbstractCachingConfiguration {
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public CacheOperationSource cacheOperationSource() {
 		// Accept protected @Cacheable etc methods on CGLIB proxies, as of 6.0.
+		logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE，通过@Bean声明Bean：CacheOperationSource");
 		return new AnnotationCacheOperationSource(false);
 	}
 
 	@Bean
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public CacheInterceptor cacheInterceptor(CacheOperationSource cacheOperationSource) {
+		logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE，通过@Bean声明Bean：CacheInterceptor");
 		CacheInterceptor interceptor = new CacheInterceptor();
 		interceptor.configure(this.errorHandler, this.keyGenerator, this.cacheResolver, this.cacheManager);
 		interceptor.setCacheOperationSource(cacheOperationSource);

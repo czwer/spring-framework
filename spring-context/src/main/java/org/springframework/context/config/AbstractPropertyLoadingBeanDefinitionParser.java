@@ -16,13 +16,14 @@
 
 package org.springframework.context.config;
 
-import org.w3c.dom.Element;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.AbstractSingleBeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.util.StringUtils;
+import org.w3c.dom.Element;
 
 /**
  * Abstract parser for &lt;context:property-.../&gt; elements.
@@ -33,7 +34,7 @@ import org.springframework.util.StringUtils;
  * @since 2.5.2
  */
 abstract class AbstractPropertyLoadingBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
-
+	protected static final Log logger = LogFactory.getLog(AbstractPropertyLoadingBeanDefinitionParser.class);
 	@Override
 	protected boolean shouldGenerateId() {
 		return true;
@@ -68,7 +69,7 @@ abstract class AbstractPropertyLoadingBeanDefinitionParser extends AbstractSingl
 
 		builder.addPropertyValue("localOverride",
 				Boolean.valueOf(element.getAttribute("local-override")));
-
+		logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE");
 		builder.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 	}
 

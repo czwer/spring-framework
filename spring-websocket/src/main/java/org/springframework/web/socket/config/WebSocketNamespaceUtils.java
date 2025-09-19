@@ -16,11 +16,8 @@
 
 package org.springframework.web.socket.config;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.w3c.dom.Element;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.parsing.BeanComponentDefinition;
@@ -36,6 +33,10 @@ import org.springframework.web.socket.server.support.OriginHandshakeInterceptor;
 import org.springframework.web.socket.sockjs.transport.TransportHandlingSockJsService;
 import org.springframework.web.socket.sockjs.transport.handler.DefaultSockJsService;
 import org.springframework.web.socket.sockjs.transport.handler.WebSocketTransportHandler;
+import org.w3c.dom.Element;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Provides utility methods for parsing common WebSocket XML namespace elements.
@@ -45,7 +46,7 @@ import org.springframework.web.socket.sockjs.transport.handler.WebSocketTranspor
  * @since 4.0
  */
 abstract class WebSocketNamespaceUtils {
-
+	protected static final Log logger = LogFactory.getLog(WebSocketNamespaceUtils.class);
 	public static RuntimeBeanReference registerHandshakeHandler(
 			Element element, ParserContext context, @Nullable Object source) {
 
@@ -57,6 +58,7 @@ abstract class WebSocketNamespaceUtils {
 		else {
 			RootBeanDefinition defaultHandlerDef = new RootBeanDefinition(DefaultHandshakeHandler.class);
 			defaultHandlerDef.setSource(source);
+			logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE（DefaultHandshakeHandler）");
 			defaultHandlerDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 			String handlerName = context.getReaderContext().registerWithGeneratedName(defaultHandlerDef);
 			handlerRef = new RuntimeBeanReference(handlerName);
@@ -160,6 +162,7 @@ abstract class WebSocketNamespaceUtils {
 			if (!attrValue.isEmpty()) {
 				sockJsServiceDef.getPropertyValues().add("suppressCors", Boolean.valueOf(attrValue));
 			}
+			logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE（DefaultSockJsService）");
 			sockJsServiceDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 			String sockJsServiceName = context.getReaderContext().registerWithGeneratedName(sockJsServiceDef);
 			return new RuntimeBeanReference(sockJsServiceName);
@@ -173,11 +176,14 @@ abstract class WebSocketNamespaceUtils {
 		if (!context.getRegistry().containsBeanDefinition(schedulerName)) {
 			RootBeanDefinition taskSchedulerDef = new RootBeanDefinition(ThreadPoolTaskScheduler.class);
 			taskSchedulerDef.setSource(source);
+			logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE（ThreadPoolTaskScheduler）");
 			taskSchedulerDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 			taskSchedulerDef.getPropertyValues().add("poolSize", Runtime.getRuntime().availableProcessors());
 			taskSchedulerDef.getPropertyValues().add("threadNamePrefix", schedulerName + "-");
 			taskSchedulerDef.getPropertyValues().add("removeOnCancelPolicy", true);
+			logger.info("[SPRING] 自定义日志---准备注册bean定义："+schedulerName);
 			context.getRegistry().registerBeanDefinition(schedulerName, taskSchedulerDef);
+			logger.info("[SPRING] 自定义日志---准备注册组件："+schedulerName);
 			context.registerComponent(new BeanComponentDefinition(taskSchedulerDef, schedulerName));
 		}
 		return new RuntimeBeanReference(schedulerName);

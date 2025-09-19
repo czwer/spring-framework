@@ -16,6 +16,8 @@
 
 package org.springframework.aop.config;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Element;
 
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -41,7 +43,7 @@ import org.springframework.lang.Nullable;
  * @see AopConfigUtils
  */
 public abstract class AopNamespaceUtils {
-
+	protected static final Log logger = LogFactory.getLog(AopNamespaceUtils.class);
 	/**
 	 * The {@code proxy-target-class} attribute as found on AOP-related XML tags.
 	 */
@@ -95,6 +97,7 @@ public abstract class AopNamespaceUtils {
 
 	private static void registerComponentIfNecessary(@Nullable BeanDefinition beanDefinition, ParserContext parserContext) {
 		if (beanDefinition != null) {
+			logger.info("[SPRING] 自定义日志---准备注册组件："+AopConfigUtils.AUTO_PROXY_CREATOR_BEAN_NAME);
 			parserContext.registerComponent(
 					new BeanComponentDefinition(beanDefinition, AopConfigUtils.AUTO_PROXY_CREATOR_BEAN_NAME));
 		}

@@ -16,11 +16,8 @@
 
 package org.springframework.beans.factory.support;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.function.Supplier;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanInstantiationException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.BeanFactory;
@@ -28,6 +25,11 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.lang.Nullable;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.function.Supplier;
 
 /**
  * Simple object instantiation strategy for use in a BeanFactory.
@@ -41,6 +43,7 @@ import org.springframework.util.StringUtils;
  * @since 1.1
  */
 public class SimpleInstantiationStrategy implements InstantiationStrategy {
+	protected final Log logger = LogFactory.getLog(SimpleInstantiationStrategy.class);
 
 	private static final ThreadLocal<Method> currentlyInvokedFactoryMethod = new ThreadLocal<>();
 
@@ -119,10 +122,12 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
 					}
 				}
 			}
+			logger.info("[SPRING] 自定义日志【重要】---【获取Bean】【创建bean实例】：1，通过构造方法创建实例：" + beanName);
 			return BeanUtils.instantiateClass(constructorToUse);
 		}
 		else {
 			// Must generate CGLIB subclass.
+			logger.info("[SPRING] 自定义日志【重要】---【获取Bean】【创建bean实例】：2，通过CGLIB 子类创建实例：" + beanName);
 			return instantiateWithMethodInjection(bd, beanName, owner);
 		}
 	}

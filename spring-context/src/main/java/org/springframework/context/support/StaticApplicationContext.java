@@ -16,14 +16,16 @@
 
 package org.springframework.context.support;
 
-import java.util.Locale;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
 import org.springframework.context.ApplicationContext;
 import org.springframework.lang.Nullable;
+
+import java.util.Locale;
 
 /**
  * {@link org.springframework.context.ApplicationContext} implementation
@@ -39,7 +41,7 @@ import org.springframework.lang.Nullable;
  * @see #refresh
  */
 public class StaticApplicationContext extends GenericApplicationContext {
-
+	protected final Log logger = LogFactory.getLog(StaticApplicationContext.class);
 	private final StaticMessageSource staticMessageSource;
 
 
@@ -94,6 +96,7 @@ public class StaticApplicationContext extends GenericApplicationContext {
 	public void registerSingleton(String name, Class<?> clazz) throws BeansException {
 		GenericBeanDefinition bd = new GenericBeanDefinition();
 		bd.setBeanClass(clazz);
+		logger.info("[SPRING] 自定义日志---准备注册Bean定义："+name);
 		getDefaultListableBeanFactory().registerBeanDefinition(name, bd);
 	}
 
@@ -106,6 +109,7 @@ public class StaticApplicationContext extends GenericApplicationContext {
 		GenericBeanDefinition bd = new GenericBeanDefinition();
 		bd.setBeanClass(clazz);
 		bd.setPropertyValues(pvs);
+		logger.info("[SPRING] 自定义日志---准备注册Bean定义："+name);
 		getDefaultListableBeanFactory().registerBeanDefinition(name, bd);
 	}
 
@@ -118,6 +122,7 @@ public class StaticApplicationContext extends GenericApplicationContext {
 		GenericBeanDefinition bd = new GenericBeanDefinition();
 		bd.setScope(BeanDefinition.SCOPE_PROTOTYPE);
 		bd.setBeanClass(clazz);
+		logger.info("[SPRING] 自定义日志---准备注册Bean定义："+name);
 		getDefaultListableBeanFactory().registerBeanDefinition(name, bd);
 	}
 
@@ -131,6 +136,7 @@ public class StaticApplicationContext extends GenericApplicationContext {
 		bd.setScope(BeanDefinition.SCOPE_PROTOTYPE);
 		bd.setBeanClass(clazz);
 		bd.setPropertyValues(pvs);
+		logger.info("[SPRING] 自定义日志---准备注册Bean定义："+ name);
 		getDefaultListableBeanFactory().registerBeanDefinition(name, bd);
 	}
 

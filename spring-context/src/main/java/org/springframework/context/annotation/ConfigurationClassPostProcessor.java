@@ -147,7 +147,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 			ConfigurationClassPostProcessor.class.getName() + ".importRegistry";
 
 
-	private final Log logger = LogFactory.getLog(AnnotationBeanNameGenerator.class);
+	private final Log logger = LogFactory.getLog(ConfigurationClassPostProcessor.class);
 
 	private SourceExtractor sourceExtractor = new PassThroughSourceExtractor();
 
@@ -276,7 +276,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 	 */
 	@Override
 	public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) {
-		logger.info("[SPRING] 自定义日志---配置解析过程的入口");
+		logger.info("[SPRING] 自定义日志【非常重要】---配置解析过程的入口，@Configuration");
 		int registryId = System.identityHashCode(registry);
 		if (this.registriesPostProcessed.contains(registryId)) {
 			throw new IllegalStateException(
@@ -364,7 +364,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 	 * {@link Configuration} classes.
 	 */
 	public void processConfigBeanDefinitions(BeanDefinitionRegistry registry) {
-		logger.info("[SPRING] 自定义日志---实际执行配置类解析和注册逻辑的核心方法");
+		logger.info("[SPRING] 自定义日志【非常重要】---实际执行配置类解析和注册逻辑的核心方法，@Configuration");
 		List<BeanDefinitionHolder> configCandidates = new ArrayList<>();
 		String[] candidateNames = registry.getBeanDefinitionNames();
 

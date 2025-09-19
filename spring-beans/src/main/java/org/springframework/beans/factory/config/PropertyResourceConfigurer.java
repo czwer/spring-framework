@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Properties;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.core.Ordered;
@@ -51,7 +53,7 @@ import org.springframework.util.ObjectUtils;
  */
 public abstract class PropertyResourceConfigurer extends PropertiesLoaderSupport
 		implements BeanFactoryPostProcessor, PriorityOrdered {
-
+	Log logger = LogFactory.getLog(PropertyResourceConfigurer.class);
 	private int order = Ordered.LOWEST_PRECEDENCE;  // default: same as non-Ordered
 
 
@@ -76,6 +78,7 @@ public abstract class PropertyResourceConfigurer extends PropertiesLoaderSupport
 	 */
 	@Override
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+		logger.info("[SPRING] 自定义日志---执行实现BeanFactoryPostProcessor接口方法postProcessBeanFactory");
 		try {
 			Properties mergedProps = mergeProperties();
 

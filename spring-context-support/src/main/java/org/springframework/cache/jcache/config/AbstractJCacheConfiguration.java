@@ -16,8 +16,8 @@
 
 package org.springframework.cache.jcache.config;
 
-import java.util.function.Supplier;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.cache.annotation.AbstractCachingConfiguration;
 import org.springframework.cache.interceptor.CacheResolver;
@@ -27,6 +27,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Role;
 import org.springframework.lang.Nullable;
+
+import java.util.function.Supplier;
 
 /**
  * Abstract JSR-107 specific {@code @Configuration} class providing common
@@ -39,7 +41,7 @@ import org.springframework.lang.Nullable;
  */
 @Configuration(proxyBeanMethods = false)
 public abstract class AbstractJCacheConfiguration extends AbstractCachingConfiguration {
-
+	protected static final Log logger = LogFactory.getLog(AbstractJCacheConfiguration.class);
 	@Nullable
 	protected Supplier<CacheResolver> exceptionCacheResolver;
 
@@ -58,6 +60,7 @@ public abstract class AbstractJCacheConfiguration extends AbstractCachingConfigu
 	@Bean(name = "jCacheOperationSource")
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public JCacheOperationSource cacheOperationSource() {
+		logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE，通过@Bean声明Bean：JCacheOperationSource");
 		return new DefaultJCacheOperationSource(
 				this.cacheManager, this.cacheResolver, this.exceptionCacheResolver, this.keyGenerator);
 	}

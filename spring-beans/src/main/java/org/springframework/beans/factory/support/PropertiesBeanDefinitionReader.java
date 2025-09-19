@@ -16,15 +16,8 @@
 
 package org.springframework.beans.factory.support;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-import java.util.ResourceBundle;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.PropertyAccessor;
@@ -39,6 +32,11 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.DefaultPropertiesPersister;
 import org.springframework.util.PropertiesPersister;
 import org.springframework.util.StringUtils;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.*;
 
 /**
  * Bean definition reader for a simple properties format.
@@ -79,7 +77,7 @@ import org.springframework.util.StringUtils;
  */
 @Deprecated
 public class PropertiesBeanDefinitionReader extends AbstractBeanDefinitionReader {
-
+	protected final Log logger = LogFactory.getLog(PropertiesBeanDefinitionReader.class);
 	/**
 	 * Value of a T/F attribute that represents true.
 	 * Anything else represents false. Case seNsItive.
@@ -502,6 +500,7 @@ public class PropertiesBeanDefinitionReader extends AbstractBeanDefinitionReader
 			bd.setLazyInit(lazyInit);
 			bd.setConstructorArgumentValues(cas);
 			bd.setPropertyValues(pvs);
+			logger.info("[SPRING] 自定义日志---准备注册Bean定义："+beanName);
 			getRegistry().registerBeanDefinition(beanName, bd);
 		}
 		catch (ClassNotFoundException ex) {

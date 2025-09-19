@@ -16,12 +16,8 @@
 
 package org.springframework.test.context.bean.override;
 
-import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.aop.scope.ScopedProxyUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactoryUtils;
@@ -31,16 +27,18 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.config.DependencyDescriptor;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.beans.factory.support.BeanNameGenerator;
-import org.springframework.beans.factory.support.DefaultBeanNameGenerator;
-import org.springframework.beans.factory.support.DefaultListableBeanFactory;
-import org.springframework.beans.factory.support.RootBeanDefinition;
+import org.springframework.beans.factory.support.*;
 import org.springframework.context.aot.AbstractAotProcessor;
 import org.springframework.core.Ordered;
 import org.springframework.core.ResolvableType;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
+
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * A {@link BeanFactoryPostProcessor} implementation that processes identified
@@ -63,6 +61,7 @@ import org.springframework.util.Assert;
  * @since 6.2
  */
 class BeanOverrideBeanFactoryPostProcessor implements BeanFactoryPostProcessor, Ordered {
+	private final Log logger = LogFactory.getLog(BeanOverrideBeanFactoryPostProcessor.class);
 
 	private static final String PSEUDO_BEAN_NAME_PLACEHOLDER = "<<< PSEUDO BEAN NAME PLACEHOLDER >>>";
 
@@ -95,6 +94,7 @@ class BeanOverrideBeanFactoryPostProcessor implements BeanFactoryPostProcessor, 
 
 	@Override
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+		logger.info("[SPRING] 自定义日志---执行实现BeanFactoryPostProcessor接口方法postProcessBeanFactory");
 		Set<String> generatedBeanNames = new HashSet<>();
 		for (BeanOverrideHandler handler : this.beanOverrideHandlers) {
 			registerBeanOverride(beanFactory, handler, generatedBeanNames);
@@ -213,7 +213,7 @@ class BeanOverrideBeanFactoryPostProcessor implements BeanFactoryPostProcessor, 
 				beanName = beanNameGenerator.generateBeanName(pseudoBeanDefinition, registry);
 				generatedBeanNames.add(beanName);
 			}
-
+			logger.info("[SPRING] 自定义日志---准备注册Bean定义："+beanName);
 			registry.registerBeanDefinition(beanName, pseudoBeanDefinition);
 		}
 

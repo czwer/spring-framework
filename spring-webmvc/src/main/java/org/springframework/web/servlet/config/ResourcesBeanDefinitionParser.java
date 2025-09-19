@@ -16,11 +16,8 @@
 
 package org.springframework.web.servlet.config;
 
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
-import org.w3c.dom.Element;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConstructorArgumentValues;
@@ -41,19 +38,11 @@ import org.springframework.util.xml.DomUtils;
 import org.springframework.web.servlet.handler.MappedInterceptor;
 import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
 import org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter;
-import org.springframework.web.servlet.resource.CachingResourceResolver;
-import org.springframework.web.servlet.resource.CachingResourceTransformer;
-import org.springframework.web.servlet.resource.ContentVersionStrategy;
-import org.springframework.web.servlet.resource.CssLinkResourceTransformer;
-import org.springframework.web.servlet.resource.FixedVersionStrategy;
-import org.springframework.web.servlet.resource.PathResourceResolver;
-import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;
-import org.springframework.web.servlet.resource.ResourceResolver;
-import org.springframework.web.servlet.resource.ResourceTransformer;
-import org.springframework.web.servlet.resource.ResourceUrlProvider;
-import org.springframework.web.servlet.resource.ResourceUrlProviderExposingInterceptor;
-import org.springframework.web.servlet.resource.VersionResourceResolver;
-import org.springframework.web.servlet.resource.WebJarsResourceResolver;
+import org.springframework.web.servlet.resource.*;
+import org.w3c.dom.Element;
+
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * {@link org.springframework.beans.factory.xml.BeanDefinitionParser} that parses a
@@ -68,6 +57,7 @@ import org.springframework.web.servlet.resource.WebJarsResourceResolver;
  * @since 3.0.4
  */
 class ResourcesBeanDefinitionParser implements BeanDefinitionParser {
+	protected static final Log logger = LogFactory.getLog(ResourcesBeanDefinitionParser.class);
 
 	private static final String RESOURCE_CHAIN_CACHE = "spring-resource-chain-cache";
 
@@ -109,6 +99,7 @@ class ResourcesBeanDefinitionParser implements BeanDefinitionParser {
 
 		RootBeanDefinition handlerMappingDef = new RootBeanDefinition(SimpleUrlHandlerMapping.class);
 		handlerMappingDef.setSource(source);
+		logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE（SimpleUrlHandlerMapping）");
 		handlerMappingDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 		handlerMappingDef.getPropertyValues().add("urlMap", urlMap).add("urlPathHelper", pathHelperRef);
 		MvcNamespaceUtils.configurePathMatching(handlerMappingDef, context, source);
@@ -122,7 +113,9 @@ class ResourcesBeanDefinitionParser implements BeanDefinitionParser {
 		handlerMappingDef.getPropertyValues().add("corsConfigurations", corsRef);
 
 		String beanName = context.getReaderContext().generateBeanName(handlerMappingDef);
+		logger.info("[SPRING] 自定义日志---准备注册bean定义："+beanName);
 		context.getRegistry().registerBeanDefinition(beanName, handlerMappingDef);
+		logger.info("[SPRING] 自定义日志---准备注册组件："+beanName);
 		context.registerComponent(new BeanComponentDefinition(handlerMappingDef, beanName));
 
 		// Ensure BeanNameUrlHandlerMapping (SPR-8289) and default HandlerAdapters are not "turned off"
@@ -137,7 +130,9 @@ class ResourcesBeanDefinitionParser implements BeanDefinitionParser {
 			RootBeanDefinition urlProvider = new RootBeanDefinition(ResourceUrlProvider.class);
 			urlProvider.setSource(source);
 			urlProvider.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
+			logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE,准备注册bean定义（ResourceUrlProvider）:"+RESOURCE_URL_PROVIDER);
 			context.getRegistry().registerBeanDefinition(RESOURCE_URL_PROVIDER, urlProvider);
+			logger.info("[SPRING] 自定义日志---准备注册组件："+RESOURCE_URL_PROVIDER);
 			context.registerComponent(new BeanComponentDefinition(urlProvider, RESOURCE_URL_PROVIDER));
 
 			RootBeanDefinition interceptor = new RootBeanDefinition(ResourceUrlProviderExposingInterceptor.class);
@@ -146,6 +141,7 @@ class ResourcesBeanDefinitionParser implements BeanDefinitionParser {
 
 			RootBeanDefinition mappedInterceptor = new RootBeanDefinition(MappedInterceptor.class);
 			mappedInterceptor.setSource(source);
+			logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE（MappedInterceptor）");
 			mappedInterceptor.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 			mappedInterceptor.getConstructorArgumentValues().addIndexedArgumentValue(0, (Object) null);
 			mappedInterceptor.getConstructorArgumentValues().addIndexedArgumentValue(1, interceptor);
@@ -166,6 +162,7 @@ class ResourcesBeanDefinitionParser implements BeanDefinitionParser {
 
 		RootBeanDefinition resourceHandlerDef = new RootBeanDefinition(ResourceHttpRequestHandler.class);
 		resourceHandlerDef.setSource(source);
+		logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE（ResourceHttpRequestHandler）");
 		resourceHandlerDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 
 		MutablePropertyValues values = resourceHandlerDef.getPropertyValues();
@@ -195,6 +192,7 @@ class ResourcesBeanDefinitionParser implements BeanDefinitionParser {
 
 		String beanName = context.getReaderContext().generateBeanName(resourceHandlerDef);
 		context.getRegistry().registerBeanDefinition(beanName, resourceHandlerDef);
+		logger.info("[SPRING] 自定义日志---准备注册组件："+beanName);
 		context.registerComponent(new BeanComponentDefinition(resourceHandlerDef, beanName));
 		return beanName;
 	}
@@ -276,11 +274,13 @@ class ResourcesBeanDefinitionParser implements BeanDefinitionParser {
 
 			RootBeanDefinition cachingResolverDef = new RootBeanDefinition(CachingResourceResolver.class);
 			cachingResolverDef.setSource(source);
+			logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE（CachingResourceResolver）");
 			cachingResolverDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 			cachingResolverDef.setConstructorArgumentValues(cargs);
 
 			RootBeanDefinition cachingTransformerDef = new RootBeanDefinition(CachingResourceTransformer.class);
 			cachingTransformerDef.setSource(source);
+			logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE（CachingResourceTransformer）");
 			cachingTransformerDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 			cachingTransformerDef.setConstructorArgumentValues(cargs);
 
@@ -296,6 +296,7 @@ class ResourcesBeanDefinitionParser implements BeanDefinitionParser {
 				cacheCavs.addIndexedArgumentValue(0, RESOURCE_CHAIN_CACHE);
 				RootBeanDefinition cacheDef = new RootBeanDefinition(ConcurrentMapCache.class);
 				cacheDef.setSource(source);
+				logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE（ConcurrentMapCache）");
 				cacheDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 				cacheDef.setConstructorArgumentValues(cacheCavs);
 				cargs.addIndexedArgumentValue(0, cacheDef);
@@ -320,6 +321,7 @@ class ResourcesBeanDefinitionParser implements BeanDefinitionParser {
 					if (isAutoRegistration) {
 						RootBeanDefinition cssLinkTransformerDef = new RootBeanDefinition(CssLinkResourceTransformer.class);
 						cssLinkTransformerDef.setSource(source);
+						logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE（CssLinkResourceTransformer）");
 						cssLinkTransformerDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 						resourceTransformers.add(cssLinkTransformerDef);
 					}
@@ -335,11 +337,13 @@ class ResourcesBeanDefinitionParser implements BeanDefinitionParser {
 			if (webJarsPresent) {
 				RootBeanDefinition webJarsResolverDef = new RootBeanDefinition(WebJarsResourceResolver.class);
 				webJarsResolverDef.setSource(source);
+				logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE（WebJarsResourceResolver）");
 				webJarsResolverDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 				resourceResolvers.add(webJarsResolverDef);
 			}
 			RootBeanDefinition pathResolverDef = new RootBeanDefinition(PathResourceResolver.class);
 			pathResolverDef.setSource(source);
+			logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE（PathResourceResolver）");
 			pathResolverDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 			resourceResolvers.add(pathResolverDef);
 		}
@@ -358,6 +362,7 @@ class ResourcesBeanDefinitionParser implements BeanDefinitionParser {
 		strategyMap.setSource(source);
 		RootBeanDefinition versionResolverDef = new RootBeanDefinition(VersionResourceResolver.class);
 		versionResolverDef.setSource(source);
+		logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE（VersionResourceResolver）");
 		versionResolverDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 		versionResolverDef.getPropertyValues().addPropertyValue("strategyMap", strategyMap);
 
@@ -369,6 +374,7 @@ class ResourcesBeanDefinitionParser implements BeanDefinitionParser {
 				cargs.addIndexedArgumentValue(0, beanElement.getAttribute("version"));
 				RootBeanDefinition strategyDef = new RootBeanDefinition(FixedVersionStrategy.class);
 				strategyDef.setSource(source);
+				logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE（FixedVersionStrategy）");
 				strategyDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 				strategyDef.setConstructorArgumentValues(cargs);
 				strategy = strategyDef;
@@ -376,6 +382,7 @@ class ResourcesBeanDefinitionParser implements BeanDefinitionParser {
 			else if (CONTENT_VERSION_STRATEGY_ELEMENT.equals(beanElement.getLocalName())) {
 				RootBeanDefinition strategyDef = new RootBeanDefinition(ContentVersionStrategy.class);
 				strategyDef.setSource(source);
+				logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE（ContentVersionStrategy）");
 				strategyDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 				strategy = strategyDef;
 			}

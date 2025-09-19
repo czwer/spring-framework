@@ -793,19 +793,19 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 		// Register default environment beans.
 		if (!beanFactory.containsLocalBean(ENVIRONMENT_BEAN_NAME)) {
-			logger.info("[SPRING] 自定义日志【重要】---调用AbstractApplicationContext的refresh方法（prepareBeanFactory），动态地向BeanFactory注册一个已经实例化好的对象作为一个单例Bean,beanName："+ENVIRONMENT_BEAN_NAME);
+			logger.info("[SPRING] 自定义日志【重要】---调用AbstractApplicationContext的refresh方法（prepareBeanFactory），【注册单例Bean】,beanName："+ENVIRONMENT_BEAN_NAME);
 			beanFactory.registerSingleton(ENVIRONMENT_BEAN_NAME, getEnvironment());
 		}
 		if (!beanFactory.containsLocalBean(SYSTEM_PROPERTIES_BEAN_NAME)) {
-			logger.info("[SPRING] 自定义日志【重要】---调用AbstractApplicationContext的refresh方法（prepareBeanFactory），动态地向BeanFactory注册一个已经实例化好的对象作为一个单例Bean,beanName："+SYSTEM_PROPERTIES_BEAN_NAME);
+			logger.info("[SPRING] 自定义日志【重要】---调用AbstractApplicationContext的refresh方法（prepareBeanFactory），【注册单例Bean】,beanName："+SYSTEM_PROPERTIES_BEAN_NAME);
 			beanFactory.registerSingleton(SYSTEM_PROPERTIES_BEAN_NAME, getEnvironment().getSystemProperties());
 		}
 		if (!beanFactory.containsLocalBean(SYSTEM_ENVIRONMENT_BEAN_NAME)) {
-			logger.info("[SPRING] 自定义日志【重要】---调用AbstractApplicationContext的refresh方法（prepareBeanFactory），动态地向BeanFactory注册一个已经实例化好的对象作为一个单例Bean,beanName："+SYSTEM_ENVIRONMENT_BEAN_NAME);
+			logger.info("[SPRING] 自定义日志【重要】---调用AbstractApplicationContext的refresh方法（prepareBeanFactory），【注册单例Bean】,beanName："+SYSTEM_ENVIRONMENT_BEAN_NAME);
 			beanFactory.registerSingleton(SYSTEM_ENVIRONMENT_BEAN_NAME, getEnvironment().getSystemEnvironment());
 		}
 		if (!beanFactory.containsLocalBean(APPLICATION_STARTUP_BEAN_NAME)) {
-			logger.info("[SPRING] 自定义日志【重要】---调用AbstractApplicationContext的refresh方法（prepareBeanFactory），动态地向BeanFactory注册一个已经实例化好的对象作为一个单例Bean,beanName："+APPLICATION_STARTUP_BEAN_NAME);
+			logger.info("[SPRING] 自定义日志【重要】---调用AbstractApplicationContext的refresh方法（prepareBeanFactory），【注册单例Bean】,beanName："+APPLICATION_STARTUP_BEAN_NAME);
 			beanFactory.registerSingleton(APPLICATION_STARTUP_BEAN_NAME, getApplicationStartup());
 		}
 	}

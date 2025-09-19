@@ -16,6 +16,8 @@
 
 package org.springframework.cache.aspectj;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.cache.config.CacheManagementConfigUtils;
 import org.springframework.cache.jcache.config.AbstractJCacheConfiguration;
@@ -37,10 +39,13 @@ import org.springframework.context.annotation.Role;
 @Configuration(proxyBeanMethods = false)
 @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 public class AspectJJCacheConfiguration extends AbstractJCacheConfiguration {
+	protected static final Log logger = LogFactory.getLog(AspectJJCacheConfiguration.class);
+
 
 	@Bean(name = CacheManagementConfigUtils.JCACHE_ASPECT_BEAN_NAME)
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public JCacheCacheAspect cacheAspect(JCacheOperationSource jCacheOperationSource) {
+		logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE，通过@Bean声明Bean：JCacheCacheAspect");
 		JCacheCacheAspect cacheAspect = JCacheCacheAspect.aspectOf();
 		cacheAspect.setCacheOperationSource(jCacheOperationSource);
 		return cacheAspect;

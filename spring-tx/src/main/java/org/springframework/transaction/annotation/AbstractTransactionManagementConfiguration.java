@@ -16,8 +16,8 @@
 
 package org.springframework.transaction.annotation;
 
-import java.util.Collection;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Bean;
@@ -34,6 +34,8 @@ import org.springframework.transaction.interceptor.RollbackRuleAttribute;
 import org.springframework.transaction.interceptor.TransactionAttributeSource;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Collection;
+
 /**
  * Abstract base {@code @Configuration} class providing common structure for enabling
  * Spring's annotation-driven transaction management capability.
@@ -46,6 +48,7 @@ import org.springframework.util.CollectionUtils;
  */
 @Configuration
 public abstract class AbstractTransactionManagementConfiguration implements ImportAware {
+	protected static final Log logger = LogFactory.getLog(AbstractTransactionManagementConfiguration.class);
 
 	@Nullable
 	protected AnnotationAttributes enableTx;
@@ -83,6 +86,7 @@ public abstract class AbstractTransactionManagementConfiguration implements Impo
 	@Bean
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public TransactionAttributeSource transactionAttributeSource() {
+		logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE，通过@Bean声明Bean：TransactionAttributeSource");
 		// Accept protected @Transactional methods on CGLIB proxies, as of 6.0
 		AnnotationTransactionAttributeSource tas = new AnnotationTransactionAttributeSource(false);
 		// Apply default rollback rule, as of 6.2
@@ -95,6 +99,7 @@ public abstract class AbstractTransactionManagementConfiguration implements Impo
 	@Bean(name = TransactionManagementConfigUtils.TRANSACTIONAL_EVENT_LISTENER_FACTORY_BEAN_NAME)
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public static TransactionalEventListenerFactory transactionalEventListenerFactory() {
+		logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE，通过@Bean声明Bean：TransactionalEventListenerFactory");
 		return new RestrictedTransactionalEventListenerFactory();
 	}
 

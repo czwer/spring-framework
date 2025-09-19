@@ -16,10 +16,8 @@
 
 package org.springframework.web.servlet.config;
 
-import java.util.Map;
-
-import org.w3c.dom.Element;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.parsing.BeanComponentDefinition;
 import org.springframework.beans.factory.support.ManagedMap;
@@ -31,6 +29,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
 import org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter;
 import org.springframework.web.servlet.resource.DefaultServletHttpRequestHandler;
+import org.w3c.dom.Element;
+
+import java.util.Map;
 
 /**
  * {@link BeanDefinitionParser} that parses a {@code default-servlet-handler} element to
@@ -43,7 +44,7 @@ import org.springframework.web.servlet.resource.DefaultServletHttpRequestHandler
  * @since 3.0.4
  */
 class DefaultServletHandlerBeanDefinitionParser implements BeanDefinitionParser {
-
+	protected static final Log logger = LogFactory.getLog(DefaultServletHandlerBeanDefinitionParser.class);
 	@Override
 	@Nullable
 	public BeanDefinition parse(Element element, ParserContext parserContext) {
@@ -52,12 +53,15 @@ class DefaultServletHandlerBeanDefinitionParser implements BeanDefinitionParser 
 		String defaultServletName = element.getAttribute("default-servlet-name");
 		RootBeanDefinition defaultServletHandlerDef = new RootBeanDefinition(DefaultServletHttpRequestHandler.class);
 		defaultServletHandlerDef.setSource(source);
+		logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE（DefaultServletHttpRequestHandler）");
 		defaultServletHandlerDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 		if (StringUtils.hasText(defaultServletName)) {
 			defaultServletHandlerDef.getPropertyValues().add("defaultServletName", defaultServletName);
 		}
 		String defaultServletHandlerName = parserContext.getReaderContext().generateBeanName(defaultServletHandlerDef);
+		logger.info("[SPRING] 自定义日志---准备注册bean定义："+defaultServletHandlerName);
 		parserContext.getRegistry().registerBeanDefinition(defaultServletHandlerName, defaultServletHandlerDef);
+		logger.info("[SPRING] 自定义日志---准备注册组件："+defaultServletHandlerName);
 		parserContext.registerComponent(new BeanComponentDefinition(defaultServletHandlerDef, defaultServletHandlerName));
 
 		Map<String, String> urlMap = new ManagedMap<>();
@@ -65,6 +69,7 @@ class DefaultServletHandlerBeanDefinitionParser implements BeanDefinitionParser 
 
 		RootBeanDefinition handlerMappingDef = new RootBeanDefinition(SimpleUrlHandlerMapping.class);
 		handlerMappingDef.setSource(source);
+		logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE（SimpleUrlHandlerMapping）");
 		handlerMappingDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 		handlerMappingDef.getPropertyValues().add("urlMap", urlMap);
 

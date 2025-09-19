@@ -16,6 +16,8 @@
 
 package org.springframework.beans.factory.xml;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Element;
 
 import org.springframework.beans.factory.BeanDefinitionStoreException;
@@ -49,7 +51,7 @@ import org.springframework.util.StringUtils;
  * @since 2.0
  */
 public abstract class AbstractBeanDefinitionParser implements BeanDefinitionParser {
-
+	protected static final Log logger = LogFactory.getLog(AbstractBeanDefinitionParser.class);
 	/** Constant for the "id" attribute. */
 	public static final String ID_ATTRIBUTE = "id";
 
@@ -81,6 +83,7 @@ public abstract class AbstractBeanDefinitionParser implements BeanDefinitionPars
 				if (shouldFireEvents()) {
 					BeanComponentDefinition componentDefinition = new BeanComponentDefinition(holder);
 					postProcessComponentDefinition(componentDefinition);
+					logger.info("[SPRING] 自定义日志---准备注册组件");
 					parserContext.registerComponent(componentDefinition);
 				}
 			}

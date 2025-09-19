@@ -16,6 +16,8 @@
 
 package org.springframework.jms.annotation;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -41,15 +43,18 @@ import org.springframework.jms.config.JmsListenerEndpointRegistry;
 @Configuration(proxyBeanMethods = false)
 @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 public class JmsBootstrapConfiguration {
+	protected static final Log logger = LogFactory.getLog(JmsBootstrapConfiguration.class);
 
 	@Bean(name = JmsListenerConfigUtils.JMS_LISTENER_ANNOTATION_PROCESSOR_BEAN_NAME)
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public JmsListenerAnnotationBeanPostProcessor jmsListenerAnnotationProcessor() {
+		logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE，通过@Bean声明Bean：JmsListenerAnnotationBeanPostProcessor");
 		return new JmsListenerAnnotationBeanPostProcessor();
 	}
 
 	@Bean(name = JmsListenerConfigUtils.JMS_LISTENER_ENDPOINT_REGISTRY_BEAN_NAME)
 	public JmsListenerEndpointRegistry defaultJmsListenerEndpointRegistry() {
+		logger.info("[SPRING] 自定义日志---通过@Bean声明Bean：JmsListenerEndpointRegistry");
 		return new JmsListenerEndpointRegistry();
 	}
 

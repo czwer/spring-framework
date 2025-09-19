@@ -16,23 +16,8 @@
 
 package org.springframework.beans.factory.aot;
 
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.Method;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.function.BiFunction;
-import java.util.function.BiPredicate;
-import java.util.function.Function;
-import java.util.function.Predicate;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.aot.generate.GeneratedMethods;
 import org.springframework.aot.generate.ValueCodeGenerator;
 import org.springframework.aot.generate.ValueCodeGenerator.Delegate;
@@ -61,6 +46,14 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
+import java.util.function.Function;
+import java.util.function.Predicate;
+
 /**
  * Internal code generator to set {@link RootBeanDefinition} properties.
  *
@@ -83,6 +76,7 @@ import org.springframework.util.StringUtils;
  * @since 6.0
  */
 class BeanDefinitionPropertiesCodeGenerator {
+	protected final Log logger = LogFactory.getLog(BeanDefinitionPropertiesCodeGenerator.class);
 
 	private static final RootBeanDefinition DEFAULT_BEAN_DEFINITION = new RootBeanDefinition();
 

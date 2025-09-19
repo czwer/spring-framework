@@ -16,6 +16,8 @@
 
 package org.springframework.beans.factory.support;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.BeanDefinitionStoreException;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -36,7 +38,7 @@ import org.springframework.util.StringUtils;
  * @see org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader
  */
 public abstract class BeanDefinitionReaderUtils {
-
+	protected static final Log logger = LogFactory.getLog(BeanDefinitionReaderUtils.class);
 	/**
 	 * Separator for generated bean names. If a class name or parent name is not
 	 * unique, "#1", "#2" etc will be appended, until the name becomes unique.
@@ -161,6 +163,7 @@ public abstract class BeanDefinitionReaderUtils {
 
 		// Register bean definition under primary name.
 		String beanName = definitionHolder.getBeanName();
+		logger.info("[SPRING] 自定义日志---准备注册Bean定义："+beanName);
 		registry.registerBeanDefinition(beanName, definitionHolder.getBeanDefinition());
 
 		// Register aliases for bean name, if any.
@@ -186,6 +189,7 @@ public abstract class BeanDefinitionReaderUtils {
 			throws BeanDefinitionStoreException {
 
 		String generatedName = generateBeanName(definition, registry, false);
+		logger.info("[SPRING] 自定义日志---准备注册Bean定义："+generatedName);
 		registry.registerBeanDefinition(generatedName, definition);
 		return generatedName;
 	}

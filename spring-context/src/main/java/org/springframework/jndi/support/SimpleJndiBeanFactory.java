@@ -25,6 +25,8 @@ import java.util.Set;
 import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanDefinitionStoreException;
 import org.springframework.beans.factory.BeanFactory;
@@ -62,7 +64,7 @@ import org.springframework.lang.Nullable;
  * @see org.springframework.context.annotation.CommonAnnotationBeanPostProcessor
  */
 public class SimpleJndiBeanFactory extends JndiLocatorSupport implements BeanFactory {
-
+	protected final Log logger = LogFactory.getLog(SimpleJndiBeanFactory.class);
 	/** JNDI names of resources that are known to be shareable, i.e. can be cached */
 	private final Set<String> shareableResources = new HashSet<>();
 
@@ -158,10 +160,12 @@ public class SimpleJndiBeanFactory extends JndiLocatorSupport implements BeanFac
 		return new ObjectProvider<>() {
 			@Override
 			public T getObject() throws BeansException {
+				logger.info("[SPRING] 自定义日志---getObject步骤：1-0，调用getBean方法："+requiredType.getName());
 				return getBean(requiredType);
 			}
 			@Override
 			public T getObject(Object... args) throws BeansException {
+				logger.info("[SPRING] 自定义日志---getObject步骤：1-1，调用getBean方法："+requiredType.getName());
 				return getBean(requiredType, args);
 			}
 			@Override

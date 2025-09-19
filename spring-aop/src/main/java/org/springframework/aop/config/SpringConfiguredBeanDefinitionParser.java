@@ -16,6 +16,8 @@
 
 package org.springframework.aop.config;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Element;
 
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -40,7 +42,7 @@ import org.springframework.lang.Nullable;
  * @since 2.0
  */
 class SpringConfiguredBeanDefinitionParser implements BeanDefinitionParser {
-
+	protected static final Log logger = LogFactory.getLog(SpringConfiguredBeanDefinitionParser.class);
 	/**
 	 * The bean name of the internally managed bean configurer aspect.
 	 */
@@ -58,8 +60,10 @@ class SpringConfiguredBeanDefinitionParser implements BeanDefinitionParser {
 			RootBeanDefinition def = new RootBeanDefinition();
 			def.setBeanClassName(BEAN_CONFIGURER_ASPECT_CLASS_NAME);
 			def.setFactoryMethodName("aspectOf");
+			logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE："+BEAN_CONFIGURER_ASPECT_BEAN_NAME);
 			def.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 			def.setSource(parserContext.extractSource(element));
+			logger.info("[SPRING] 自定义日志---准备注册bean组件："+BEAN_CONFIGURER_ASPECT_BEAN_NAME);
 			parserContext.registerBeanComponent(new BeanComponentDefinition(def, BEAN_CONFIGURER_ASPECT_BEAN_NAME));
 		}
 		return null;

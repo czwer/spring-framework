@@ -16,10 +16,8 @@
 
 package org.springframework.context.annotation;
 
-import java.util.Map;
-
-import javax.management.MBeanServer;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -32,6 +30,9 @@ import org.springframework.jmx.support.RegistrationPolicy;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
+
+import javax.management.MBeanServer;
+import java.util.Map;
 
 /**
  * {@code @Configuration} class that registers a {@link AnnotationMBeanExporter} bean.
@@ -47,7 +48,7 @@ import org.springframework.util.StringUtils;
 @Configuration(proxyBeanMethods = false)
 @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 public class MBeanExportConfiguration implements ImportAware, EnvironmentAware, BeanFactoryAware {
-
+	protected static final Log logger = LogFactory.getLog(MBeanExportConfiguration.class);
 	private static final String MBEAN_EXPORTER_BEAN_NAME = "mbeanExporter";
 
 	@Nullable
@@ -84,6 +85,7 @@ public class MBeanExportConfiguration implements ImportAware, EnvironmentAware, 
 	@Bean(name = MBEAN_EXPORTER_BEAN_NAME)
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public AnnotationMBeanExporter mbeanExporter() {
+		logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE，通过@Bean声明Bean："+MBEAN_EXPORTER_BEAN_NAME);
 		AnnotationMBeanExporter exporter = new AnnotationMBeanExporter();
 		Assert.state(this.enableMBeanExport != null, "No EnableMBeanExport annotation found");
 		setupDomain(exporter, this.enableMBeanExport);

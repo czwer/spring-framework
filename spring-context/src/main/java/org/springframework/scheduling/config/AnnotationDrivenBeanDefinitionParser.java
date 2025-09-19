@@ -16,6 +16,8 @@
 
 package org.springframework.scheduling.config;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Element;
 
 import org.springframework.aop.config.AopNamespaceUtils;
@@ -41,7 +43,7 @@ import org.springframework.util.StringUtils;
  * @since 3.0
  */
 public class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
-
+	protected static final Log logger = LogFactory.getLog(AnnotationDrivenBeanDefinitionParser.class);
 	private static final String ASYNC_EXECUTION_ASPECT_CLASS_NAME =
 			"org.springframework.scheduling.aspectj.AnnotationAsyncExecutionAspect";
 
@@ -121,6 +123,7 @@ public class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParse
 			if (StringUtils.hasText(exceptionHandler)) {
 				builder.addPropertyReference("exceptionHandler", exceptionHandler);
 			}
+			logger.info("[SPRING] 自定义日志---准备注册组件："+TaskManagementConfigUtils.ASYNC_EXECUTION_ASPECT_BEAN_NAME);
 			parserContext.registerBeanComponent(new BeanComponentDefinition(builder.getBeanDefinition(),
 					TaskManagementConfigUtils.ASYNC_EXECUTION_ASPECT_BEAN_NAME));
 		}
@@ -128,10 +131,11 @@ public class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParse
 
 	private static void registerPostProcessor(
 			ParserContext parserContext, BeanDefinitionBuilder builder, String beanName) {
-
 		builder.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
+		logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE,准备注册bean定义："+beanName);
 		parserContext.getRegistry().registerBeanDefinition(beanName, builder.getBeanDefinition());
 		BeanDefinitionHolder holder = new BeanDefinitionHolder(builder.getBeanDefinition(), beanName);
+		logger.info("[SPRING] 自定义日志---准备注册组件："+beanName);
 		parserContext.registerComponent(new BeanComponentDefinition(holder));
 	}
 

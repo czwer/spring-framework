@@ -16,14 +16,11 @@
 
 package org.springframework.web.servlet.config;
 
-import java.util.List;
-import java.util.Properties;
-
 import com.fasterxml.jackson.dataformat.cbor.CBORFactory;
 import com.fasterxml.jackson.dataformat.smile.SmileFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import org.w3c.dom.Element;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -41,11 +38,7 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.format.support.DefaultFormattingConversionService;
 import org.springframework.format.support.FormattingConversionServiceFactoryBean;
 import org.springframework.http.MediaType;
-import org.springframework.http.converter.ByteArrayHttpMessageConverter;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.ResourceHttpMessageConverter;
-import org.springframework.http.converter.ResourceRegionHttpMessageConverter;
-import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.http.converter.*;
 import org.springframework.http.converter.cbor.MappingJackson2CborHttpMessageConverter;
 import org.springframework.http.converter.feed.AtomFeedHttpMessageConverter;
 import org.springframework.http.converter.feed.RssChannelHttpMessageConverter;
@@ -77,14 +70,12 @@ import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter;
 import org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter;
 import org.springframework.web.servlet.mvc.annotation.ResponseStatusExceptionResolver;
-import org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver;
-import org.springframework.web.servlet.mvc.method.annotation.JsonViewRequestBodyAdvice;
-import org.springframework.web.servlet.mvc.method.annotation.JsonViewResponseBodyAdvice;
-import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
-import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
-import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
-import org.springframework.web.servlet.mvc.method.annotation.ServletWebArgumentResolverAdapter;
+import org.springframework.web.servlet.mvc.method.annotation.*;
 import org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver;
+import org.w3c.dom.Element;
+
+import java.util.List;
+import java.util.Properties;
 
 /**
  * A {@link BeanDefinitionParser} that provides the configuration for the
@@ -154,6 +145,7 @@ import org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolv
  * @since 3.0
  */
 class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
+	protected static final Log logger = LogFactory.getLog(AnnotationDrivenBeanDefinitionParser.class);
 
 	public static final String HANDLER_MAPPING_BEAN_NAME = RequestMappingHandlerMapping.class.getName();
 
@@ -208,6 +200,7 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 
 		RootBeanDefinition handlerMappingDef = new RootBeanDefinition(RequestMappingHandlerMapping.class);
 		handlerMappingDef.setSource(source);
+		logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE（RequestMappingHandlerMapping）");
 		handlerMappingDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 		handlerMappingDef.getPropertyValues().add("order", 0);
 		handlerMappingDef.getPropertyValues().add("contentNegotiationManager", contentNegotiationManager);
@@ -218,6 +211,7 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 		}
 
 		configurePathMatchingProperties(handlerMappingDef, element, context);
+		logger.info("[SPRING] 自定义日志---准备注册Bean定义："+HANDLER_MAPPING_BEAN_NAME);
 		readerContext.getRegistry().registerBeanDefinition(HANDLER_MAPPING_BEAN_NAME, handlerMappingDef);
 
 		RuntimeBeanReference corsRef = MvcNamespaceUtils.registerCorsConfigurations(null, context, source);
@@ -229,6 +223,7 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 
 		RootBeanDefinition bindingDef = new RootBeanDefinition(ConfigurableWebBindingInitializer.class);
 		bindingDef.setSource(source);
+		logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE（ConfigurableWebBindingInitializer）");
 		bindingDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 		bindingDef.getPropertyValues().add("conversionService", conversionService);
 		bindingDef.getPropertyValues().add("validator", validator);
@@ -244,6 +239,7 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 
 		RootBeanDefinition handlerAdapterDef = new RootBeanDefinition(RequestMappingHandlerAdapter.class);
 		handlerAdapterDef.setSource(source);
+		logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE（RequestMappingHandlerAdapter）");
 		handlerAdapterDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 		handlerAdapterDef.getPropertyValues().add("contentNegotiationManager", contentNegotiationManager);
 		handlerAdapterDef.getPropertyValues().add("webBindingInitializer", bindingDef);
@@ -285,6 +281,7 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 		csInterceptorDef.getConstructorArgumentValues().addIndexedArgumentValue(0, conversionService);
 		RootBeanDefinition mappedInterceptorDef = new RootBeanDefinition(MappedInterceptor.class);
 		mappedInterceptorDef.setSource(source);
+		logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE（MappedInterceptor）");
 		mappedInterceptorDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 		mappedInterceptorDef.getConstructorArgumentValues().addIndexedArgumentValue(0, (Object) null);
 		mappedInterceptorDef.getConstructorArgumentValues().addIndexedArgumentValue(1, csInterceptorDef);
@@ -292,6 +289,7 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 
 		RootBeanDefinition methodExceptionResolver = new RootBeanDefinition(ExceptionHandlerExceptionResolver.class);
 		methodExceptionResolver.setSource(source);
+		logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE（ExceptionHandlerExceptionResolver）");
 		methodExceptionResolver.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 		methodExceptionResolver.getPropertyValues().add("contentNegotiationManager", contentNegotiationManager);
 		methodExceptionResolver.getPropertyValues().add("messageConverters", messageConverters);
@@ -307,22 +305,30 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 
 		RootBeanDefinition statusExceptionResolver = new RootBeanDefinition(ResponseStatusExceptionResolver.class);
 		statusExceptionResolver.setSource(source);
+		logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE（ResponseStatusExceptionResolver）");
 		statusExceptionResolver.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 		statusExceptionResolver.getPropertyValues().add("order", 1);
 		String statusExResolverName = readerContext.registerWithGeneratedName(statusExceptionResolver);
 
 		RootBeanDefinition defaultExceptionResolver = new RootBeanDefinition(DefaultHandlerExceptionResolver.class);
 		defaultExceptionResolver.setSource(source);
+		logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE（DefaultHandlerExceptionResolver）");
 		defaultExceptionResolver.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 		defaultExceptionResolver.getPropertyValues().add("order", 2);
 		String defaultExResolverName = readerContext.registerWithGeneratedName(defaultExceptionResolver);
-
+		logger.info("[SPRING] 自定义日志---准备注册组件："+HANDLER_MAPPING_BEAN_NAME);
 		context.registerComponent(new BeanComponentDefinition(handlerMappingDef, HANDLER_MAPPING_BEAN_NAME));
+		logger.info("[SPRING] 自定义日志---准备注册组件："+HANDLER_ADAPTER_BEAN_NAME);
 		context.registerComponent(new BeanComponentDefinition(handlerAdapterDef, HANDLER_ADAPTER_BEAN_NAME));
+		logger.info("[SPRING] 自定义日志---准备注册组件："+uriContributorName);
 		context.registerComponent(new BeanComponentDefinition(uriContributorDef, uriContributorName));
+		logger.info("[SPRING] 自定义日志---准备注册组件："+mappedInterceptorName);
 		context.registerComponent(new BeanComponentDefinition(mappedInterceptorDef, mappedInterceptorName));
+		logger.info("[SPRING] 自定义日志---准备注册组件："+methodExResolverName);
 		context.registerComponent(new BeanComponentDefinition(methodExceptionResolver, methodExResolverName));
+		logger.info("[SPRING] 自定义日志---准备注册组件："+statusExResolverName);
 		context.registerComponent(new BeanComponentDefinition(statusExceptionResolver, statusExResolverName));
+		logger.info("[SPRING] 自定义日志---准备注册组件："+defaultExResolverName);
 		context.registerComponent(new BeanComponentDefinition(defaultExceptionResolver, defaultExResolverName));
 
 		// Ensure BeanNameUrlHandlerMapping (SPR-8289) and default HandlerAdapters are not "turned off"
@@ -355,8 +361,10 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 		else {
 			RootBeanDefinition conversionDef = new RootBeanDefinition(FormattingConversionServiceFactoryBean.class);
 			conversionDef.setSource(source);
+			logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE（FormattingConversionServiceFactoryBean）");
 			conversionDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 			String conversionName = context.getReaderContext().registerWithGeneratedName(conversionDef);
+			logger.info("[SPRING] 自定义日志---准备注册组件："+conversionName);
 			context.registerComponent(new BeanComponentDefinition(conversionDef, conversionName));
 			conversionServiceRef = new RuntimeBeanReference(conversionName);
 		}
@@ -372,8 +380,10 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 			RootBeanDefinition validatorDef = new RootBeanDefinition(
 					"org.springframework.validation.beanvalidation.OptionalValidatorFactoryBean");
 			validatorDef.setSource(source);
+			logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE（OptionalValidatorFactoryBean）");
 			validatorDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 			String validatorName = context.getReaderContext().registerWithGeneratedName(validatorDef);
+			logger.info("[SPRING] 自定义日志---准备注册组件："+validatorName);
 			context.registerComponent(new BeanComponentDefinition(validatorDef, validatorName));
 			return new RuntimeBeanReference(validatorName);
 		}
@@ -396,7 +406,9 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 			factoryBeanDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 			factoryBeanDef.getPropertyValues().add("mediaTypes", getDefaultMediaTypes());
 			String name = CONTENT_NEGOTIATION_MANAGER_BEAN_NAME;
+			logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE，准备注册bean定义（ContentNegotiationManagerFactoryBean）："+name);
 			context.getReaderContext().getRegistry().registerBeanDefinition(name, factoryBeanDef);
+			logger.info("[SPRING] 自定义日志---准备注册组件："+name);
 			context.registerComponent(new BeanComponentDefinition(factoryBeanDef, name));
 			beanRef = new RuntimeBeanReference(name);
 		}
@@ -644,6 +656,7 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 		GenericBeanDefinition beanDefinition = new GenericBeanDefinition();
 		beanDefinition.setBeanClass(Jackson2ObjectMapperFactoryBean.class);
 		beanDefinition.setSource(source);
+		logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE（Jackson2ObjectMapperFactoryBean）");
 		beanDefinition.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 		return beanDefinition;
 	}
@@ -651,6 +664,7 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 	private RootBeanDefinition createConverterDefinition(Class<?> converterClass, @Nullable Object source) {
 		RootBeanDefinition beanDefinition = new RootBeanDefinition(converterClass);
 		beanDefinition.setSource(source);
+		logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE："+converterClass.getName());
 		beanDefinition.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 		return beanDefinition;
 	}

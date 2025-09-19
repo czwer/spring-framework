@@ -17,6 +17,8 @@
 package org.springframework.jms.config;
 
 import jakarta.jms.Session;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -43,6 +45,7 @@ import org.springframework.util.StringUtils;
  * @since 2.5
  */
 abstract class AbstractListenerContainerParser implements BeanDefinitionParser {
+	protected static final Log logger = LogFactory.getLog(AbstractListenerContainerParser.class);
 
 	protected static final String FACTORY_ID_ATTRIBUTE = "factory-id";
 
@@ -117,6 +120,7 @@ abstract class AbstractListenerContainerParser implements BeanDefinitionParser {
 					factoryId, element, parserContext, commonProperties, specificProperties);
 			if (beanDefinition != null) {
 				beanDefinition.setSource(parserContext.extractSource(element));
+				logger.info("[SPRING] 自定义日志---准备注册bean组件："+ factoryId);
 				parserContext.registerBeanComponent(new BeanComponentDefinition(beanDefinition, factoryId));
 			}
 		}
@@ -192,6 +196,7 @@ abstract class AbstractListenerContainerParser implements BeanDefinitionParser {
 		}
 
 		// Register the listener and fire event
+		logger.info("[SPRING] 自定义日志---准备注册组件："+ containerBeanName);
 		parserContext.registerBeanComponent(new BeanComponentDefinition(containerDef, containerBeanName));
 	}
 

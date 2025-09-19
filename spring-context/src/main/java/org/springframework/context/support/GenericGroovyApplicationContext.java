@@ -243,6 +243,7 @@ public class GenericGroovyApplicationContext extends GenericApplicationContext i
 	@Override
 	public void setProperty(String property, Object newValue) {
 		if (newValue instanceof BeanDefinition beanDefinition) {
+			logger.info("[SPRING] 自定义日志---准备注册Bean定义："+property);
 			registerBeanDefinition(property, beanDefinition);
 		}
 		else {

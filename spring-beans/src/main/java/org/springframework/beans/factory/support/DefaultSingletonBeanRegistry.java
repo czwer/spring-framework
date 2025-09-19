@@ -16,30 +16,21 @@
 
 package org.springframework.beans.factory.support;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.Consumer;
-
-import org.springframework.beans.factory.BeanCreationException;
-import org.springframework.beans.factory.BeanCreationNotAllowedException;
-import org.springframework.beans.factory.BeanCurrentlyInCreationException;
-import org.springframework.beans.factory.DisposableBean;
-import org.springframework.beans.factory.ObjectFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.*;
 import org.springframework.beans.factory.config.SingletonBeanRegistry;
 import org.springframework.core.SimpleAliasRegistry;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
+
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Consumer;
 
 /**
  * Generic registry for shared bean instances, implementing the
@@ -73,7 +64,7 @@ import org.springframework.util.StringUtils;
  * @see org.springframework.beans.factory.config.ConfigurableBeanFactory
  */
 public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements SingletonBeanRegistry {
-
+	protected final Log logger = LogFactory.getLog(DefaultSingletonBeanRegistry.class);
 	/** Maximum number of suppressed exceptions to preserve. */
 	private static final int SUPPRESSED_EXCEPTIONS_LIMIT = 100;
 
@@ -215,6 +206,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 			if (singletonObject == null && allowEarlyReference) {
 				if (!this.singletonLock.tryLock()) {
 					// Avoid early singleton inference outside of original creation thread.
+					logger.info("[SPRING] 自定义日志---【获取Bean】getSingleton步骤A：1，return null："+beanName);
 					return null;
 				}
 				try {
@@ -225,6 +217,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 						if (singletonObject == null) {
 							ObjectFactory<?> singletonFactory = this.singletonFactories.get(beanName);
 							if (singletonFactory != null) {
+								logger.info("[SPRING] 自定义日志---【获取Bean】getSingleton步骤A：2，singletonFactory.getObject()："+beanName);
 								singletonObject = singletonFactory.getObject();
 								// Singleton could have been added or removed in the meantime.
 								if (this.singletonFactories.remove(beanName) != null) {
@@ -241,6 +234,11 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 					this.singletonLock.unlock();
 				}
 			}
+		}
+		if (singletonObject == null){
+			logger.info("[SPRING] 自定义日志---【获取Bean】getSingleton步骤A：3，return null："+beanName);
+		}else {
+			logger.info("[SPRING] 自定义日志---【获取Bean】getSingleton步骤A：4，return singletonObject："+beanName);
 		}
 		return singletonObject;
 	}
@@ -294,6 +292,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 						// Singleton object might have possibly appeared in the meantime.
 						singletonObject = this.singletonObjects.get(beanName);
 						if (singletonObject != null) {
+							logger.info("[SPRING] 自定义日志---【获取Bean】getSingleton步骤B：1，缓存中返回："+beanName);
 							return singletonObject;
 						}
 					}
@@ -309,6 +308,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 				}
 
 				try {
+					logger.info("[SPRING] 自定义日志---【获取Bean】getSingleton步骤B：2，调用beforeSingletonCreation方法："+beanName);
 					beforeSingletonCreation(beanName);
 				}
 				catch (BeanCurrentlyInCreationException ex) {
@@ -370,7 +370,9 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 					if (singletonObject == null) {
 						this.currentCreationThreads.put(beanName, currentThread);
 						try {
+							logger.info("[SPRING] 自定义日志---【获取Bean】getSingleton步骤B：3，调用singletonFactory的getObject方法,singletonFactory类型："+singletonFactory.getClass().getName());
 							singletonObject = singletonFactory.getObject();
+							logger.info("[SPRING] 自定义日志---【获取Bean】getSingleton步骤B：3，调用singletonFactory的getObject方法,singletonFactory类型："+singletonFactory.getClass().getName()+"，返回类型："+singletonObject.getClass().getName());
 						}
 						finally {
 							this.currentCreationThreads.remove(beanName);
@@ -398,11 +400,13 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 					if (recordSuppressedExceptions) {
 						this.suppressedExceptions = null;
 					}
+					logger.info("[SPRING] 自定义日志---【获取Bean】getSingleton步骤B：4，调用afterSingletonCreation方法："+beanName);
 					afterSingletonCreation(beanName);
 				}
 
 				if (newSingleton) {
 					try {
+						logger.info("[SPRING] 自定义日志---【获取Bean】getSingleton步骤B：5，调用addSingleton方法："+beanName);
 						addSingleton(beanName, singletonObject);
 					}
 					catch (IllegalStateException ex) {

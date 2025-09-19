@@ -98,6 +98,7 @@ public class EventListenerMethodProcessor
 
 	@Override
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) {
+		logger.info("[SPRING] 自定义日志---执行实现BeanFactoryPostProcessor接口方法postProcessBeanFactory");
 		this.beanFactory = beanFactory;
 		this.originalEvaluationContext.setBeanResolver(new BeanFactoryResolver(this.beanFactory));
 

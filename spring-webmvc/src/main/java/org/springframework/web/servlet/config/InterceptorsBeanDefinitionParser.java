@@ -16,10 +16,8 @@
 
 package org.springframework.web.servlet.config;
 
-import java.util.List;
-
-import org.w3c.dom.Element;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.parsing.BeanComponentDefinition;
@@ -31,6 +29,9 @@ import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.lang.Nullable;
 import org.springframework.util.xml.DomUtils;
 import org.springframework.web.servlet.handler.MappedInterceptor;
+import org.w3c.dom.Element;
+
+import java.util.List;
 
 /**
  * {@link org.springframework.beans.factory.xml.BeanDefinitionParser} that parses a
@@ -40,7 +41,7 @@ import org.springframework.web.servlet.handler.MappedInterceptor;
  * @since 3.0
  */
 class InterceptorsBeanDefinitionParser implements BeanDefinitionParser {
-
+	protected static final Log logger = LogFactory.getLog(InterceptorsBeanDefinitionParser.class);
 	@Override
 	@Nullable
 	public BeanDefinition parse(Element element, ParserContext context) {
@@ -56,6 +57,7 @@ class InterceptorsBeanDefinitionParser implements BeanDefinitionParser {
 		for (Element interceptor : interceptors) {
 			RootBeanDefinition mappedInterceptorDef = new RootBeanDefinition(MappedInterceptor.class);
 			mappedInterceptorDef.setSource(context.extractSource(interceptor));
+			logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE（MappedInterceptor）");
 			mappedInterceptorDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 
 			ManagedList<String> includePatterns = null;
@@ -79,6 +81,7 @@ class InterceptorsBeanDefinitionParser implements BeanDefinitionParser {
 			}
 
 			String beanName = context.getReaderContext().registerWithGeneratedName(mappedInterceptorDef);
+			logger.info("[SPRING] 自定义日志---准备注册组件："+beanName);
 			context.registerComponent(new BeanComponentDefinition(mappedInterceptorDef, beanName));
 		}
 

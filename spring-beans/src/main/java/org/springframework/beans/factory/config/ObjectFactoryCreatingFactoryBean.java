@@ -18,9 +18,12 @@ package org.springframework.beans.factory.config;
 
 import java.io.Serializable;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.ObjectFactory;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
@@ -138,6 +141,7 @@ public class ObjectFactoryCreatingFactoryBean extends AbstractFactoryBean<Object
 	 */
 	@SuppressWarnings("serial")
 	private static class TargetBeanObjectFactory implements ObjectFactory<Object>, Serializable {
+		Log logger = LogFactory.getLog(TargetBeanObjectFactory.class);
 
 		private final BeanFactory beanFactory;
 
@@ -150,6 +154,7 @@ public class ObjectFactoryCreatingFactoryBean extends AbstractFactoryBean<Object
 
 		@Override
 		public Object getObject() throws BeansException {
+			logger.info("[SPRING] 自定义日志---getObject步骤：调用getBean方法："+this.targetBeanName);
 			return this.beanFactory.getBean(this.targetBeanName);
 		}
 	}

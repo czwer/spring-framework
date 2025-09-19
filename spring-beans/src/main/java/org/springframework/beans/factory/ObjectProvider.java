@@ -22,6 +22,8 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.core.OrderComparator;
 import org.springframework.lang.Nullable;
@@ -68,7 +70,7 @@ import org.springframework.lang.Nullable;
  * @see org.springframework.beans.factory.annotation.Autowired
  */
 public interface ObjectProvider<T> extends ObjectFactory<T>, Iterable<T> {
-
+	Log logger = LogFactory.getLog(ObjectProvider.class);
 	/**
 	 * A predicate for unfiltered type matches, including non-default candidates
 	 * but still excluding non-autowire candidates when used on injection points.
@@ -83,6 +85,7 @@ public interface ObjectProvider<T> extends ObjectFactory<T>, Iterable<T> {
 
 	@Override
 	default T getObject() throws BeansException {
+		logger.info("[SPRING] 自定义日志---getObject步骤：调用iterator方法");
 		Iterator<T> it = iterator();
 		if (!it.hasNext()) {
 			throw new NoSuchBeanDefinitionException(Object.class);

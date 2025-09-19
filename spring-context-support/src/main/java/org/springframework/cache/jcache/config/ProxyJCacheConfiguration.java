@@ -16,6 +16,8 @@
 
 package org.springframework.cache.jcache.config;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.cache.config.CacheManagementConfigUtils;
 import org.springframework.cache.jcache.interceptor.BeanFactoryJCacheOperationSourceAdvisor;
@@ -40,11 +42,13 @@ import org.springframework.context.annotation.Role;
 @Configuration(proxyBeanMethods = false)
 @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 public class ProxyJCacheConfiguration extends AbstractJCacheConfiguration {
+	protected static final Log logger = LogFactory.getLog(ProxyJCacheConfiguration.class);
 
 	@Bean(name = CacheManagementConfigUtils.JCACHE_ADVISOR_BEAN_NAME)
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public BeanFactoryJCacheOperationSourceAdvisor cacheAdvisor(
 			JCacheOperationSource jCacheOperationSource, JCacheInterceptor jCacheInterceptor) {
+		logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE，通过@Bean声明Bean：BeanFactoryJCacheOperationSourceAdvisor");
 
 		BeanFactoryJCacheOperationSourceAdvisor advisor = new BeanFactoryJCacheOperationSourceAdvisor();
 		advisor.setCacheOperationSource(jCacheOperationSource);
@@ -58,6 +62,7 @@ public class ProxyJCacheConfiguration extends AbstractJCacheConfiguration {
 	@Bean(name = "jCacheInterceptor")
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public JCacheInterceptor cacheInterceptor(JCacheOperationSource jCacheOperationSource) {
+		logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE，通过@Bean声明Bean：JCacheInterceptor");
 		JCacheInterceptor interceptor = new JCacheInterceptor(this.errorHandler);
 		interceptor.setCacheOperationSource(jCacheOperationSource);
 		return interceptor;

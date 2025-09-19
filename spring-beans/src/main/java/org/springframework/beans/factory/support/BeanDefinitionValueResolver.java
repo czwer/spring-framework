@@ -25,6 +25,8 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.function.BiFunction;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.BeansException;
@@ -63,6 +65,7 @@ import org.springframework.util.StringUtils;
  * @see AbstractAutowireCapableBeanFactory
  */
 public class BeanDefinitionValueResolver {
+	protected final Log logger = LogFactory.getLog(BeanDefinitionValueResolver.class);
 
 	private final AbstractAutowireCapableBeanFactory beanFactory;
 
@@ -132,6 +135,7 @@ public class BeanDefinitionValueResolver {
 		// We must check each value to see whether it requires a runtime reference
 		// to another bean to be resolved.
 		if (value instanceof RuntimeBeanReference ref) {
+			logger.info("[SPRING] 自定义日志---【获取Bean】resolveValueIfNecessary步骤：1，调用resolveReference方法，beanName："+beanName+",argName："+argName);
 			return resolveReference(argName, ref);
 		}
 		else if (value instanceof RuntimeBeanNameReference ref) {
@@ -141,14 +145,17 @@ public class BeanDefinitionValueResolver {
 				throw new BeanDefinitionStoreException(
 						"Invalid bean name '" + refName + "' in bean reference for " + argName);
 			}
+			logger.info("[SPRING] 自定义日志---【获取Bean】resolveValueIfNecessary步骤：2，beanName："+beanName+",argName："+argName);
 			return refName;
 		}
 		else if (value instanceof BeanDefinitionHolder bdHolder) {
 			// Resolve BeanDefinitionHolder: contains BeanDefinition with name and aliases.
+			logger.info("[SPRING] 自定义日志---【获取Bean】resolveValueIfNecessary步骤：3，调用resolveInnerBean方法，beanName："+beanName+",argName："+argName);
 			return resolveInnerBean(bdHolder.getBeanName(), bdHolder.getBeanDefinition(),
 					(name, mbd) -> resolveInnerBeanValue(argName, name, mbd));
 		}
 		else if (value instanceof BeanDefinition bd) {
+			logger.info("[SPRING] 自定义日志---【获取Bean】resolveValueIfNecessary步骤：4，调用resolveInnerBean方法，beanName："+beanName+",argName："+argName);
 			return resolveInnerBean(null, bd,
 					(name, mbd) -> resolveInnerBeanValue(argName, name, mbd));
 		}
@@ -161,6 +168,7 @@ public class BeanDefinitionValueResolver {
 					this.beanFactory.registerDependentBean(autowiredBeanName, this.beanName);
 				}
 			}
+			logger.info("[SPRING] 自定义日志---【获取Bean】resolveValueIfNecessary步骤：5，调用resolveDependency方法，beanName："+beanName+",argName："+argName);
 			return result;
 		}
 		else if (value instanceof ManagedArray managedArray) {
@@ -184,18 +192,22 @@ public class BeanDefinitionValueResolver {
 					elementType = Object.class;
 				}
 			}
+			logger.info("[SPRING] 自定义日志---【获取Bean】resolveValueIfNecessary步骤：6，调用resolveManagedArray方法，beanName："+beanName+",argName："+argName);
 			return resolveManagedArray(argName, (List<?>) value, elementType);
 		}
 		else if (value instanceof ManagedList<?> managedList) {
 			// May need to resolve contained runtime references.
+			logger.info("[SPRING] 自定义日志---【获取Bean】resolveValueIfNecessary步骤：7，调用resolveManagedList方法，beanName："+beanName+",argName："+argName);
 			return resolveManagedList(argName, managedList);
 		}
 		else if (value instanceof ManagedSet<?> managedSet) {
 			// May need to resolve contained runtime references.
+			logger.info("[SPRING] 自定义日志---【获取Bean】resolveValueIfNecessary步骤：8，调用resolveManagedList方法，beanName："+beanName+",argName："+argName);
 			return resolveManagedSet(argName, managedSet);
 		}
 		else if (value instanceof ManagedMap<?, ?> managedMap) {
 			// May need to resolve contained runtime references.
+			logger.info("[SPRING] 自定义日志---【获取Bean】resolveValueIfNecessary步骤：9，调用resolveManagedList方法，beanName："+beanName+",argName："+argName);
 			return resolveManagedMap(argName, managedMap);
 		}
 		else if (value instanceof ManagedProperties original) {
@@ -215,12 +227,14 @@ public class BeanDefinitionValueResolver {
 				}
 				copy.put(propKey, propValue);
 			});
+			logger.info("[SPRING] 自定义日志---【获取Bean】resolveValueIfNecessary步骤：10，beanName："+beanName+",argName："+argName);
 			return copy;
 		}
 		else if (value instanceof TypedStringValue typedStringValue) {
 			// Convert value to target type here.
 			Object valueObject = evaluate(typedStringValue);
 			try {
+				logger.info("[SPRING] 自定义日志---【获取Bean】resolveValueIfNecessary步骤：11，调用resolveTargetType方法，beanName："+beanName+",argName："+argName);
 				Class<?> resolvedTargetType = resolveTargetType(typedStringValue);
 				if (resolvedTargetType != null) {
 					return this.typeConverter.convertIfNecessary(valueObject, resolvedTargetType);
@@ -237,9 +251,11 @@ public class BeanDefinitionValueResolver {
 			}
 		}
 		else if (value instanceof NullBean) {
+			logger.info("[SPRING] 自定义日志---【获取Bean】resolveValueIfNecessary步骤：12，beanName："+beanName+",argName："+argName);
 			return null;
 		}
 		else {
+			logger.info("[SPRING] 自定义日志---【获取Bean】resolveValueIfNecessary步骤：13，调用evaluate方法，beanName："+beanName+",argName："+argName);
 			return evaluate(value);
 		}
 	}
@@ -347,23 +363,28 @@ public class BeanDefinitionValueResolver {
 									" in parent factory: no parent factory available");
 				}
 				if (beanType != null) {
+					logger.info("[SPRING] 自定义日志---【获取Bean】resolveReference步骤：1-0，调用parent.getBean方法，beanName："+beanName+",beanType："+beanType+",argName："+argName);
 					bean = parent.getBean(beanType);
 				}
 				else {
+					logger.info("[SPRING] 自定义日志---【获取Bean】resolveReference步骤：1-1，调用parent.getBean方法，beanName："+beanName+",resolvedName："+String.valueOf(doEvaluate(ref.getBeanName()))+",argName："+argName);
 					bean = parent.getBean(String.valueOf(doEvaluate(ref.getBeanName())));
 				}
 			}
 			else {
 				String resolvedName;
 				if (beanType != null) {
+					logger.info("[SPRING] 自定义日志---【获取Bean】resolveReference步骤：2-0，调用resolveNamedBean方法，beanName："+beanName+",beanType："+beanType+",argName："+argName);
 					NamedBeanHolder<?> namedBean = this.beanFactory.resolveNamedBean(beanType);
 					bean = namedBean.getBeanInstance();
 					resolvedName = namedBean.getBeanName();
 				}
 				else {
 					resolvedName = String.valueOf(doEvaluate(ref.getBeanName()));
+					logger.info("[SPRING] 自定义日志---【获取Bean】resolveReference步骤：2-1，调用getBean方法，beanName："+beanName+",resolvedName："+resolvedName+",argName："+argName);
 					bean = this.beanFactory.getBean(resolvedName);
 				}
+				logger.info("[SPRING] 自定义日志---【获取Bean】resolveReference步骤：2-2，调用registerDependentBean方法，beanName："+beanName+",resolvedName："+resolvedName+",argName："+argName);
 				this.beanFactory.registerDependentBean(resolvedName, this.beanName);
 			}
 			if (bean instanceof NullBean) {
@@ -404,9 +425,11 @@ public class BeanDefinitionValueResolver {
 				}
 			}
 			// Actually create the inner bean instance now...
+			logger.info("[SPRING] 自定义日志---resolveInnerBeanValue中，调用createBean方法："+beanName);
 			Object innerBean = this.beanFactory.createBean(actualInnerBeanName, mbd, null);
 			if (innerBean instanceof FactoryBean<?> factoryBean) {
 				boolean synthetic = mbd.isSynthetic();
+				logger.info("[SPRING] 自定义日志---resolveInnerBeanValue中，调用getObjectFromFactoryBean方法："+beanName);
 				innerBean = this.beanFactory.getObjectFromFactoryBean(factoryBean, actualInnerBeanName, !synthetic);
 			}
 			if (innerBean instanceof NullBean) {

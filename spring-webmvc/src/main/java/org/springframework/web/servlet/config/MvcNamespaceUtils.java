@@ -16,9 +16,8 @@
 
 package org.springframework.web.servlet.config;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
@@ -43,6 +42,9 @@ import org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator;
 import org.springframework.web.util.UrlPathHelper;
 import org.springframework.web.util.pattern.PathPatternParser;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 /**
  * Convenience methods for use in MVC namespace BeanDefinitionParsers.
  *
@@ -53,7 +55,7 @@ import org.springframework.web.util.pattern.PathPatternParser;
  * @since 3.1
  */
 public abstract class MvcNamespaceUtils {
-
+	protected static final Log logger = LogFactory.getLog(MvcNamespaceUtils.class);
 	private static final String BEAN_NAME_URL_HANDLER_MAPPING_BEAN_NAME =
 			BeanNameUrlHandlerMapping.class.getName();
 
@@ -104,7 +106,9 @@ public abstract class MvcNamespaceUtils {
 			RootBeanDefinition urlPathHelperDef = new RootBeanDefinition(UrlPathHelper.class);
 			urlPathHelperDef.setSource(source);
 			urlPathHelperDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
+			logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE，准备注册bean定义（UrlPathHelper）："+URL_PATH_HELPER_BEAN_NAME);
 			context.getRegistry().registerBeanDefinition(URL_PATH_HELPER_BEAN_NAME, urlPathHelperDef);
+			logger.info("[SPRING] 自定义日志---准备注册组件："+URL_PATH_HELPER_BEAN_NAME);
 			context.registerComponent(new BeanComponentDefinition(urlPathHelperDef, URL_PATH_HELPER_BEAN_NAME));
 		}
 		return new RuntimeBeanReference(URL_PATH_HELPER_BEAN_NAME);
@@ -144,7 +148,9 @@ public abstract class MvcNamespaceUtils {
 			RootBeanDefinition pathMatcherDef = new RootBeanDefinition(AntPathMatcher.class);
 			pathMatcherDef.setSource(source);
 			pathMatcherDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
+			logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE，准备注册bean定义（AntPathMatcher）："+PATH_MATCHER_BEAN_NAME);
 			context.getRegistry().registerBeanDefinition(PATH_MATCHER_BEAN_NAME, pathMatcherDef);
+			logger.info("[SPRING] 自定义日志---准备注册组件："+PATH_MATCHER_BEAN_NAME);
 			context.registerComponent(new BeanComponentDefinition(pathMatcherDef, PATH_MATCHER_BEAN_NAME));
 		}
 		return new RuntimeBeanReference(PATH_MATCHER_BEAN_NAME);
@@ -180,7 +186,9 @@ public abstract class MvcNamespaceUtils {
 			RootBeanDefinition pathMatcherDef = new RootBeanDefinition(PathPatternParser.class);
 			pathMatcherDef.setSource(source);
 			pathMatcherDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
+			logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE，准备注册bean定义（PathPatternParser）："+PATTERN_PARSER_BEAN_NAME);
 			context.getRegistry().registerBeanDefinition(PATTERN_PARSER_BEAN_NAME, pathMatcherDef);
+			logger.info("[SPRING] 自定义日志---准备注册组件："+PATTERN_PARSER_BEAN_NAME);
 			context.registerComponent(new BeanComponentDefinition(pathMatcherDef, PATTERN_PARSER_BEAN_NAME));
 		}
 		return new RuntimeBeanReference(PATTERN_PARSER_BEAN_NAME);
@@ -212,12 +220,15 @@ public abstract class MvcNamespaceUtils {
 		if (!context.getRegistry().containsBeanDefinition(BEAN_NAME_URL_HANDLER_MAPPING_BEAN_NAME)) {
 			RootBeanDefinition mappingDef = new RootBeanDefinition(BeanNameUrlHandlerMapping.class);
 			mappingDef.setSource(source);
+			logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE（BeanNameUrlHandlerMapping）");
 			mappingDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 			mappingDef.getPropertyValues().add("order", 2);	// consistent with WebMvcConfigurationSupport
 			RuntimeBeanReference corsRef = MvcNamespaceUtils.registerCorsConfigurations(null, context, source);
 			mappingDef.getPropertyValues().add("corsConfigurations", corsRef);
 			configurePathMatching(mappingDef, context, source);
+			logger.info("[SPRING] 自定义日志---准备注册bean定义："+BEAN_NAME_URL_HANDLER_MAPPING_BEAN_NAME);
 			context.getRegistry().registerBeanDefinition(BEAN_NAME_URL_HANDLER_MAPPING_BEAN_NAME, mappingDef);
+			logger.info("[SPRING] 自定义日志---准备注册组件："+BEAN_NAME_URL_HANDLER_MAPPING_BEAN_NAME);
 			context.registerComponent(new BeanComponentDefinition(mappingDef, BEAN_NAME_URL_HANDLER_MAPPING_BEAN_NAME));
 		}
 	}
@@ -231,7 +242,9 @@ public abstract class MvcNamespaceUtils {
 			RootBeanDefinition adapterDef = new RootBeanDefinition(HttpRequestHandlerAdapter.class);
 			adapterDef.setSource(source);
 			adapterDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
+			logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE，准备注册bean定义（HttpRequestHandlerAdapter）");
 			context.getRegistry().registerBeanDefinition(HTTP_REQUEST_HANDLER_ADAPTER_BEAN_NAME, adapterDef);
+			logger.info("[SPRING] 自定义日志---准备注册组件："+HTTP_REQUEST_HANDLER_ADAPTER_BEAN_NAME);
 			context.registerComponent(new BeanComponentDefinition(adapterDef, HTTP_REQUEST_HANDLER_ADAPTER_BEAN_NAME));
 		}
 	}
@@ -245,7 +258,9 @@ public abstract class MvcNamespaceUtils {
 			RootBeanDefinition beanDef = new RootBeanDefinition(SimpleControllerHandlerAdapter.class);
 			beanDef.setSource(source);
 			beanDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
+			logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE，准备注册bean定义（SimpleControllerHandlerAdapter）："+SIMPLE_CONTROLLER_HANDLER_ADAPTER_BEAN_NAME);
 			context.getRegistry().registerBeanDefinition(SIMPLE_CONTROLLER_HANDLER_ADAPTER_BEAN_NAME, beanDef);
+			logger.info("[SPRING] 自定义日志---准备注册组件："+SIMPLE_CONTROLLER_HANDLER_ADAPTER_BEAN_NAME);
 			context.registerComponent(new BeanComponentDefinition(beanDef, SIMPLE_CONTROLLER_HANDLER_ADAPTER_BEAN_NAME));
 		}
 	}
@@ -263,11 +278,14 @@ public abstract class MvcNamespaceUtils {
 		if (!context.getRegistry().containsBeanDefinition(CORS_CONFIGURATION_BEAN_NAME)) {
 			RootBeanDefinition corsDef = new RootBeanDefinition(LinkedHashMap.class);
 			corsDef.setSource(source);
+
 			corsDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 			if (corsConfigurations != null) {
 				corsDef.getConstructorArgumentValues().addIndexedArgumentValue(0, corsConfigurations);
 			}
+			logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE，准备注册bean定义（LinkedHashMap）："+CORS_CONFIGURATION_BEAN_NAME);
 			context.getReaderContext().getRegistry().registerBeanDefinition(CORS_CONFIGURATION_BEAN_NAME, corsDef);
+			logger.info("[SPRING] 自定义日志---准备注册组件："+CORS_CONFIGURATION_BEAN_NAME);
 			context.registerComponent(new BeanComponentDefinition(corsDef, CORS_CONFIGURATION_BEAN_NAME));
 		}
 		else if (corsConfigurations != null) {
@@ -287,7 +305,9 @@ public abstract class MvcNamespaceUtils {
 			beanDef.setSource(source);
 			beanDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 			beanDef.setLazyInit(true);
+			logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE，准备注册bean定义（HandlerMappingIntrospector）："+HANDLER_MAPPING_INTROSPECTOR_BEAN_NAME);
 			context.getRegistry().registerBeanDefinition(HANDLER_MAPPING_INTROSPECTOR_BEAN_NAME, beanDef);
+			logger.info("[SPRING] 自定义日志---准备注册组件："+HANDLER_MAPPING_INTROSPECTOR_BEAN_NAME);
 			context.registerComponent(new BeanComponentDefinition(beanDef, HANDLER_MAPPING_INTROSPECTOR_BEAN_NAME));
 		}
 	}
@@ -301,7 +321,9 @@ public abstract class MvcNamespaceUtils {
 			RootBeanDefinition beanDef = new RootBeanDefinition(AcceptHeaderLocaleResolver.class);
 			beanDef.setSource(source);
 			beanDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
+			logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE，准备注册bean定义（AcceptHeaderLocaleResolver）："+DispatcherServlet.LOCALE_RESOLVER_BEAN_NAME);
 			context.getRegistry().registerBeanDefinition(DispatcherServlet.LOCALE_RESOLVER_BEAN_NAME, beanDef);
+			logger.info("[SPRING] 自定义日志---准备注册组件："+DispatcherServlet.LOCALE_RESOLVER_BEAN_NAME);
 			context.registerComponent(new BeanComponentDefinition(beanDef, DispatcherServlet.LOCALE_RESOLVER_BEAN_NAME));
 		}
 	}
@@ -316,7 +338,9 @@ public abstract class MvcNamespaceUtils {
 			RootBeanDefinition beanDef = new RootBeanDefinition(org.springframework.web.servlet.theme.FixedThemeResolver.class);
 			beanDef.setSource(source);
 			beanDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
+			logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE,准备注册bean定义（FixedThemeResolver）"+DispatcherServlet.THEME_RESOLVER_BEAN_NAME);
 			context.getRegistry().registerBeanDefinition(DispatcherServlet.THEME_RESOLVER_BEAN_NAME, beanDef);
+			logger.info("[SPRING] 自定义日志---准备注册组件："+DispatcherServlet.THEME_RESOLVER_BEAN_NAME);
 			context.registerComponent(new BeanComponentDefinition(beanDef, DispatcherServlet.THEME_RESOLVER_BEAN_NAME));
 		}
 	}
@@ -330,8 +354,10 @@ public abstract class MvcNamespaceUtils {
 			RootBeanDefinition beanDef = new RootBeanDefinition(DefaultRequestToViewNameTranslator.class);
 			beanDef.setSource(source);
 			beanDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
+			logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE，准备注册bean定义（DefaultRequestToViewNameTranslator）："+DispatcherServlet.REQUEST_TO_VIEW_NAME_TRANSLATOR_BEAN_NAME);
 			context.getRegistry().registerBeanDefinition(
 					DispatcherServlet.REQUEST_TO_VIEW_NAME_TRANSLATOR_BEAN_NAME, beanDef);
+			logger.info("[SPRING] 自定义日志---准备注册组件："+DispatcherServlet.REQUEST_TO_VIEW_NAME_TRANSLATOR_BEAN_NAME);
 			context.registerComponent(
 					new BeanComponentDefinition(beanDef, DispatcherServlet.REQUEST_TO_VIEW_NAME_TRANSLATOR_BEAN_NAME));
 		}
@@ -346,7 +372,9 @@ public abstract class MvcNamespaceUtils {
 			RootBeanDefinition beanDef = new RootBeanDefinition(SessionFlashMapManager.class);
 			beanDef.setSource(source);
 			beanDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
+			logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE，准备注册bean定义:"+DispatcherServlet.FLASH_MAP_MANAGER_BEAN_NAME);
 			context.getRegistry().registerBeanDefinition(DispatcherServlet.FLASH_MAP_MANAGER_BEAN_NAME, beanDef);
+			logger.info("[SPRING] 自定义日志---准备注册组件:"+DispatcherServlet.FLASH_MAP_MANAGER_BEAN_NAME);
 			context.registerComponent(new BeanComponentDefinition(beanDef, DispatcherServlet.FLASH_MAP_MANAGER_BEAN_NAME));
 		}
 	}

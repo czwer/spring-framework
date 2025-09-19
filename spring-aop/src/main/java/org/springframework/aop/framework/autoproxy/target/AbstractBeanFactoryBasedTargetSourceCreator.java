@@ -16,12 +16,8 @@
 
 package org.springframework.aop.framework.autoproxy.target;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.aop.TargetSource;
 import org.springframework.aop.framework.AopInfrastructureBean;
 import org.springframework.aop.framework.autoproxy.TargetSourceCreator;
@@ -35,6 +31,9 @@ import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Convenient superclass for
@@ -57,7 +56,7 @@ import org.springframework.util.Assert;
 public abstract class AbstractBeanFactoryBasedTargetSourceCreator
 		implements TargetSourceCreator, BeanFactoryAware, DisposableBean {
 
-	protected final Log logger = LogFactory.getLog(getClass());
+	protected final Log logger = LogFactory.getLog(AbstractBeanFactoryBasedTargetSourceCreator.class);
 
 	@Nullable
 	private ConfigurableBeanFactory beanFactory;
@@ -116,6 +115,7 @@ public abstract class AbstractBeanFactoryBasedTargetSourceCreator
 		if (isPrototypeBased()) {
 			bdCopy.setScope(BeanDefinition.SCOPE_PROTOTYPE);
 		}
+		logger.info("[SPRING] 自定义日志---准备注册Bean定义："+beanName);
 		internalBeanFactory.registerBeanDefinition(beanName, bdCopy);
 
 		// Complete configuring the PrototypeTargetSource.

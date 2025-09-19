@@ -16,10 +16,8 @@
 
 package org.springframework.test.context.support;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.Set;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
@@ -32,6 +30,10 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.MergedContextConfiguration;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.Set;
 
 /**
  * {@link ContextCustomizer} which supports
@@ -49,6 +51,7 @@ import org.springframework.util.ReflectionUtils;
  * @see DynamicPropertyRegistrarBeanInitializer
  */
 class DynamicPropertiesContextCustomizer implements ContextCustomizer {
+	protected static final Log logger = LogFactory.getLog(DynamicPropertiesContextCustomizer.class);
 
 	private final Set<Method> methods;
 
@@ -69,6 +72,7 @@ class DynamicPropertiesContextCustomizer implements ContextCustomizer {
 		if (!beanDefinitionRegistry.containsBeanDefinition(DynamicPropertyRegistrarBeanInitializer.BEAN_NAME)) {
 			BeanDefinition beanDefinition = new RootBeanDefinition(DynamicPropertyRegistrarBeanInitializer.class);
 			beanDefinition.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
+			logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE，准备注册Bean定义："+DynamicPropertyRegistrarBeanInitializer.BEAN_NAME);
 			beanDefinitionRegistry.registerBeanDefinition(DynamicPropertyRegistrarBeanInitializer.BEAN_NAME, beanDefinition);
 		}
 

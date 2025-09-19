@@ -19,6 +19,8 @@ package org.springframework.beans.factory.annotation;
 import java.lang.annotation.Annotation;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
@@ -48,6 +50,7 @@ import org.springframework.util.ClassUtils;
  * @see org.springframework.beans.factory.annotation.Qualifier
  */
 public class CustomAutowireConfigurer implements BeanFactoryPostProcessor, BeanClassLoaderAware, Ordered {
+	private final Log logger = LogFactory.getLog(CustomAutowireConfigurer.class);
 
 	private int order = Ordered.LOWEST_PRECEDENCE;  // default: same as non-Ordered
 
@@ -90,6 +93,7 @@ public class CustomAutowireConfigurer implements BeanFactoryPostProcessor, BeanC
 	@Override
 	@SuppressWarnings("unchecked")
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+		logger.info("[SPRING] 自定义日志---执行实现BeanFactoryPostProcessor接口方法postProcessBeanFactory");
 		if (this.customQualifierTypes != null) {
 			if (!(beanFactory instanceof DefaultListableBeanFactory dlbf)) {
 				throw new IllegalStateException(

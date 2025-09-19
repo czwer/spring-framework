@@ -16,6 +16,8 @@
 
 package org.springframework.scheduling.config;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Element;
 
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -33,7 +35,7 @@ import org.springframework.util.StringUtils;
  * @since 3.0
  */
 public class ExecutorBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
-
+	protected static final Log logger = LogFactory.getLog(ExecutorBeanDefinitionParser.class);
 	@Override
 	protected String getBeanClassName(Element element) {
 		return "org.springframework.scheduling.config.TaskExecutorFactoryBean";
@@ -54,6 +56,7 @@ public class ExecutorBeanDefinitionParser extends AbstractSingleBeanDefinitionPa
 		if (StringUtils.hasText(poolSize)) {
 			builder.addPropertyValue("poolSize", poolSize);
 		}
+		logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE");
 		builder.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 	}
 

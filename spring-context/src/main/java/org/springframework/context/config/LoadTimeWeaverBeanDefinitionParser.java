@@ -16,6 +16,8 @@
 
 package org.springframework.context.config;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Element;
 
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -37,7 +39,7 @@ import org.springframework.util.ClassUtils;
  * @since 2.5
  */
 class LoadTimeWeaverBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
-
+	protected static final Log logger = LogFactory.getLog(LoadTimeWeaverBeanDefinitionParser.class);
 	/**
 	 * The bean name of the internally managed AspectJ weaving enabler.
 	 * @since 4.3.1
@@ -71,11 +73,13 @@ class LoadTimeWeaverBeanDefinitionParser extends AbstractSingleBeanDefinitionPar
 
 	@Override
 	protected void doParse(Element element, ParserContext parserContext, BeanDefinitionBuilder builder) {
+		logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE");
 		builder.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 
 		if (isAspectJWeavingEnabled(element.getAttribute(ASPECTJ_WEAVING_ATTRIBUTE), parserContext)) {
 			if (!parserContext.getRegistry().containsBeanDefinition(ASPECTJ_WEAVING_ENABLER_BEAN_NAME)) {
 				RootBeanDefinition def = new RootBeanDefinition(ASPECTJ_WEAVING_ENABLER_CLASS_NAME);
+				logger.info("[SPRING] 自定义日志---准备注册组件："+ASPECTJ_WEAVING_ENABLER_BEAN_NAME);
 				parserContext.registerBeanComponent(
 						new BeanComponentDefinition(def, ASPECTJ_WEAVING_ENABLER_BEAN_NAME));
 			}

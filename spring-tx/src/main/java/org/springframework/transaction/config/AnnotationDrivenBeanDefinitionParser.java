@@ -16,8 +16,8 @@
 
 package org.springframework.transaction.config;
 
-import org.w3c.dom.Element;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.aop.config.AopNamespaceUtils;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
@@ -31,6 +31,7 @@ import org.springframework.transaction.event.TransactionalEventListenerFactory;
 import org.springframework.transaction.interceptor.BeanFactoryTransactionAttributeSourceAdvisor;
 import org.springframework.transaction.interceptor.TransactionInterceptor;
 import org.springframework.util.ClassUtils;
+import org.w3c.dom.Element;
 
 /**
  * {@link org.springframework.beans.factory.xml.BeanDefinitionParser
@@ -51,7 +52,7 @@ import org.springframework.util.ClassUtils;
  * @since 2.0
  */
 class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
-
+	protected static final Log logger = LogFactory.getLog(AnnotationDrivenBeanDefinitionParser.class);
 	/**
 	 * Parses the {@code <tx:annotation-driven/>} tag. Will
 	 * {@link AopNamespaceUtils#registerAutoProxyCreatorIfNecessary register an AutoProxyCreator}
@@ -84,6 +85,7 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 			def.setBeanClassName(txAspectClassName);
 			def.setFactoryMethodName("aspectOf");
 			registerTransactionManager(element, def);
+			logger.info("[SPRING] 自定义日志---准备注册bean组件："+txAspectBeanName);
 			parserContext.registerBeanComponent(new BeanComponentDefinition(def, txAspectBeanName));
 		}
 	}
@@ -96,6 +98,7 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 			def.setBeanClassName(txAspectClassName);
 			def.setFactoryMethodName("aspectOf");
 			registerTransactionManager(element, def);
+			logger.info("[SPRING] 自定义日志---准备注册bean组件："+txAspectBeanName);
 			parserContext.registerBeanComponent(new BeanComponentDefinition(def, txAspectBeanName));
 		}
 	}
@@ -108,6 +111,7 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 	private void registerTransactionalEventListenerFactory(ParserContext parserContext) {
 		RootBeanDefinition def = new RootBeanDefinition();
 		def.setBeanClass(TransactionalEventListenerFactory.class);
+		logger.info("[SPRING] 自定义日志---准备注册bean组件："+TransactionManagementConfigUtils.TRANSACTIONAL_EVENT_LISTENER_FACTORY_BEAN_NAME);
 		parserContext.registerBeanComponent(new BeanComponentDefinition(def,
 				TransactionManagementConfigUtils.TRANSACTIONAL_EVENT_LISTENER_FACTORY_BEAN_NAME));
 	}
@@ -117,6 +121,7 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 	 * Inner class to just introduce an AOP framework dependency when actually in proxy mode.
 	 */
 	private static class AopAutoProxyConfigurer {
+		protected static final Log logger = LogFactory.getLog(AopAutoProxyConfigurer.class);
 
 		public static void configureAutoProxyCreator(Element element, ParserContext parserContext) {
 			AopNamespaceUtils.registerAutoProxyCreatorIfNecessary(parserContext, element);
@@ -130,6 +135,7 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 						"org.springframework.transaction.annotation.AnnotationTransactionAttributeSource");
 				sourceDef.setSource(eleSource);
 				sourceDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
+				logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE，准备注册Bean定义：AnnotationTransactionAttributeSource");
 				String sourceName = parserContext.getReaderContext().registerWithGeneratedName(sourceDef);
 
 				// Create the TransactionInterceptor definition.
@@ -138,6 +144,7 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 				interceptorDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 				registerTransactionManager(element, interceptorDef);
 				interceptorDef.getPropertyValues().add("transactionAttributeSource", new RuntimeBeanReference(sourceName));
+				logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE，准备注册Bean定义：TransactionInterceptor");
 				String interceptorName = parserContext.getReaderContext().registerWithGeneratedName(interceptorDef);
 
 				// Create the TransactionAttributeSourceAdvisor definition.
@@ -149,12 +156,14 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 				if (element.hasAttribute("order")) {
 					advisorDef.getPropertyValues().add("order", element.getAttribute("order"));
 				}
+				logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE，准备注册Bean定义：BeanFactoryTransactionAttributeSourceAdvisor");
 				parserContext.getRegistry().registerBeanDefinition(txAdvisorBeanName, advisorDef);
 
 				CompositeComponentDefinition compositeDef = new CompositeComponentDefinition(element.getTagName(), eleSource);
 				compositeDef.addNestedComponent(new BeanComponentDefinition(sourceDef, sourceName));
 				compositeDef.addNestedComponent(new BeanComponentDefinition(interceptorDef, interceptorName));
 				compositeDef.addNestedComponent(new BeanComponentDefinition(advisorDef, txAdvisorBeanName));
+				logger.info("[SPRING] 自定义日志---准备注册组件：CompositeComponentDefinition");
 				parserContext.registerComponent(compositeDef);
 			}
 		}

@@ -16,6 +16,8 @@
 
 package org.springframework.context.config;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Element;
 
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -39,7 +41,7 @@ import org.springframework.util.StringUtils;
  * @see org.springframework.jmx.export.annotation.AnnotationMBeanExporter
  */
 class MBeanServerBeanDefinitionParser extends AbstractBeanDefinitionParser {
-
+	protected static final Log logger = LogFactory.getLog(MBeanServerBeanDefinitionParser.class);
 	private static final String MBEAN_SERVER_BEAN_NAME = "mbeanServer";
 
 	private static final String AGENT_ID_ATTRIBUTE = "agent-id";
@@ -64,6 +66,7 @@ class MBeanServerBeanDefinitionParser extends AbstractBeanDefinitionParser {
 		bd.getPropertyValues().add("locateExistingServerIfPossible", Boolean.TRUE);
 
 		// Mark as infrastructure bean and attach source location.
+		logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE");
 		bd.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 		bd.setSource(parserContext.extractSource(element));
 		return bd;

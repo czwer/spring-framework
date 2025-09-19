@@ -16,8 +16,8 @@
 
 package org.springframework.jms.config;
 
-import org.w3c.dom.Element;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.parsing.BeanComponentDefinition;
@@ -28,6 +28,7 @@ import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
+import org.w3c.dom.Element;
 
 /**
  * Parser for the 'annotation-driven' element of the 'jms' namespace.
@@ -36,6 +37,7 @@ import org.springframework.util.StringUtils;
  * @since 4.1
  */
 class AnnotationDrivenJmsBeanDefinitionParser implements BeanDefinitionParser {
+	protected static final Log logger = LogFactory.getLog(AnnotationDrivenJmsBeanDefinitionParser.class);
 
 	@Override
 	@Nullable
@@ -94,10 +96,11 @@ class AnnotationDrivenJmsBeanDefinitionParser implements BeanDefinitionParser {
 
 	private static void registerInfrastructureBean(
 			ParserContext parserContext, BeanDefinitionBuilder builder, String beanName) {
-
 		builder.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
+		logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE，准备注册Bean定义："+beanName);
 		parserContext.getRegistry().registerBeanDefinition(beanName, builder.getBeanDefinition());
 		BeanDefinitionHolder holder = new BeanDefinitionHolder(builder.getBeanDefinition(), beanName);
+		logger.info("[SPRING] 自定义日志---准备注册组件："+beanName);
 		parserContext.registerComponent(new BeanComponentDefinition(holder));
 	}
 

@@ -23,6 +23,8 @@ import java.util.Properties;
 
 import jakarta.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.Ordered;
@@ -86,7 +88,7 @@ import org.springframework.web.servlet.View;
  * @see org.springframework.web.servlet.view.freemarker.FreeMarkerView
  */
 public class UrlBasedViewResolver extends AbstractCachingViewResolver implements Ordered {
-
+	protected final Log logger = LogFactory.getLog(UrlBasedViewResolver.class);
 	/**
 	 * Prefix for special view names that specify a redirect URL (usually
 	 * to a controller after a form has been submitted and processed).
@@ -615,6 +617,7 @@ public class UrlBasedViewResolver extends AbstractCachingViewResolver implements
 	protected View applyLifecycleMethods(String viewName, AbstractUrlBasedView view) {
 		ApplicationContext context = getApplicationContext();
 		if (context != null) {
+			logger.info("[SPRING] 自定义日志---applyLifecycleMethods中，调用initializeBean方法："+viewName);
 			Object initialized = context.getAutowireCapableBeanFactory().initializeBean(view, viewName);
 			if (initialized instanceof View initializedView) {
 				return initializedView;

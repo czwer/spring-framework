@@ -16,6 +16,8 @@
 
 package org.springframework.context.annotation.aspectj;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.aspectj.AnnotationBeanConfigurerAspect;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Bean;
@@ -38,6 +40,7 @@ import org.springframework.context.annotation.Role;
  */
 @Configuration
 public class SpringConfiguredConfiguration {
+	protected static final Log logger = LogFactory.getLog(SpringConfiguredConfiguration.class);
 
 	/**
 	 * The bean name used for the configurer aspect.
@@ -48,6 +51,7 @@ public class SpringConfiguredConfiguration {
 	@Bean(name = BEAN_CONFIGURER_ASPECT_BEAN_NAME)
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public AnnotationBeanConfigurerAspect beanConfigurerAspect() {
+		logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE，通过@Bean声明Bean：AnnotationBeanConfigurerAspect");
 		return AnnotationBeanConfigurerAspect.aspectOf();
 	}
 

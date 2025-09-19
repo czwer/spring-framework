@@ -446,6 +446,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		return new BeanObjectProvider<>() {
 			@Override
 			public T getObject() throws BeansException {
+				logger.info("[SPRING] 自定义日志---getObject步骤：3-0，调用resolveBean方法："+requiredType.getType().getTypeName());
 				T resolved = resolveBean(requiredType, null, false);
 				if (resolved == null) {
 					throw new NoSuchBeanDefinitionException(requiredType);
@@ -454,6 +455,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			}
 			@Override
 			public T getObject(Object... args) throws BeansException {
+				logger.info("[SPRING] 自定义日志---getObject步骤：3-1，调用resolveBean方法："+requiredType.getType().getTypeName());
 				T resolved = resolveBean(requiredType, args, false);
 				if (resolved == null) {
 					throw new NoSuchBeanDefinitionException(requiredType);
@@ -1239,7 +1241,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	@Override
 	public void registerBeanDefinition(String beanName, BeanDefinition beanDefinition)
 			throws BeanDefinitionStoreException {
-		logger.info("[SPRING] 自定义日志【重要】---注册Bean定义：" + beanName);
+		logger.info("[SPRING] 自定义日志【重要】---【注册Bean定义】：beanName：" + beanName+",beanClass："+beanDefinition.getBeanClassName());
 		Assert.hasText(beanName, "Bean name must not be empty");
 		Assert.notNull(beanDefinition, "BeanDefinition must not be null");
 
@@ -1459,7 +1461,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 	@Override
 	public void registerSingleton(String beanName, Object singletonObject) throws IllegalStateException {
-		logger.info("[SPRING] 自定义日志【重要】---动态地向BeanFactory注册一个已经实例化好的对象作为一个单例Bean,beanName：" + beanName+",beanClass："+singletonObject.getClass().getName());
+		logger.info("[SPRING] 自定义日志【重要】---【注册单例Bean】,beanName：" + beanName+",beanClass："+singletonObject.getClass().getName());
 		super.registerSingleton(beanName, singletonObject);
 		updateManualSingletonNames(set -> set.add(beanName), set -> !this.beanDefinitionMap.containsKey(beanName));
 		clearByTypeCache();
@@ -2462,6 +2464,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	 * Serializable ObjectFactory/ObjectProvider for lazy resolution of a dependency.
 	 */
 	private class DependencyObjectProvider implements BeanObjectProvider<Object> {
+		protected final Log logger = LogFactory.getLog(DependencyObjectProvider.class);
 
 		private final DependencyDescriptor descriptor;
 
@@ -2479,9 +2482,11 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		@Override
 		public Object getObject() throws BeansException {
 			if (this.optional) {
+				logger.info("[SPRING] 自定义日志---getObject步骤：1-0，调用createOptionalDependency方法："+beanName);
 				return createOptionalDependency(this.descriptor, this.beanName);
 			}
 			else {
+				logger.info("[SPRING] 自定义日志---getObject步骤：1-1，调用doResolveDependency方法："+beanName);
 				Object result = doResolveDependency(this.descriptor, this.beanName, null, null);
 				if (result == null) {
 					throw new NoSuchBeanDefinitionException(this.descriptor.getResolvableType());
@@ -2493,6 +2498,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		@Override
 		public Object getObject(final Object... args) throws BeansException {
 			if (this.optional) {
+				logger.info("[SPRING] 自定义日志---getObject步骤：2-0，调用createOptionalDependency方法："+beanName);
 				return createOptionalDependency(this.descriptor, this.beanName, args);
 			}
 			else {
@@ -2502,6 +2508,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 						return beanFactory.getBean(beanName, args);
 					}
 				};
+				logger.info("[SPRING] 自定义日志---getObject步骤：2-1，调用doResolveDependency方法："+beanName);
 				Object result = doResolveDependency(descriptorToUse, this.beanName, null, null);
 				if (result == null) {
 					throw new NoSuchBeanDefinitionException(this.descriptor.getResolvableType());

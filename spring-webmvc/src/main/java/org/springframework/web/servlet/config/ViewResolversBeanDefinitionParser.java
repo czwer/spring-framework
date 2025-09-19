@@ -16,10 +16,8 @@
 
 package org.springframework.web.servlet.config;
 
-import java.util.List;
-
-import org.w3c.dom.Element;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.parsing.BeanComponentDefinition;
@@ -38,6 +36,9 @@ import org.springframework.web.servlet.view.ViewResolverComposite;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 import org.springframework.web.servlet.view.groovy.GroovyMarkupViewResolver;
 import org.springframework.web.servlet.view.script.ScriptTemplateViewResolver;
+import org.w3c.dom.Element;
+
+import java.util.List;
 
 /**
  * Parses the {@code view-resolvers} MVC namespace element and registers
@@ -61,7 +62,7 @@ import org.springframework.web.servlet.view.script.ScriptTemplateViewResolver;
  * @see ScriptTemplateConfigurerBeanDefinitionParser
  */
 public class ViewResolversBeanDefinitionParser implements BeanDefinitionParser {
-
+	protected static final Log logger = LogFactory.getLog(ViewResolversBeanDefinitionParser.class);
 	/**
 	 * The bean name used for the {@code ViewResolverComposite}.
 	 */
@@ -114,6 +115,7 @@ public class ViewResolversBeanDefinitionParser implements BeanDefinitionParser {
 				throw new IllegalStateException("Unexpected element name: " + name);
 			}
 			resolverBeanDef.setSource(source);
+			logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE");
 			resolverBeanDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 			resolvers.add(resolverBeanDef);
 		}
@@ -121,6 +123,7 @@ public class ViewResolversBeanDefinitionParser implements BeanDefinitionParser {
 		String beanName = VIEW_RESOLVER_BEAN_NAME;
 		RootBeanDefinition compositeResolverBeanDef = new RootBeanDefinition(ViewResolverComposite.class);
 		compositeResolverBeanDef.setSource(source);
+		logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE（ViewResolverComposite）");
 		compositeResolverBeanDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 
 		names = new String[] {"content-negotiation"};
@@ -143,8 +146,9 @@ public class ViewResolversBeanDefinitionParser implements BeanDefinitionParser {
 		if (element.hasAttribute("order")) {
 			compositeResolverBeanDef.getPropertyValues().add("order", element.getAttribute("order"));
 		}
-
+		logger.info("[SPRING] 自定义日志---准备注册Bean定义："+beanName);
 		context.getReaderContext().getRegistry().registerBeanDefinition(beanName, compositeResolverBeanDef);
+		logger.info("[SPRING] 自定义日志---准备注册组件："+beanName);
 		context.registerComponent(new BeanComponentDefinition(compositeResolverBeanDef, beanName));
 		context.popAndRegisterContainingComponent();
 		return null;
@@ -171,6 +175,7 @@ public class ViewResolversBeanDefinitionParser implements BeanDefinitionParser {
 	private BeanDefinition createContentNegotiatingViewResolver(Element resolverElement, ParserContext context) {
 		RootBeanDefinition beanDef = new RootBeanDefinition(ContentNegotiatingViewResolver.class);
 		beanDef.setSource(context.extractSource(resolverElement));
+		logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE（ContentNegotiatingViewResolver）");
 		beanDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 		MutablePropertyValues values = beanDef.getPropertyValues();
 

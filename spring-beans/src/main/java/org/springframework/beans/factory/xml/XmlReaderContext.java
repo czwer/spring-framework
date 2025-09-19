@@ -16,11 +16,8 @@
 
 package org.springframework.beans.factory.xml;
 
-import java.io.StringReader;
-
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.BeanDefinitionStoreException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.parsing.ProblemReporter;
@@ -32,6 +29,10 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.lang.Nullable;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
+
+import java.io.StringReader;
 
 /**
  * Extension of {@link org.springframework.beans.factory.parsing.ReaderContext},
@@ -43,6 +44,7 @@ import org.springframework.lang.Nullable;
  * @since 2.0
  */
 public class XmlReaderContext extends ReaderContext {
+	protected static final Log logger = LogFactory.getLog(XmlReaderContext.class);
 
 	private final XmlBeanDefinitionReader reader;
 
@@ -144,6 +146,7 @@ public class XmlReaderContext extends ReaderContext {
 	 */
 	public String registerWithGeneratedName(BeanDefinition beanDefinition) {
 		String generatedName = generateBeanName(beanDefinition);
+		logger.info("[SPRING] 自定义日志---准备注册Bean定义："+generatedName);
 		getRegistry().registerBeanDefinition(generatedName, beanDefinition);
 		return generatedName;
 	}

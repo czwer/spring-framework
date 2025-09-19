@@ -16,11 +16,8 @@
 
 package org.springframework.web.socket.config;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.w3c.dom.Element;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConstructorArgumentValues;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
@@ -39,6 +36,10 @@ import org.springframework.web.socket.server.support.OriginHandshakeInterceptor;
 import org.springframework.web.socket.server.support.WebSocketHandlerMapping;
 import org.springframework.web.socket.server.support.WebSocketHttpRequestHandler;
 import org.springframework.web.socket.sockjs.support.SockJsHttpRequestHandler;
+import org.w3c.dom.Element;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Parses the configuration for the {@code <websocket:handlers/>} namespace element.
@@ -51,7 +52,7 @@ import org.springframework.web.socket.sockjs.support.SockJsHttpRequestHandler;
  * @since 4.0
  */
 class HandlersBeanDefinitionParser implements BeanDefinitionParser {
-
+	protected static final Log logger = LogFactory.getLog(HandlersBeanDefinitionParser.class);
 	private static final String SOCK_JS_SCHEDULER_NAME = "SockJsScheduler";
 
 	private static final int DEFAULT_MAPPING_ORDER = 1;
@@ -69,6 +70,7 @@ class HandlersBeanDefinitionParser implements BeanDefinitionParser {
 
 		RootBeanDefinition handlerMappingDef = new RootBeanDefinition(WebSocketHandlerMapping.class);
 		handlerMappingDef.setSource(source);
+		logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE（WebSocketHandlerMapping）");
 		handlerMappingDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 		handlerMappingDef.getPropertyValues().add("order", order);
 		String handlerMappingName = context.getReaderContext().registerWithGeneratedName(handlerMappingDef);
@@ -102,7 +104,7 @@ class HandlersBeanDefinitionParser implements BeanDefinitionParser {
 			strategy.addMapping(mappingElement, urlMap, context);
 		}
 		handlerMappingDef.getPropertyValues().add("urlMap", urlMap);
-
+		logger.info("[SPRING] 自定义日志---准备注册组件："+handlerMappingName);
 		context.registerComponent(new BeanComponentDefinition(handlerMappingDef, handlerMappingName));
 		context.popAndRegisterContainingComponent();
 		return null;
@@ -116,7 +118,7 @@ class HandlersBeanDefinitionParser implements BeanDefinitionParser {
 
 
 	private static class WebSocketHandlerMappingStrategy implements HandlerMappingStrategy {
-
+		protected static final Log logger = LogFactory.getLog(WebSocketHandlerMappingStrategy.class);
 		private final RuntimeBeanReference handshakeHandlerReference;
 
 		private final ManagedList<?> interceptorsList;
@@ -137,6 +139,7 @@ class HandlersBeanDefinitionParser implements BeanDefinitionParser {
 			cargs.addIndexedArgumentValue(1, this.handshakeHandlerReference);
 			RootBeanDefinition requestHandlerDef = new RootBeanDefinition(WebSocketHttpRequestHandler.class, cargs, null);
 			requestHandlerDef.setSource(context.extractSource(element));
+			logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE（WebSocketHttpRequestHandler）");
 			requestHandlerDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 			requestHandlerDef.getPropertyValues().add("handshakeInterceptors", this.interceptorsList);
 			String requestHandlerName = context.getReaderContext().registerWithGeneratedName(requestHandlerDef);
@@ -150,7 +153,7 @@ class HandlersBeanDefinitionParser implements BeanDefinitionParser {
 
 
 	private static class SockJsHandlerMappingStrategy implements HandlerMappingStrategy {
-
+		protected static final Log logger = LogFactory.getLog(SockJsHandlerMappingStrategy.class);
 		private final RuntimeBeanReference sockJsService;
 
 		public SockJsHandlerMappingStrategy(RuntimeBeanReference sockJsService) {
@@ -169,6 +172,7 @@ class HandlersBeanDefinitionParser implements BeanDefinitionParser {
 
 			RootBeanDefinition requestHandlerDef = new RootBeanDefinition(SockJsHttpRequestHandler.class, cargs, null);
 			requestHandlerDef.setSource(context.extractSource(element));
+			logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE（SockJsHttpRequestHandler）");
 			requestHandlerDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 			String requestHandlerName = context.getReaderContext().registerWithGeneratedName(requestHandlerDef);
 			RuntimeBeanReference requestHandlerRef = new RuntimeBeanReference(requestHandlerName);

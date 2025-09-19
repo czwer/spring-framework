@@ -16,27 +16,11 @@
 
 package org.springframework.aop.config;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import org.springframework.aop.aspectj.AspectJAfterAdvice;
-import org.springframework.aop.aspectj.AspectJAfterReturningAdvice;
-import org.springframework.aop.aspectj.AspectJAfterThrowingAdvice;
-import org.springframework.aop.aspectj.AspectJAroundAdvice;
-import org.springframework.aop.aspectj.AspectJExpressionPointcut;
-import org.springframework.aop.aspectj.AspectJMethodBeforeAdvice;
-import org.springframework.aop.aspectj.AspectJPointcutAdvisor;
-import org.springframework.aop.aspectj.DeclareParentsAdvisor;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.aop.aspectj.*;
 import org.springframework.aop.support.DefaultBeanFactoryPointcutAdvisor;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.config.BeanReference;
-import org.springframework.beans.factory.config.ConstructorArgumentValues;
-import org.springframework.beans.factory.config.RuntimeBeanNameReference;
-import org.springframework.beans.factory.config.RuntimeBeanReference;
+import org.springframework.beans.factory.config.*;
 import org.springframework.beans.factory.parsing.CompositeComponentDefinition;
 import org.springframework.beans.factory.parsing.ParseState;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
@@ -48,6 +32,12 @@ import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 import org.springframework.util.xml.DomUtils;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * {@link BeanDefinitionParser} for the {@code <aop:config>} tag.
@@ -60,7 +50,7 @@ import org.springframework.util.xml.DomUtils;
  * @since 2.0
  */
 class ConfigBeanDefinitionParser implements BeanDefinitionParser {
-
+	protected static final Log logger = LogFactory.getLog(ConfigBeanDefinitionParser.class);
 	private static final String ASPECT = "aspect";
 	private static final String EXPRESSION = "expression";
 	private static final String ID = "id";
@@ -142,6 +132,7 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 			this.parseState.push(new AdvisorEntry(id));
 			String advisorBeanName = id;
 			if (StringUtils.hasText(advisorBeanName)) {
+				logger.info("[SPRING] 自定义日志---准备注册Bean定义："+advisorBeanName);
 				parserContext.getRegistry().registerBeanDefinition(advisorBeanName, advisorDef);
 			}
 			else {
@@ -151,11 +142,13 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 			Object pointcut = parsePointcutProperty(advisorElement, parserContext);
 			if (pointcut instanceof BeanDefinition beanDefinition) {
 				advisorDef.getPropertyValues().add(POINTCUT, pointcut);
+				logger.info("[SPRING] 自定义日志---准备注册组件："+ advisorBeanName);
 				parserContext.registerComponent(
 						new AdvisorComponentDefinition(advisorBeanName, advisorDef, beanDefinition));
 			}
 			else if (pointcut instanceof String beanName) {
 				advisorDef.getPropertyValues().add(POINTCUT, new RuntimeBeanReference(beanName));
+				logger.info("[SPRING] 自定义日志---准备注册组件："+ advisorBeanName);
 				parserContext.registerComponent(
 						new AdvisorComponentDefinition(advisorBeanName, advisorDef));
 			}
@@ -431,12 +424,13 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 
 			String pointcutBeanName = id;
 			if (StringUtils.hasText(pointcutBeanName)) {
+				logger.info("[SPRING] 自定义日志---准备注册Bean定义："+pointcutBeanName);
 				parserContext.getRegistry().registerBeanDefinition(pointcutBeanName, pointcutDefinition);
 			}
 			else {
 				pointcutBeanName = parserContext.getReaderContext().registerWithGeneratedName(pointcutDefinition);
 			}
-
+			logger.info("[SPRING] 自定义日志---准备注册组件："+pointcutBeanName);
 			parserContext.registerComponent(
 					new PointcutComponentDefinition(pointcutBeanName, pointcutDefinition, expression));
 		}

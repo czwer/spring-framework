@@ -16,6 +16,8 @@
 
 package org.springframework.context.config;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Element;
 
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -40,6 +42,7 @@ import org.springframework.util.StringUtils;
  * @see org.springframework.jmx.export.annotation.AnnotationMBeanExporter
  */
 class MBeanExportBeanDefinitionParser extends AbstractBeanDefinitionParser {
+	protected static final Log logger = LogFactory.getLog(MBeanExportBeanDefinitionParser.class);
 
 	private static final String MBEAN_EXPORTER_BEAN_NAME = "mbeanExporter";
 
@@ -64,6 +67,7 @@ class MBeanExportBeanDefinitionParser extends AbstractBeanDefinitionParser {
 		BeanDefinitionBuilder builder = BeanDefinitionBuilder.rootBeanDefinition(AnnotationMBeanExporter.class);
 
 		// Mark as infrastructure bean and attach source location.
+		logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE（AnnotationMBeanExporter）");
 		builder.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 		builder.getRawBeanDefinition().setSource(parserContext.extractSource(element));
 

@@ -29,6 +29,8 @@ import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.Ordered;
@@ -89,6 +91,7 @@ import org.springframework.web.servlet.ViewResolver;
  */
 public class ContentNegotiatingViewResolver extends WebApplicationObjectSupport
 		implements ViewResolver, Ordered, InitializingBean {
+	protected final Log logger = LogFactory.getLog(ContentNegotiatingViewResolver.class);
 
 	@Nullable
 	private ContentNegotiationManager contentNegotiationManager;
@@ -200,6 +203,7 @@ public class ContentNegotiatingViewResolver extends WebApplicationObjectSupport
 					continue;
 				}
 				String name = vr.getClass().getName() + i;
+				logger.info("[SPRING] 自定义日志---initServletContext中，调用initializeBean方法："+name);
 				obtainApplicationContext().getAutowireCapableBeanFactory().initializeBean(vr, name);
 			}
 

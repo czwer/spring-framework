@@ -16,10 +16,8 @@
 
 package org.springframework.web.servlet.config;
 
-import java.util.Map;
-
-import org.w3c.dom.Element;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.parsing.BeanComponentDefinition;
@@ -32,6 +30,9 @@ import org.springframework.lang.Nullable;
 import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
 import org.springframework.web.servlet.mvc.ParameterizableViewController;
 import org.springframework.web.servlet.view.RedirectView;
+import org.w3c.dom.Element;
+
+import java.util.Map;
 
 /**
  * {@link org.springframework.beans.factory.xml.BeanDefinitionParser} that
@@ -54,7 +55,7 @@ import org.springframework.web.servlet.view.RedirectView;
  * @since 3.0
  */
 class ViewControllerBeanDefinitionParser implements BeanDefinitionParser {
-
+	protected static final Log logger = LogFactory.getLog(ViewControllerBeanDefinitionParser.class);
 	private static final String HANDLER_MAPPING_BEAN_NAME =
 			"org.springframework.web.servlet.config.viewControllerHandlerMapping";
 
@@ -118,7 +119,9 @@ class ViewControllerBeanDefinitionParser implements BeanDefinitionParser {
 		}
 		RootBeanDefinition beanDef = new RootBeanDefinition(SimpleUrlHandlerMapping.class);
 		beanDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
+		logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE，准备注册bean定义（SimpleUrlHandlerMapping）："+HANDLER_MAPPING_BEAN_NAME);
 		context.getRegistry().registerBeanDefinition(HANDLER_MAPPING_BEAN_NAME, beanDef);
+		logger.info("[SPRING] 自定义日志---准备注册组件："+ HANDLER_MAPPING_BEAN_NAME);
 		context.registerComponent(new BeanComponentDefinition(beanDef, HANDLER_MAPPING_BEAN_NAME));
 
 		beanDef.setSource(source);

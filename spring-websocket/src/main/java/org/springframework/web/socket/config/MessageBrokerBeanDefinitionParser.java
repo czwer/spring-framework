@@ -16,13 +16,8 @@
 
 package org.springframework.web.socket.config;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import org.w3c.dom.Element;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -39,13 +34,7 @@ import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.http.converter.json.Jackson2ObjectMapperFactoryBean;
 import org.springframework.lang.Nullable;
-import org.springframework.messaging.converter.ByteArrayMessageConverter;
-import org.springframework.messaging.converter.CompositeMessageConverter;
-import org.springframework.messaging.converter.DefaultContentTypeResolver;
-import org.springframework.messaging.converter.GsonMessageConverter;
-import org.springframework.messaging.converter.JsonbMessageConverter;
-import org.springframework.messaging.converter.MappingJackson2MessageConverter;
-import org.springframework.messaging.converter.StringMessageConverter;
+import org.springframework.messaging.converter.*;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.SimpSessionScope;
 import org.springframework.messaging.simp.broker.SimpleBrokerMessageHandler;
@@ -57,11 +46,7 @@ import org.springframework.messaging.simp.user.UserRegistryMessageHandler;
 import org.springframework.messaging.support.ExecutorSubscribableChannel;
 import org.springframework.messaging.support.ImmutableMessageChannelInterceptor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.util.Assert;
-import org.springframework.util.ClassUtils;
-import org.springframework.util.MimeTypeUtils;
-import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
+import org.springframework.util.*;
 import org.springframework.util.xml.DomUtils;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.handler.WebSocketHandlerDecoratorFactory;
@@ -73,6 +58,12 @@ import org.springframework.web.socket.server.support.OriginHandshakeInterceptor;
 import org.springframework.web.socket.server.support.WebSocketHandlerMapping;
 import org.springframework.web.socket.server.support.WebSocketHttpRequestHandler;
 import org.springframework.web.socket.sockjs.support.SockJsHttpRequestHandler;
+import org.w3c.dom.Element;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A {@link org.springframework.beans.factory.xml.BeanDefinitionParser} that provides
@@ -101,7 +92,7 @@ import org.springframework.web.socket.sockjs.support.SockJsHttpRequestHandler;
  * @since 4.0
  */
 class MessageBrokerBeanDefinitionParser implements BeanDefinitionParser {
-
+	protected static final Log logger = LogFactory.getLog(MessageBrokerBeanDefinitionParser.class);
 	public static final String WEB_SOCKET_HANDLER_BEAN_NAME = "subProtocolWebSocketHandler";
 
 	public static final String SCHEDULER_BEAN_NAME = "messageBrokerScheduler";
@@ -514,6 +505,7 @@ class MessageBrokerBeanDefinitionParser implements BeanDefinitionParser {
 				// Use Jackson factory in order to have well known modules registered automatically
 				GenericBeanDefinition jacksonFactoryDef = new GenericBeanDefinition();
 				jacksonFactoryDef.setBeanClass(Jackson2ObjectMapperFactoryBean.class);
+				logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE（Jackson2ObjectMapperFactoryBean）");
 				jacksonFactoryDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 				jacksonFactoryDef.setSource(source);
 				jacksonConverterDef.getPropertyValues().add("objectMapper", jacksonFactoryDef);
@@ -599,8 +591,10 @@ class MessageBrokerBeanDefinitionParser implements BeanDefinitionParser {
 			RootBeanDefinition validatorDef = new RootBeanDefinition(
 					"org.springframework.validation.beanvalidation.OptionalValidatorFactoryBean");
 			validatorDef.setSource(source);
+			logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE（OptionalValidatorFactoryBean）");
 			validatorDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 			String validatorName = context.getReaderContext().registerWithGeneratedName(validatorDef);
+			logger.info("[SPRING] 自定义日志---准备注册组件："+validatorName);
 			context.registerComponent(new BeanComponentDefinition(validatorDef, validatorName));
 			return new RuntimeBeanReference(validatorName);
 		}
@@ -687,7 +681,9 @@ class MessageBrokerBeanDefinitionParser implements BeanDefinitionParser {
 
 		beanDef.setSource(source);
 		beanDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
+		logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE，准备注册bean定义："+name);
 		context.getRegistry().registerBeanDefinition(name, beanDef);
+		logger.info("[SPRING] 自定义日志---准备注册组件："+name);
 		context.registerComponent(new BeanComponentDefinition(beanDef, name));
 	}
 

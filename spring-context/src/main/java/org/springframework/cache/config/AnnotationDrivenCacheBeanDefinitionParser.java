@@ -16,8 +16,8 @@
 
 package org.springframework.cache.config;
 
-import org.w3c.dom.Element;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.aop.config.AopNamespaceUtils;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
@@ -31,6 +31,7 @@ import org.springframework.cache.interceptor.CacheInterceptor;
 import org.springframework.lang.Nullable;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
+import org.w3c.dom.Element;
 
 /**
  * {@link org.springframework.beans.factory.xml.BeanDefinitionParser}
@@ -138,6 +139,7 @@ class AnnotationDrivenCacheBeanDefinitionParser implements BeanDefinitionParser 
 	 * Configure the necessary infrastructure to support the Spring's caching annotations.
 	 */
 	private static class SpringCachingConfigurer {
+		protected static final Log logger = LogFactory.getLog(SpringCachingConfigurer.class);
 
 		private static void registerCacheAdvisor(Element element, ParserContext parserContext) {
 			if (!parserContext.getRegistry().containsBeanDefinition(CacheManagementConfigUtils.CACHE_ADVISOR_BEAN_NAME)) {
@@ -147,6 +149,7 @@ class AnnotationDrivenCacheBeanDefinitionParser implements BeanDefinitionParser 
 				RootBeanDefinition sourceDef = new RootBeanDefinition("org.springframework.cache.annotation.AnnotationCacheOperationSource");
 				sourceDef.setSource(eleSource);
 				sourceDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
+				logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE，准备注册Bean定义：AnnotationCacheOperationSource");
 				String sourceName = parserContext.getReaderContext().registerWithGeneratedName(sourceDef);
 
 				// Create the CacheInterceptor definition.
@@ -157,6 +160,7 @@ class AnnotationDrivenCacheBeanDefinitionParser implements BeanDefinitionParser 
 				parseErrorHandler(element, interceptorDef);
 				CacheNamespaceHandler.parseKeyGenerator(element, interceptorDef);
 				interceptorDef.getPropertyValues().add("cacheOperationSources", new RuntimeBeanReference(sourceName));
+				logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE，准备注册Bean定义：CacheInterceptor");
 				String interceptorName = parserContext.getReaderContext().registerWithGeneratedName(interceptorDef);
 
 				// Create the CacheAdvisor definition.
@@ -168,12 +172,14 @@ class AnnotationDrivenCacheBeanDefinitionParser implements BeanDefinitionParser 
 				if (element.hasAttribute("order")) {
 					advisorDef.getPropertyValues().add("order", element.getAttribute("order"));
 				}
+				logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE，准备注册Bean定义：BeanFactoryCacheOperationSourceAdvisor");
 				parserContext.getRegistry().registerBeanDefinition(CacheManagementConfigUtils.CACHE_ADVISOR_BEAN_NAME, advisorDef);
 
 				CompositeComponentDefinition compositeDef = new CompositeComponentDefinition(element.getTagName(), eleSource);
 				compositeDef.addNestedComponent(new BeanComponentDefinition(sourceDef, sourceName));
 				compositeDef.addNestedComponent(new BeanComponentDefinition(interceptorDef, interceptorName));
 				compositeDef.addNestedComponent(new BeanComponentDefinition(advisorDef, CacheManagementConfigUtils.CACHE_ADVISOR_BEAN_NAME));
+				logger.info("[SPRING] 自定义日志---准备注册组件");
 				parserContext.registerComponent(compositeDef);
 			}
 		}
@@ -194,6 +200,7 @@ class AnnotationDrivenCacheBeanDefinitionParser implements BeanDefinitionParser 
 				def.setFactoryMethodName("aspectOf");
 				parseCacheResolution(element, def, false);
 				CacheNamespaceHandler.parseKeyGenerator(element, def);
+				logger.info("[SPRING] 自定义日志---准备注册组件："+CacheManagementConfigUtils.CACHE_ASPECT_BEAN_NAME);
 				parserContext.registerBeanComponent(new BeanComponentDefinition(def, CacheManagementConfigUtils.CACHE_ASPECT_BEAN_NAME));
 			}
 		}
@@ -204,7 +211,7 @@ class AnnotationDrivenCacheBeanDefinitionParser implements BeanDefinitionParser 
 	 * Configure the necessary infrastructure to support the standard JSR-107 caching annotations.
 	 */
 	private static class JCacheCachingConfigurer {
-
+		protected static final Log logger = LogFactory.getLog(JCacheCachingConfigurer.class);
 		private static void registerCacheAdvisor(Element element, ParserContext parserContext) {
 			if (!parserContext.getRegistry().containsBeanDefinition(CacheManagementConfigUtils.JCACHE_ADVISOR_BEAN_NAME)) {
 				Object source = parserContext.extractSource(element);
@@ -217,27 +224,32 @@ class AnnotationDrivenCacheBeanDefinitionParser implements BeanDefinitionParser 
 				RootBeanDefinition interceptorDef =
 						new RootBeanDefinition("org.springframework.cache.jcache.interceptor.JCacheInterceptor");
 				interceptorDef.setSource(source);
+				logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE：JCacheInterceptor");
 				interceptorDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 				interceptorDef.getPropertyValues().add("cacheOperationSource", new RuntimeBeanReference(sourceName));
 				parseErrorHandler(element, interceptorDef);
+				logger.info("[SPRING] 自定义日志---准备注册Bean定义：JCacheInterceptor");
 				String interceptorName = parserContext.getReaderContext().registerWithGeneratedName(interceptorDef);
 
 				// Create the CacheAdvisor definition.
 				RootBeanDefinition advisorDef = new RootBeanDefinition(
 						"org.springframework.cache.jcache.interceptor.BeanFactoryJCacheOperationSourceAdvisor");
 				advisorDef.setSource(source);
+				logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE：BeanFactoryJCacheOperationSourceAdvisor");
 				advisorDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 				advisorDef.getPropertyValues().add("cacheOperationSource", new RuntimeBeanReference(sourceName));
 				advisorDef.getPropertyValues().add("adviceBeanName", interceptorName);
 				if (element.hasAttribute("order")) {
 					advisorDef.getPropertyValues().add("order", element.getAttribute("order"));
 				}
+				logger.info("[SPRING] 自定义日志---准备注册Bean定义："+CacheManagementConfigUtils.JCACHE_ADVISOR_BEAN_NAME);
 				parserContext.getRegistry().registerBeanDefinition(CacheManagementConfigUtils.JCACHE_ADVISOR_BEAN_NAME, advisorDef);
 
 				CompositeComponentDefinition compositeDef = new CompositeComponentDefinition(element.getTagName(), source);
 				compositeDef.addNestedComponent(new BeanComponentDefinition(sourceDef, sourceName));
 				compositeDef.addNestedComponent(new BeanComponentDefinition(interceptorDef, interceptorName));
 				compositeDef.addNestedComponent(new BeanComponentDefinition(advisorDef, CacheManagementConfigUtils.JCACHE_ADVISOR_BEAN_NAME));
+				logger.info("[SPRING] 自定义日志---准备注册组件：CompositeComponentDefinition");
 				parserContext.registerComponent(compositeDef);
 			}
 		}
@@ -253,11 +265,13 @@ class AnnotationDrivenCacheBeanDefinitionParser implements BeanDefinitionParser 
 				jcacheAspectDef.setBeanClassName(JCACHE_ASPECT_CLASS_NAME);
 				jcacheAspectDef.setFactoryMethodName("aspectOf");
 				jcacheAspectDef.getPropertyValues().add("cacheOperationSource", new RuntimeBeanReference(cacheOperationSourceName));
+				logger.info("[SPRING] 自定义日志---准备注册Bean定义："+CacheManagementConfigUtils.JCACHE_ASPECT_BEAN_NAME);
 				parserContext.getRegistry().registerBeanDefinition(CacheManagementConfigUtils.JCACHE_ASPECT_BEAN_NAME, jcacheAspectDef);
 
 				CompositeComponentDefinition compositeDef = new CompositeComponentDefinition(element.getTagName(), source);
 				compositeDef.addNestedComponent(new BeanComponentDefinition(cacheOperationSourceDef, cacheOperationSourceName));
 				compositeDef.addNestedComponent(new BeanComponentDefinition(jcacheAspectDef, CacheManagementConfigUtils.JCACHE_ASPECT_BEAN_NAME));
+				logger.info("[SPRING] 自定义日志---准备注册组件");
 				parserContext.registerComponent(compositeDef);
 			}
 		}
@@ -266,6 +280,7 @@ class AnnotationDrivenCacheBeanDefinitionParser implements BeanDefinitionParser 
 			RootBeanDefinition sourceDef =
 					new RootBeanDefinition("org.springframework.cache.jcache.interceptor.DefaultJCacheOperationSource");
 			sourceDef.setSource(eleSource);
+			logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE：DefaultJCacheOperationSource");
 			sourceDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 			// JSR-107 support should create an exception cache resolver with the cache manager
 			// and there is no way to set that exception cache resolver from the namespace

@@ -16,8 +16,8 @@
 
 package org.springframework.scheduling.annotation;
 
-import java.lang.annotation.Annotation;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +25,8 @@ import org.springframework.context.annotation.Role;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.scheduling.config.TaskManagementConfigUtils;
 import org.springframework.util.Assert;
+
+import java.lang.annotation.Annotation;
 
 /**
  * {@code @Configuration} class that registers the Spring infrastructure beans necessary
@@ -40,10 +42,12 @@ import org.springframework.util.Assert;
 @Configuration(proxyBeanMethods = false)
 @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 public class ProxyAsyncConfiguration extends AbstractAsyncConfiguration {
+	protected static final Log logger = LogFactory.getLog(ProxyAsyncConfiguration.class);
 
 	@Bean(name = TaskManagementConfigUtils.ASYNC_ANNOTATION_PROCESSOR_BEAN_NAME)
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public AsyncAnnotationBeanPostProcessor asyncAdvisor() {
+		logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE，通过@Bean声明Bean：AsyncAnnotationBeanPostProcessor");
 		Assert.state(this.enableAsync != null, "@EnableAsync annotation metadata was not injected");
 		AsyncAnnotationBeanPostProcessor bpp = new AsyncAnnotationBeanPostProcessor();
 		bpp.configure(this.executor, this.exceptionHandler);

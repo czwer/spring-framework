@@ -149,6 +149,7 @@ public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanReg
 								beforeSingletonCreation(beanName);
 							}
 							try {
+								logger.info("[SPRING] 自定义日志---getObjectFromFactoryBean中，调用postProcessObjectFromFactoryBean方法："+beanName);
 								object = postProcessObjectFromFactoryBean(object, beanName);
 							}
 							catch (Throwable ex) {

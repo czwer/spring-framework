@@ -19,6 +19,9 @@ package org.springframework.web.reactive.result.view;
 import java.util.Locale;
 import java.util.function.Function;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.support.AbstractBeanFactory;
 import reactor.core.publisher.Mono;
 
 import org.springframework.beans.BeanUtils;
@@ -64,7 +67,7 @@ import org.springframework.util.PatternMatchUtils;
  */
 public class UrlBasedViewResolver extends ViewResolverSupport
 		implements ViewResolver, ApplicationContextAware, InitializingBean {
-
+	protected final Log logger = LogFactory.getLog(UrlBasedViewResolver.class);
 	/**
 	 * Prefix for special view names that specify a redirect URL (usually
 	 * to a controller after a form has been submitted and processed).
@@ -319,6 +322,7 @@ public class UrlBasedViewResolver extends ViewResolverSupport
 	protected View applyLifecycleMethods(String viewName, AbstractUrlBasedView view) {
 		ApplicationContext context = getApplicationContext();
 		if (context != null) {
+			logger.info("[SPRING] 自定义日志---applyLifecycleMethods中，调用initializeBean方法："+viewName);
 			Object initialized = context.getAutowireCapableBeanFactory().initializeBean(view, viewName);
 			if (initialized instanceof View initializedView) {
 				return initializedView;

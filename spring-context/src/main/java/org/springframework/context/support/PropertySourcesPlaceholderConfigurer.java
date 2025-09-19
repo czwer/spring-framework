@@ -19,10 +19,13 @@ package org.springframework.context.support;
 import java.io.IOException;
 import java.util.Properties;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.config.PlaceholderConfigurerSupport;
+import org.springframework.beans.factory.config.PropertyResourceConfigurer;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.ConfigurablePropertyResolver;
@@ -65,7 +68,7 @@ import org.springframework.util.StringValueResolver;
  * @see org.springframework.beans.factory.config.PropertyPlaceholderConfigurer
  */
 public class PropertySourcesPlaceholderConfigurer extends PlaceholderConfigurerSupport implements EnvironmentAware {
-
+	private final Log logger = LogFactory.getLog(PropertySourcesPlaceholderConfigurer.class);
 	/**
 	 * {@value} is the name given to the {@link PropertySource} for the set of
 	 * {@linkplain #mergeProperties() merged properties} supplied to this configurer.
@@ -129,6 +132,7 @@ public class PropertySourcesPlaceholderConfigurer extends PlaceholderConfigurerS
 	 */
 	@Override
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+		logger.info("[SPRING] 自定义日志---执行实现BeanFactoryPostProcessor接口方法postProcessBeanFactory");
 		if (this.propertySources == null) {
 			this.propertySources = new MutablePropertySources();
 			if (this.environment != null) {

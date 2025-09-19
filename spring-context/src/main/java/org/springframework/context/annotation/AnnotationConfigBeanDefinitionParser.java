@@ -16,10 +16,8 @@
 
 package org.springframework.context.annotation;
 
-import java.util.Set;
-
-import org.w3c.dom.Element;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.parsing.BeanComponentDefinition;
@@ -27,6 +25,9 @@ import org.springframework.beans.factory.parsing.CompositeComponentDefinition;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.lang.Nullable;
+import org.w3c.dom.Element;
+
+import java.util.Set;
 
 /**
  * Parser for the &lt;context:annotation-config/&gt; element.
@@ -38,6 +39,7 @@ import org.springframework.lang.Nullable;
  * @see AnnotationConfigUtils
  */
 public class AnnotationConfigBeanDefinitionParser implements BeanDefinitionParser {
+	protected static final Log logger = LogFactory.getLog(AnnotationConfigBeanDefinitionParser.class);
 
 	@Override
 	@Nullable
@@ -54,6 +56,7 @@ public class AnnotationConfigBeanDefinitionParser implements BeanDefinitionParse
 
 		// Nest the concrete beans in the surrounding component.
 		for (BeanDefinitionHolder processorDefinition : processorDefinitions) {
+			logger.info("[SPRING] 自定义日志---准备注册组件");
 			parserContext.registerComponent(new BeanComponentDefinition(processorDefinition));
 		}
 

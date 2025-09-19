@@ -16,9 +16,6 @@
 
 package org.springframework.context.annotation;
 
-import java.lang.annotation.Annotation;
-import java.util.Set;
-import java.util.function.Predicate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
@@ -39,6 +36,10 @@ import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.lang.Nullable;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.CollectionUtils;
+
+import java.lang.annotation.Annotation;
+import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  * Utility class that allows for convenient registration of common
@@ -162,6 +163,7 @@ public abstract class AnnotationConfigUtils {
 		if (!registry.containsBeanDefinition(CONFIGURATION_ANNOTATION_PROCESSOR_BEAN_NAME)) {
 			RootBeanDefinition def = new RootBeanDefinition(ConfigurationClassPostProcessor.class);
 			def.setSource(source);
+			logger.info("[SPRING] 自定义日志---准备注册Bean定义："+CONFIGURATION_ANNOTATION_PROCESSOR_BEAN_NAME);
 			beanDefs.add(registerPostProcessor(registry, def, CONFIGURATION_ANNOTATION_PROCESSOR_BEAN_NAME));
 			logger.info("[SPRING] 自定义日志---创建应用上下文：配置基础设施：ConfigurationClassPostProcessor（核心作用：是在Spring容器启动时，识别和处理所有用 @Configuration、@ComponentScan、@Import、@Bean 等注解标注的“配置类”，并将这些配置类中定义的Bean注册到Spring容器中");
 		}
@@ -169,6 +171,7 @@ public abstract class AnnotationConfigUtils {
 		if (!registry.containsBeanDefinition(AUTOWIRED_ANNOTATION_PROCESSOR_BEAN_NAME)) {
 			RootBeanDefinition def = new RootBeanDefinition(AutowiredAnnotationBeanPostProcessor.class);
 			def.setSource(source);
+			logger.info("[SPRING] 自定义日志---准备注册Bean定义："+AUTOWIRED_ANNOTATION_PROCESSOR_BEAN_NAME);
 			beanDefs.add(registerPostProcessor(registry, def, AUTOWIRED_ANNOTATION_PROCESSOR_BEAN_NAME));
 			logger.info("[SPRING] 自定义日志---创建应用上下文：配置基础设施：AutowiredAnnotationBeanPostProcessor（核心作用：负责解析并处理Bean中所有由@Autowired（默认按类型注入）、@Value、@Inject（JSR-330）等注解标注的字段、构造方法和普通方法，并完成自动装配（即自动注入依赖对象）的过程");
 		}
@@ -178,6 +181,7 @@ public abstract class AnnotationConfigUtils {
 				!registry.containsBeanDefinition(COMMON_ANNOTATION_PROCESSOR_BEAN_NAME)) {
 			RootBeanDefinition def = new RootBeanDefinition(CommonAnnotationBeanPostProcessor.class);
 			def.setSource(source);
+			logger.info("[SPRING] 自定义日志---准备注册Bean定义："+COMMON_ANNOTATION_PROCESSOR_BEAN_NAME);
 			beanDefs.add(registerPostProcessor(registry, def, COMMON_ANNOTATION_PROCESSOR_BEAN_NAME));
 			logger.info("[SPRING] 自定义日志---创建应用上下文：配置基础设施：CommonAnnotationBeanPostProcessor（核心作用：负责解析并处理Bean中所有 @PostConstruct、@PreDestroy、@Resource 等注解，实现了基于注解的依赖注入和生命周期管理");
 		}
@@ -194,6 +198,7 @@ public abstract class AnnotationConfigUtils {
 						"Cannot load optional framework class: " + PERSISTENCE_ANNOTATION_PROCESSOR_CLASS_NAME, ex);
 			}
 			def.setSource(source);
+			logger.info("[SPRING] 自定义日志---准备注册Bean定义："+PERSISTENCE_ANNOTATION_PROCESSOR_BEAN_NAME);
 			beanDefs.add(registerPostProcessor(registry, def, PERSISTENCE_ANNOTATION_PROCESSOR_BEAN_NAME));
 			logger.info("[SPRING] 自定义日志---创建应用上下文：配置基础设施：PersistenceAnnotationBeanPostProcessor（核心作用：用于处理 JPA（Java Persistence API）相关注解的后置处理器（BeanPostProcessor）。它的主要作用是简化 JPA 核心资源（如 EntityManager和 EntityManagerFactory）在Spring容器中的注入过程");
 		}
@@ -201,6 +206,7 @@ public abstract class AnnotationConfigUtils {
 		if (!registry.containsBeanDefinition(EVENT_LISTENER_PROCESSOR_BEAN_NAME)) {
 			RootBeanDefinition def = new RootBeanDefinition(EventListenerMethodProcessor.class);
 			def.setSource(source);
+			logger.info("[SPRING] 自定义日志---准备注册Bean定义："+EVENT_LISTENER_PROCESSOR_BEAN_NAME);
 			beanDefs.add(registerPostProcessor(registry, def, EVENT_LISTENER_PROCESSOR_BEAN_NAME));
 			logger.info("[SPRING] 自定义日志---创建应用上下文：配置基础设施：EventListenerMethodProcessor（核心作用：扫描与发现: 负责在 Spring 容器中扫描所有 Bean，查找被 @EventListener注解标记的方法。");
 		}
@@ -208,6 +214,7 @@ public abstract class AnnotationConfigUtils {
 		if (!registry.containsBeanDefinition(EVENT_LISTENER_FACTORY_BEAN_NAME)) {
 			RootBeanDefinition def = new RootBeanDefinition(DefaultEventListenerFactory.class);
 			def.setSource(source);
+			logger.info("[SPRING] 自定义日志---准备注册Bean定义："+EVENT_LISTENER_FACTORY_BEAN_NAME);
 			beanDefs.add(registerPostProcessor(registry, def, EVENT_LISTENER_FACTORY_BEAN_NAME));
 			logger.info("[SPRING] 自定义日志---创建应用上下文：配置基础设施：DefaultEventListenerFactory（核心作用：封装与创建: 将 EventListenerMethodProcessor找到的注解方法包装成 Spring 的 ApplicationListener");
 		}
@@ -217,8 +224,8 @@ public abstract class AnnotationConfigUtils {
 
 	private static BeanDefinitionHolder registerPostProcessor(
 			BeanDefinitionRegistry registry, RootBeanDefinition definition, String beanName) {
-
 		definition.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
+		logger.info("[SPRING] 自定义日志---标识ROLE_INFRASTRUCTURE，准备注册Bean定义："+beanName);
 		registry.registerBeanDefinition(beanName, definition);
 		return new BeanDefinitionHolder(definition, beanName);
 	}
