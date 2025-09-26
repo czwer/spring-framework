@@ -16,9 +16,6 @@
 
 package org.springframework.beans.factory.config;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanUtils;
@@ -28,6 +25,9 @@ import org.springframework.core.Ordered;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Simple {@link BeanFactoryPostProcessor} implementation that registers
@@ -98,7 +98,7 @@ public class CustomScopeConfigurer implements BeanFactoryPostProcessor, BeanClas
 
 	@Override
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-		logger.info("[SPRING] 自定义日志---执行实现BeanFactoryPostProcessor接口方法postProcessBeanFactory");
+		logger.info("[SPRING] 自定义日志---CustomScopeConfigurer实现BeanFactoryPostProcessor接口，执行方法postProcessBeanFactory：用于注册自定义作用域的重要扩展点");
 		if (this.scopes != null) {
 			this.scopes.forEach((scopeKey, value) -> {
 				if (value instanceof Scope scope) {

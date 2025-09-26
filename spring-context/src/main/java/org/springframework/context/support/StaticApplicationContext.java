@@ -68,6 +68,7 @@ public class StaticApplicationContext extends GenericApplicationContext {
 
 		// Initialize and register a StaticMessageSource.
 		this.staticMessageSource = new StaticMessageSource();
+		logger.info("[SPRING] 自定义日志---【注册单例Bean】："+ MESSAGE_SOURCE_BEAN_NAME);
 		getBeanFactory().registerSingleton(MESSAGE_SOURCE_BEAN_NAME, this.staticMessageSource);
 	}
 

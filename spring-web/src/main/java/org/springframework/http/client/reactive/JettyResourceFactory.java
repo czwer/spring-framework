@@ -17,9 +17,8 @@
 package org.springframework.http.client.reactive;
 
 
-import java.nio.ByteBuffer;
-import java.util.concurrent.Executor;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.jetty.io.ArrayByteBufferPool;
 import org.eclipse.jetty.io.ByteBufferPool;
 import org.eclipse.jetty.util.ProcessorUtils;
@@ -28,11 +27,13 @@ import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.eclipse.jetty.util.thread.ScheduledExecutorScheduler;
 import org.eclipse.jetty.util.thread.Scheduler;
 import org.eclipse.jetty.util.thread.ThreadPool;
-
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
+
+import java.nio.ByteBuffer;
+import java.util.concurrent.Executor;
 
 /**
  * Factory to manage Jetty resources, i.e. {@link Executor}, {@link ByteBufferPool} and
@@ -45,7 +46,7 @@ import org.springframework.util.Assert;
  * @since 5.1
  */
 public class JettyResourceFactory implements InitializingBean, DisposableBean {
-
+	protected static final Log logger = LogFactory.getLog(JettyResourceFactory.class);
 	@Nullable
 	private Executor executor;
 
@@ -125,6 +126,7 @@ public class JettyResourceFactory implements InitializingBean, DisposableBean {
 	public void afterPropertiesSet() throws Exception {
 		String name = this.threadPrefix + "@" + Integer.toHexString(hashCode());
 		if (this.executor == null) {
+			logger.info("[SPRING] 自定义日志---创建线程池："+name+"(QueuedThreadPool)");
 			QueuedThreadPool threadPool = new QueuedThreadPool();
 			threadPool.setName(name);
 			this.executor = threadPool;

@@ -18,11 +18,9 @@ package org.springframework.web.context.support;
 
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.AbstractRefreshableConfigApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.io.Resource;
@@ -171,7 +169,7 @@ public abstract class AbstractRefreshableWebApplicationContext extends AbstractR
 	 */
 	@Override
 	protected void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) {
-		logger.info("[SPRING] 自定义日志---执行postProcessBeanFactory方法，添加BeanPostProcessor：ServletContextAwareProcessor");
+		logger.info("[SPRING] 自定义日志---执行postProcessBeanFactory方法，【添加BeanPostProcessor】：ServletContextAwareProcessor");
 		beanFactory.addBeanPostProcessor(new ServletContextAwareProcessor(this.servletContext, this.servletConfig));
 		beanFactory.ignoreDependencyInterface(ServletContextAware.class);
 		beanFactory.ignoreDependencyInterface(ServletConfigAware.class);

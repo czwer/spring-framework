@@ -94,7 +94,7 @@ class BeanOverrideBeanFactoryPostProcessor implements BeanFactoryPostProcessor, 
 
 	@Override
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-		logger.info("[SPRING] 自定义日志---执行实现BeanFactoryPostProcessor接口方法postProcessBeanFactory");
+		logger.info("[SPRING] 自定义日志---BeanOverrideBeanFactoryPostProcessor实现BeanFactoryPostProcessor接口，执行方法postProcessBeanFactory：专门用于在测试环境中处理Bean的覆盖逻辑");
 		Set<String> generatedBeanNames = new HashSet<>();
 		for (BeanOverrideHandler handler : this.beanOverrideHandlers) {
 			registerBeanOverride(beanFactory, handler, generatedBeanNames);
@@ -232,6 +232,7 @@ class BeanOverrideBeanFactoryPostProcessor implements BeanFactoryPostProcessor, 
 		if (beanFactory.containsSingleton(beanName)) {
 			destroySingleton(beanFactory, beanName);
 		}
+		logger.info("[SPRING] 自定义日志---【注册单例Bean】："+beanName);
 		beanFactory.registerSingleton(beanName, override);
 	}
 

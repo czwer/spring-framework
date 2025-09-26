@@ -16,9 +16,6 @@
 
 package org.springframework.beans.factory.annotation;
 
-import java.lang.annotation.Annotation;
-import java.util.Set;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
@@ -29,6 +26,9 @@ import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.core.Ordered;
 import org.springframework.lang.Nullable;
 import org.springframework.util.ClassUtils;
+
+import java.lang.annotation.Annotation;
+import java.util.Set;
 
 /**
  * A {@link org.springframework.beans.factory.config.BeanFactoryPostProcessor}
@@ -93,7 +93,7 @@ public class CustomAutowireConfigurer implements BeanFactoryPostProcessor, BeanC
 	@Override
 	@SuppressWarnings("unchecked")
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-		logger.info("[SPRING] 自定义日志---执行实现BeanFactoryPostProcessor接口方法postProcessBeanFactory");
+		logger.info("[SPRING] 自定义日志---CustomAutowireConfigurer实现BeanFactoryPostProcessor接口，执行方法postProcessBeanFactory：主要作用是注册自定义的自动装配限定符注解类型，从而扩展Spring容器对自动装配候选者的解析能力");
 		if (this.customQualifierTypes != null) {
 			if (!(beanFactory instanceof DefaultListableBeanFactory dlbf)) {
 				throw new IllegalStateException(

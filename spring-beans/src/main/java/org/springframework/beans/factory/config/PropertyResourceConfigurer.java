@@ -16,10 +16,6 @@
 
 package org.springframework.beans.factory.config;
 
-import java.io.IOException;
-import java.util.Enumeration;
-import java.util.Properties;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
@@ -28,6 +24,10 @@ import org.springframework.core.Ordered;
 import org.springframework.core.PriorityOrdered;
 import org.springframework.core.io.support.PropertiesLoaderSupport;
 import org.springframework.util.ObjectUtils;
+
+import java.io.IOException;
+import java.util.Enumeration;
+import java.util.Properties;
 
 /**
  * Allows for configuration of individual bean property values from a property resource,
@@ -78,7 +78,7 @@ public abstract class PropertyResourceConfigurer extends PropertiesLoaderSupport
 	 */
 	@Override
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-		logger.info("[SPRING] 自定义日志---执行实现BeanFactoryPostProcessor接口方法postProcessBeanFactory");
+		logger.info("[SPRING] 自定义日志---PropertyResourceConfigurer实现BeanFactoryPostProcessor接口，执行方法postProcessBeanFactory：核心作用是在Spring容器生命周期的关键节点，处理和解析外部属性配置，并将其应用到容器的bean定义中");
 		try {
 			Properties mergedProps = mergeProperties();
 

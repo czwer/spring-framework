@@ -16,17 +16,19 @@
 
 package org.springframework.http.client.reactive;
 
-import java.net.http.HttpClient;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.lang.Nullable;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 import org.springframework.util.Assert;
+
+import java.net.http.HttpClient;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 
 /**
  * Factory to manage JDK HttpClient resources such as a shared {@link Executor}
@@ -40,7 +42,7 @@ import org.springframework.util.Assert;
  * @see JdkClientHttpConnector#JdkClientHttpConnector(HttpClient.Builder, JdkHttpClientResourceFactory)
  */
 public class JdkHttpClientResourceFactory implements InitializingBean, DisposableBean {
-
+	protected static final Log logger = LogFactory.getLog(JdkHttpClientResourceFactory.class);
 	@Nullable
 	private Executor executor;
 
@@ -84,6 +86,7 @@ public class JdkHttpClientResourceFactory implements InitializingBean, Disposabl
 	public void afterPropertiesSet() throws Exception {
 		if (this.executor == null) {
 			String name = this.threadPrefix + "@" + Integer.toHexString(hashCode());
+			logger.info("[SPRING] 自定义日志---创建线程池："+name+"(Executors.newCachedThreadPool())");
 			this.executor = Executors.newCachedThreadPool(new CustomizableThreadFactory(name));
 		}
 	}

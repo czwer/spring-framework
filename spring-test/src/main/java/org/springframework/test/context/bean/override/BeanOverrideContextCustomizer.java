@@ -16,12 +16,14 @@
 
 package org.springframework.test.context.bean.override;
 
-import java.util.Set;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.context.ContextCustomizer;
 import org.springframework.test.context.MergedContextConfiguration;
+
+import java.util.Set;
 
 /**
  * {@link ContextCustomizer} implementation that registers the necessary
@@ -33,6 +35,7 @@ import org.springframework.test.context.MergedContextConfiguration;
  * @since 6.2
  */
 class BeanOverrideContextCustomizer implements ContextCustomizer {
+	private final Log logger = LogFactory.getLog(BeanOverrideContextCustomizer.class);
 
 	private static final String INFRASTRUCTURE_BEAN_NAME =
 			"org.springframework.test.context.bean.override.internalBeanOverridePostProcessor";
@@ -57,9 +60,12 @@ class BeanOverrideContextCustomizer implements ContextCustomizer {
 		// AOT processing, since a bean definition cannot be generated for the
 		// Set<BeanOverrideHandler> argument that it accepts in its constructor.
 		BeanOverrideRegistry beanOverrideRegistry = new BeanOverrideRegistry(beanFactory);
+		logger.info("[SPRING] 自定义日志---【注册单例Bean】："+ BeanOverrideRegistry.BEAN_NAME);
 		beanFactory.registerSingleton(BeanOverrideRegistry.BEAN_NAME, beanOverrideRegistry);
+		logger.info("[SPRING] 自定义日志---【注册单例Bean】："+ INFRASTRUCTURE_BEAN_NAME);
 		beanFactory.registerSingleton(INFRASTRUCTURE_BEAN_NAME,
 				new BeanOverrideBeanFactoryPostProcessor(this.handlers, beanOverrideRegistry));
+		logger.info("[SPRING] 自定义日志---【注册单例Bean】："+ EARLY_INFRASTRUCTURE_BEAN_NAME);
 		beanFactory.registerSingleton(EARLY_INFRASTRUCTURE_BEAN_NAME,
 				new WrapEarlyBeanPostProcessor(beanOverrideRegistry));
 	}

@@ -16,18 +16,12 @@
 
 package org.springframework.scheduling.concurrent;
 
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.RejectedExecutionHandler;
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.lang.Nullable;
+
+import java.util.concurrent.*;
 
 /**
  * JavaBean that allows for configuring a {@link java.util.concurrent.ThreadPoolExecutor}
@@ -64,7 +58,7 @@ import org.springframework.lang.Nullable;
 @SuppressWarnings("serial")
 public class ThreadPoolExecutorFactoryBean extends ExecutorConfigurationSupport
 		implements FactoryBean<ExecutorService> {
-
+	protected final Log logger = LogFactory.getLog(ThreadPoolExecutorFactoryBean.class);
 	private int corePoolSize = 1;
 
 	private int maxPoolSize = Integer.MAX_VALUE;
@@ -204,7 +198,7 @@ public class ThreadPoolExecutorFactoryBean extends ExecutorConfigurationSupport
 	protected ThreadPoolExecutor createExecutor(
 			int corePoolSize, int maxPoolSize, int keepAliveSeconds, BlockingQueue<Runnable> queue,
 			ThreadFactory threadFactory, RejectedExecutionHandler rejectedExecutionHandler) {
-
+		logger.info("[SPRING] 自定义日志---创建线程池：（ThreadPoolExecutor）");
 		return new ThreadPoolExecutor(corePoolSize, maxPoolSize,
 				keepAliveSeconds, TimeUnit.SECONDS, queue, threadFactory, rejectedExecutionHandler) {
 			@Override

@@ -16,20 +16,8 @@
 
 package org.springframework.scheduling.concurrent;
 
-import java.util.Map;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.RejectedExecutionHandler;
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.core.task.AsyncListenableTaskExecutor;
 import org.springframework.core.task.TaskDecorator;
 import org.springframework.core.task.TaskRejectedException;
@@ -39,6 +27,9 @@ import org.springframework.util.Assert;
 import org.springframework.util.ConcurrentReferenceHashMap;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureTask;
+
+import java.util.Map;
+import java.util.concurrent.*;
 
 /**
  * JavaBean that allows for configuring a {@link java.util.concurrent.ThreadPoolExecutor}
@@ -83,7 +74,7 @@ import org.springframework.util.concurrent.ListenableFutureTask;
 @SuppressWarnings({"serial", "deprecation", "removal"})
 public class ThreadPoolTaskExecutor extends ExecutorConfigurationSupport
 		implements AsyncListenableTaskExecutor, SchedulingTaskExecutor {
-
+	protected final Log logger = LogFactory.getLog(ThreadPoolTaskExecutor.class);
 	private final Object poolSizeMonitor = new Object();
 
 	private int corePoolSize = 1;
@@ -279,7 +270,7 @@ public class ThreadPoolTaskExecutor extends ExecutorConfigurationSupport
 			ThreadFactory threadFactory, RejectedExecutionHandler rejectedExecutionHandler) {
 
 		BlockingQueue<Runnable> queue = createQueue(this.queueCapacity);
-
+		logger.info("[SPRING] 自定义日志---创建线程池：（ThreadPoolExecutor）");
 		ThreadPoolExecutor executor = new ThreadPoolExecutor(
 					this.corePoolSize, this.maxPoolSize, this.keepAliveSeconds, TimeUnit.SECONDS,
 					queue, threadFactory, rejectedExecutionHandler) {
@@ -394,6 +385,7 @@ public class ThreadPoolTaskExecutor extends ExecutorConfigurationSupport
 
 	@Override
 	public Future<?> submit(Runnable task) {
+		logger.info("[SPRING] 自定义日志---提交任务（同步阻塞）：Runnable");
 		ExecutorService executor = getThreadPoolExecutor();
 		try {
 			return executor.submit(task);
@@ -405,6 +397,7 @@ public class ThreadPoolTaskExecutor extends ExecutorConfigurationSupport
 
 	@Override
 	public <T> Future<T> submit(Callable<T> task) {
+		logger.info("[SPRING] 自定义日志---提交任务（同步阻塞）：Callable");
 		ExecutorService executor = getThreadPoolExecutor();
 		try {
 			return executor.submit(task);
@@ -416,6 +409,7 @@ public class ThreadPoolTaskExecutor extends ExecutorConfigurationSupport
 
 	@Override
 	public ListenableFuture<?> submitListenable(Runnable task) {
+		logger.info("[SPRING] 自定义日志---提交任务（异步非阻塞）：Runnable");
 		ExecutorService executor = getThreadPoolExecutor();
 		try {
 			ListenableFutureTask<Object> future = new ListenableFutureTask<>(task, null);
@@ -429,6 +423,7 @@ public class ThreadPoolTaskExecutor extends ExecutorConfigurationSupport
 
 	@Override
 	public <T> ListenableFuture<T> submitListenable(Callable<T> task) {
+		logger.info("[SPRING] 自定义日志---提交任务（异步非阻塞）：Callable");
 		ExecutorService executor = getThreadPoolExecutor();
 		try {
 			ListenableFutureTask<T> future = new ListenableFutureTask<>(task);

@@ -16,14 +16,6 @@
 
 package org.springframework.beans.factory.support;
 
-import java.lang.reflect.Constructor;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Supplier;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanMetadataAttributeAccessor;
@@ -39,6 +31,10 @@ import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
+
+import java.lang.reflect.Constructor;
+import java.util.*;
+import java.util.function.Supplier;
 
 /**
  * Base class for concrete, full-fledged {@link BeanDefinition} classes,
@@ -956,6 +952,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 * Specify constructor argument values for this bean.
 	 */
 	public void setConstructorArgumentValues(ConstructorArgumentValues constructorArgumentValues) {
+		logger.info("[SPRING] 自定义日志---配置构造函数参数，为后续基于构造函数的依赖注入提供参数配置"+getBeanClassName());
 		this.constructorArgumentValues = constructorArgumentValues;
 	}
 
@@ -986,6 +983,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 * Specify property values for this bean, if any.
 	 */
 	public void setPropertyValues(MutablePropertyValues propertyValues) {
+		logger.info("[SPRING] 自定义日志---设置Bean定义中的属性值，为后续基于setter方法的依赖注入提供配置："+getBeanClassName());
 		if (propertyValues != null){
 			propertyValues.getPropertyValueList().forEach( p -> {logger.info("[SPRING] 自定义日志---setPropertyValues："+p.getName());});
 		}

@@ -156,6 +156,7 @@ public class PropertiesBeanDefinitionReader extends AbstractBeanDefinitionReader
 	 */
 	public PropertiesBeanDefinitionReader(BeanDefinitionRegistry registry) {
 		super(registry);
+		logger.info("[SPRING] 自定义日志---PropertiesBeanDefinitionReader构造方法执行");
 	}
 
 
@@ -211,6 +212,7 @@ public class PropertiesBeanDefinitionReader extends AbstractBeanDefinitionReader
 	 */
 	@Override
 	public int loadBeanDefinitions(Resource resource) throws BeanDefinitionStoreException {
+		logger.info("[SPRING_BOOT] 自定义日志---【加载bean定义】：PropertiesBeanDefinitionReader方式");
 		return loadBeanDefinitions(new EncodedResource(resource), null);
 	}
 

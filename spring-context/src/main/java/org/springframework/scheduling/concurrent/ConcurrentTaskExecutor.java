@@ -16,16 +16,10 @@
 
 package org.springframework.scheduling.concurrent;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-
 import jakarta.enterprise.concurrent.ManagedExecutors;
 import jakarta.enterprise.concurrent.ManagedTask;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.core.task.AsyncListenableTaskExecutor;
 import org.springframework.core.task.TaskDecorator;
 import org.springframework.core.task.support.TaskExecutorAdapter;
@@ -34,6 +28,13 @@ import org.springframework.scheduling.SchedulingAwareRunnable;
 import org.springframework.scheduling.SchedulingTaskExecutor;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.concurrent.ListenableFuture;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * Adapter that takes a {@code java.util.concurrent.Executor} and exposes
@@ -64,7 +65,7 @@ import org.springframework.util.concurrent.ListenableFuture;
  */
 @SuppressWarnings({"deprecation", "removal"})
 public class ConcurrentTaskExecutor implements AsyncListenableTaskExecutor, SchedulingTaskExecutor {
-
+	protected final Log logger = LogFactory.getLog(ConcurrentTaskExecutor.class);
 	private static final Executor STUB_EXECUTOR = (task -> {
 		throw new IllegalStateException("Executor not configured");
 	});
@@ -101,6 +102,7 @@ public class ConcurrentTaskExecutor implements AsyncListenableTaskExecutor, Sche
 	 */
 	@Deprecated(since = "6.1")
 	public ConcurrentTaskExecutor() {
+		logger.info("[SPRING] 自定义日志---创建线程池：(Executors.newSingleThreadExecutor())");
 		this.concurrentExecutor = Executors.newSingleThreadExecutor();
 		this.adaptedExecutor = new TaskExecutorAdapter(this.concurrentExecutor);
 	}

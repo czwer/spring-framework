@@ -16,14 +16,16 @@
 
 package org.springframework.test.context.bean.override.mockito;
 
-import java.lang.reflect.Field;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.config.SingletonBeanRegistry;
 import org.springframework.core.ResolvableType;
 import org.springframework.core.style.ToStringCreator;
 import org.springframework.lang.Nullable;
 import org.springframework.test.context.bean.override.BeanOverrideHandler;
 import org.springframework.test.context.bean.override.BeanOverrideStrategy;
+
+import java.lang.reflect.Field;
 
 /**
  * Abstract base {@link BeanOverrideHandler} implementation for Mockito.
@@ -34,7 +36,7 @@ import org.springframework.test.context.bean.override.BeanOverrideStrategy;
  * @since 6.2
  */
 abstract class AbstractMockitoBeanOverrideHandler extends BeanOverrideHandler {
-
+	protected static final Log logger = LogFactory.getLog(AbstractMockitoBeanOverrideHandler.class);
 	private final MockReset reset;
 
 
@@ -68,6 +70,7 @@ abstract class AbstractMockitoBeanOverrideHandler extends BeanOverrideHandler {
 		}
 		if (mockBeans == null) {
 			mockBeans = new MockBeans();
+			logger.info("[SPRING] 自定义日志---【注册单例Bean】："+ beanName);
 			trackingBeanRegistry.registerSingleton(beanName, mockBeans);
 		}
 		return mockBeans;

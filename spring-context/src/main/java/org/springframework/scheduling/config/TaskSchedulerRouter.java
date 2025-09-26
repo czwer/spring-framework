@@ -16,23 +16,9 @@
 
 package org.springframework.scheduling.config;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.function.Supplier;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
-import org.springframework.beans.factory.BeanNameAware;
-import org.springframework.beans.factory.BeanNotOfRequiredTypeException;
-import org.springframework.beans.factory.DisposableBean;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
-import org.springframework.beans.factory.NoUniqueBeanDefinitionException;
+import org.springframework.beans.factory.*;
 import org.springframework.beans.factory.annotation.BeanFactoryAnnotationUtils;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -47,6 +33,13 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.util.StringValueResolver;
 import org.springframework.util.function.SingletonSupplier;
+
+import java.time.Duration;
+import java.time.Instant;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.function.Supplier;
 
 /**
  * A routing implementation of the {@link TaskScheduler} interface,
@@ -225,6 +218,7 @@ public class TaskSchedulerRouter implements TaskScheduler, BeanNameAware, BeanFa
 				logger.info("No TaskScheduler/ScheduledExecutorService bean found for scheduled processing");
 			}
 		}
+		logger.info("[SPRING] 自定义日志---创建线程池：(Executors.newSingleThreadScheduledExecutor())");
 		ScheduledExecutorService localExecutor = Executors.newSingleThreadScheduledExecutor();
 		this.localExecutor = localExecutor;
 		return new ConcurrentTaskScheduler(localExecutor);

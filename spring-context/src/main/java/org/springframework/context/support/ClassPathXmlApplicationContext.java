@@ -16,6 +16,8 @@
 
 package org.springframework.context.support;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.ClassPathResource;
@@ -50,7 +52,7 @@ import org.springframework.util.Assert;
  * @see GenericApplicationContext
  */
 public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContext {
-
+	protected final Log logger = LogFactory.getLog(ClassPathXmlApplicationContext.class);
 	@Nullable
 	private Resource[] configResources;
 
@@ -141,6 +143,7 @@ public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContex
 		super(parent);
 		setConfigLocations(configLocations);
 		if (refresh) {
+			logger.info("[SPRING] 自定义日志---调用AbstractApplicationContext的refresh方法");
 			refresh();
 		}
 	}
@@ -200,6 +203,7 @@ public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContex
 			this.configResources[i] = new ClassPathResource(paths[i], clazz);
 		}
 		refresh();
+		logger.info("[SPRING] 自定义日志---调用AbstractApplicationContext的refresh方法");
 	}
 
 

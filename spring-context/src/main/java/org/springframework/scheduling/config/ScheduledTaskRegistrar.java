@@ -16,20 +16,9 @@
 
 package org.springframework.scheduling.config;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-
 import io.micrometer.observation.ObservationRegistry;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.lang.Nullable;
@@ -39,6 +28,12 @@ import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
 import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
+
+import java.time.Duration;
+import java.time.Instant;
+import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * Helper bean for registering tasks with a {@link TaskScheduler}, typically using cron
@@ -61,7 +56,7 @@ import org.springframework.util.CollectionUtils;
  * @see org.springframework.scheduling.annotation.SchedulingConfigurer
  */
 public class ScheduledTaskRegistrar implements ScheduledTaskHolder, InitializingBean, DisposableBean {
-
+	protected final Log logger = LogFactory.getLog(ScheduledTaskRegistrar.class);
 	/**
 	 * A special cron expression value that indicates a disabled trigger: {@value}.
 	 * <p>This is primarily meant for use with {@link #addCronTask(Runnable, String)}
@@ -427,6 +422,7 @@ public class ScheduledTaskRegistrar implements ScheduledTaskHolder, Initializing
 	 */
 	protected void scheduleTasks() {
 		if (this.taskScheduler == null) {
+			logger.info("[SPRING] 自定义日志---创建线程池：(Executors.newSingleThreadScheduledExecutor())");
 			this.localExecutor = Executors.newSingleThreadScheduledExecutor();
 			this.taskScheduler = new ConcurrentTaskScheduler(this.localExecutor);
 		}

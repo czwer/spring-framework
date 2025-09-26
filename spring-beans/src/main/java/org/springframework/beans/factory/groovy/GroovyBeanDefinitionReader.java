@@ -150,6 +150,7 @@ public class GroovyBeanDefinitionReader extends AbstractBeanDefinitionReader imp
 	 */
 	public GroovyBeanDefinitionReader(BeanDefinitionRegistry registry) {
 		super(registry);
+		logger.info("[SPRING] 自定义日志---GroovyBeanDefinitionReader构造方法执行");
 		this.standardXmlBeanDefinitionReader = new XmlBeanDefinitionReader(registry);
 		this.groovyDslXmlBeanDefinitionReader = new XmlBeanDefinitionReader(registry);
 		this.groovyDslXmlBeanDefinitionReader.setValidating(false);
@@ -166,6 +167,7 @@ public class GroovyBeanDefinitionReader extends AbstractBeanDefinitionReader imp
 	 */
 	public GroovyBeanDefinitionReader(XmlBeanDefinitionReader xmlBeanDefinitionReader) {
 		super(xmlBeanDefinitionReader.getRegistry());
+		logger.info("[SPRING] 自定义日志---GroovyBeanDefinitionReader构造方法执行");
 		this.standardXmlBeanDefinitionReader = new XmlBeanDefinitionReader(xmlBeanDefinitionReader.getRegistry());
 		this.groovyDslXmlBeanDefinitionReader = xmlBeanDefinitionReader;
 	}
@@ -210,6 +212,7 @@ public class GroovyBeanDefinitionReader extends AbstractBeanDefinitionReader imp
 	 */
 	@Override
 	public int loadBeanDefinitions(Resource resource) throws BeanDefinitionStoreException {
+		logger.info("[SPRING_BOOT] 自定义日志---【加载bean定义】：GroovyBeanDefinitionReader方式");
 		return loadBeanDefinitions(new EncodedResource(resource));
 	}
 

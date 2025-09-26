@@ -16,12 +16,6 @@
 
 package org.springframework.web.context.support;
 
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.servlet.ServletConfig;
@@ -29,7 +23,6 @@ import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpSession;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.ObjectFactory;
@@ -41,13 +34,13 @@ import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.web.context.ConfigurableWebApplicationContext;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.RequestScope;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.context.request.ServletWebRequest;
-import org.springframework.web.context.request.SessionScope;
-import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.context.request.*;
+
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Convenience methods for retrieving the root {@link WebApplicationContext} for
@@ -225,12 +218,12 @@ public abstract class WebApplicationContextUtils {
 			@Nullable ServletContext servletContext, @Nullable ServletConfig servletConfig) {
 
 		if (servletContext != null && !bf.containsBean(WebApplicationContext.SERVLET_CONTEXT_BEAN_NAME)) {
-			logger.info("[SPRING_BOOT] 自定义日志---注册单例Bean："+WebApplicationContext.SERVLET_CONTEXT_BEAN_NAME);
+			logger.info("[SPRING_BOOT] 自定义日志---【注册单例Bean】："+WebApplicationContext.SERVLET_CONTEXT_BEAN_NAME);
 			bf.registerSingleton(WebApplicationContext.SERVLET_CONTEXT_BEAN_NAME, servletContext);
 		}
 
 		if (servletConfig != null && !bf.containsBean(ConfigurableWebApplicationContext.SERVLET_CONFIG_BEAN_NAME)) {
-			logger.info("[SPRING_BOOT] 自定义日志---注册单例Bean："+ConfigurableWebApplicationContext.SERVLET_CONFIG_BEAN_NAME);
+			logger.info("[SPRING_BOOT] 自定义日志---【注册单例Bean】："+ConfigurableWebApplicationContext.SERVLET_CONFIG_BEAN_NAME);
 			bf.registerSingleton(ConfigurableWebApplicationContext.SERVLET_CONFIG_BEAN_NAME, servletConfig);
 		}
 
@@ -250,7 +243,7 @@ public abstract class WebApplicationContextUtils {
 					parameterMap.put(paramName, servletConfig.getInitParameter(paramName));
 				}
 			}
-			logger.info("[SPRING_BOOT] 自定义日志---注册单例Bean："+WebApplicationContext.CONTEXT_PARAMETERS_BEAN_NAME);
+			logger.info("[SPRING_BOOT] 自定义日志---【注册单例Bean】："+WebApplicationContext.CONTEXT_PARAMETERS_BEAN_NAME);
 			bf.registerSingleton(WebApplicationContext.CONTEXT_PARAMETERS_BEAN_NAME,
 					Collections.unmodifiableMap(parameterMap));
 		}
@@ -264,7 +257,7 @@ public abstract class WebApplicationContextUtils {
 					attributeMap.put(attrName, servletContext.getAttribute(attrName));
 				}
 			}
-			logger.info("[SPRING_BOOT] 自定义日志---注册单例Bean："+WebApplicationContext.CONTEXT_ATTRIBUTES_BEAN_NAME);
+			logger.info("[SPRING_BOOT] 自定义日志---【注册单例Bean】："+WebApplicationContext.CONTEXT_ATTRIBUTES_BEAN_NAME);
 			bf.registerSingleton(WebApplicationContext.CONTEXT_ATTRIBUTES_BEAN_NAME,
 					Collections.unmodifiableMap(attributeMap));
 		}

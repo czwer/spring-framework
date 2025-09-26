@@ -63,7 +63,7 @@ public class DefaultListableBeanFactoryBenchmark {
 				case "dependencyCheck" -> {
 					rbd = new RootBeanDefinition(LifecycleBean.class);
 					rbd.setDependencyCheck(RootBeanDefinition.DEPENDENCY_CHECK_OBJECTS);
-					logger.info("[SPRING] 自定义日志【重要】---添加BeanPostProcessor：LifecycleBean.PostProcessor");
+					logger.info("[SPRING] 自定义日志【重要】---【添加BeanPostProcessor】：LifecycleBean.PostProcessor");
 					this.beanFactory.addBeanPostProcessor(new LifecycleBean.PostProcessor());
 				}
 				case "constructor" -> {

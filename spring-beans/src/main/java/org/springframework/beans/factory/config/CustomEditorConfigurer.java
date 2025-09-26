@@ -16,17 +16,16 @@
 
 package org.springframework.beans.factory.config;
 
-import java.beans.PropertyEditor;
-import java.util.Map;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.beans.BeansException;
 import org.springframework.beans.PropertyEditorRegistrar;
 import org.springframework.core.Ordered;
 import org.springframework.lang.Nullable;
 import org.springframework.util.ClassUtils;
+
+import java.beans.PropertyEditor;
+import java.util.Map;
 
 /**
  * {@link BeanFactoryPostProcessor} implementation that allows for convenient
@@ -142,7 +141,7 @@ public class CustomEditorConfigurer implements BeanFactoryPostProcessor, Ordered
 
 	@Override
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-		logger.info("[SPRING] 自定义日志---执行实现BeanFactoryPostProcessor接口方法postProcessBeanFactory");
+		logger.info("[SPRING] 自定义日志---CustomEditorConfigurer实现BeanFactoryPostProcessor接口，执行方法postProcessBeanFactory：注册自定义属性编辑器的重要扩展点");
 		if (this.propertyEditorRegistrars != null) {
 			for (PropertyEditorRegistrar propertyEditorRegistrar : this.propertyEditorRegistrars) {
 				beanFactory.addPropertyEditorRegistrar(propertyEditorRegistrar);

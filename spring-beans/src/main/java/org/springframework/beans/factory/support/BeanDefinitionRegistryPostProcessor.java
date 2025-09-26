@@ -16,6 +16,8 @@
 
 package org.springframework.beans.factory.support;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -32,7 +34,7 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
  * @see org.springframework.context.annotation.ConfigurationClassPostProcessor
  */
 public interface BeanDefinitionRegistryPostProcessor extends BeanFactoryPostProcessor {
-
+	final Log logger = LogFactory.getLog(BeanDefinitionRegistryPostProcessor.class);
 	/**
 	 * Modify the application context's internal bean definition registry after its
 	 * standard initialization. All regular bean definitions will have been loaded,
@@ -51,6 +53,7 @@ public interface BeanDefinitionRegistryPostProcessor extends BeanFactoryPostProc
 	 */
 	@Override
 	default void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+		logger.info("[SPRING] 自定义日志---BeanDefinitionRegistryPostProcessor实现BeanFactoryPostProcessor接口，执行方法postProcessBeanFactory：空方法");
 	}
 
 }

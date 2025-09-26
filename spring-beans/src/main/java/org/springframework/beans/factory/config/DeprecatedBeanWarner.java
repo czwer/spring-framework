@@ -53,7 +53,7 @@ public class DeprecatedBeanWarner implements BeanFactoryPostProcessor {
 
 	@Override
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-		logger.info("[SPRING] 自定义日志---执行实现BeanFactoryPostProcessor接口方法postProcessBeanFactory");
+		logger.info("[SPRING] 自定义日志---CustomScopeConfigurer实现BeanFactoryPostProcessor接口，执行方法postProcessBeanFactory：专门用于检测并警告使用了过时（Deprecated）Bean的内部工具");
 		if (isLogEnabled()) {
 			String[] beanNames = beanFactory.getBeanDefinitionNames();
 			for (String beanName : beanNames) {

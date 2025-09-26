@@ -16,6 +16,8 @@
 
 package org.springframework.context.support;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.FileSystemResource;
@@ -54,7 +56,7 @@ import org.springframework.lang.Nullable;
  * @see GenericApplicationContext
  */
 public class FileSystemXmlApplicationContext extends AbstractXmlApplicationContext {
-
+	protected final Log logger = LogFactory.getLog(FileSystemXmlApplicationContext.class);
 	/**
 	 * Create a new FileSystemXmlApplicationContext for bean-style configuration.
 	 * @see #setConfigLocation
@@ -139,6 +141,7 @@ public class FileSystemXmlApplicationContext extends AbstractXmlApplicationConte
 		super(parent);
 		setConfigLocations(configLocations);
 		if (refresh) {
+			logger.info("[SPRING] 自定义日志---调用AbstractApplicationContext的refresh方法");
 			refresh();
 		}
 	}

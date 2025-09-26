@@ -16,22 +16,10 @@
 
 package org.springframework.scheduling.concurrent;
 
-import java.time.Clock;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.Date;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
-
 import jakarta.enterprise.concurrent.LastExecution;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.core.task.TaskRejectedException;
 import org.springframework.lang.Nullable;
 import org.springframework.scheduling.TaskScheduler;
@@ -41,6 +29,12 @@ import org.springframework.scheduling.support.TaskUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ErrorHandler;
+
+import java.time.Clock;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Date;
+import java.util.concurrent.*;
 
 /**
  * Adapter that takes a {@code java.util.concurrent.ScheduledExecutorService} and
@@ -71,7 +65,7 @@ import org.springframework.util.ErrorHandler;
  * @see ThreadPoolTaskScheduler
  */
 public class ConcurrentTaskScheduler extends ConcurrentTaskExecutor implements TaskScheduler {
-
+	protected final Log logger = LogFactory.getLog(ConcurrentTaskScheduler.class);
 	private static final TimeUnit NANO = TimeUnit.NANOSECONDS;
 
 
@@ -112,6 +106,7 @@ public class ConcurrentTaskScheduler extends ConcurrentTaskExecutor implements T
 	@Deprecated(since = "6.1")
 	public ConcurrentTaskScheduler() {
 		super();
+		logger.info("[SPRING] 自定义日志---创建线程池：(Executors.newSingleThreadScheduledExecutor())");
 		this.scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
 		this.enterpriseConcurrentScheduler = false;
 	}

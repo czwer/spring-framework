@@ -1007,6 +1007,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				logger.info("[SPRING] 自定义日志---getSingletonFactoryBeanForTypeCheck中，调用resolveBeforeInstantiation方法："+beanName);
 				instance = resolveBeforeInstantiation(beanName, mbd);
 				if (instance == null) {
+					logger.info("[SPRING] 自定义日志---getSingletonFactoryBeanForTypeCheck中，调用createBeanInstance方法："+beanName);
 					bw = createBeanInstance(beanName, mbd, null);
 					instance = bw.getWrappedInstance();
 					this.factoryBeanInstanceCache.put(beanName, bw);
@@ -1063,6 +1064,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			logger.info("[SPRING] 自定义日志---getNonSingletonFactoryBeanForTypeCheck中，调用resolveBeforeInstantiation方法："+beanName);
 			instance = resolveBeforeInstantiation(beanName, mbd);
 			if (instance == null) {
+				logger.info("[SPRING] 自定义日志---getNonSingletonFactoryBeanForTypeCheck中，调用createBeanInstance方法："+beanName);
 				BeanWrapper bw = createBeanInstance(beanName, mbd, null);
 				instance = bw.getWrappedInstance();
 			}
@@ -1336,9 +1338,11 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 */
 	protected BeanWrapper instantiateBean(String beanName, RootBeanDefinition mbd) {
 		try {
+			logger.info("[SPRING] 自定义日志【重要】---【获取Bean】【创建bean实例】：instantiateBean中调用getInstantiationStrategy().instantiate(mbd, beanName, this)：" + beanName);
 			Object beanInstance = getInstantiationStrategy().instantiate(mbd, beanName, this);
 			BeanWrapper bw = new BeanWrapperImpl(beanInstance);
 			initBeanWrapper(bw);
+			logger.info("[SPRING] 自定义日志【重要】---【获取Bean】【创建bean实例】：instantiateBean返回BeanWrapper" + beanName);
 			return bw;
 		}
 		catch (Throwable ex) {
@@ -1666,6 +1670,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * @param pvs the new property values
 	 */
 	protected void applyPropertyValues(String beanName, BeanDefinition mbd, BeanWrapper bw, PropertyValues pvs) {
+		logger.info("[SPRING] 自定义日志---applyPropertyValues：调用属性填充"+beanName);
 		if (pvs.isEmpty()) {
 			return;
 		}
