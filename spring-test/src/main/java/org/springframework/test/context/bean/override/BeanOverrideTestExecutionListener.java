@@ -16,10 +16,6 @@
 
 package org.springframework.test.context.bean.override;
 
-import java.lang.reflect.Field;
-import java.util.List;
-import java.util.Objects;
-
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.TestContext;
@@ -27,6 +23,10 @@ import org.springframework.test.context.support.AbstractTestExecutionListener;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
+
+import java.lang.reflect.Field;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * {@code TestExecutionListener} that enables {@link BeanOverride @BeanOverride}

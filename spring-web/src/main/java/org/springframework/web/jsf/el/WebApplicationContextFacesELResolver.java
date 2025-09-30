@@ -16,20 +16,19 @@
 
 package org.springframework.web.jsf.el;
 
-import java.beans.FeatureDescriptor;
-import java.util.Iterator;
-
 import jakarta.el.ELContext;
 import jakarta.el.ELException;
 import jakarta.el.ELResolver;
 import jakarta.faces.context.FacesContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.beans.BeansException;
 import org.springframework.lang.Nullable;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.jsf.FacesContextUtils;
+
+import java.beans.FeatureDescriptor;
+import java.util.Iterator;
 
 /**
  * Special JSF {@code ELResolver} that exposes the Spring {@code WebApplicationContext}
@@ -63,7 +62,7 @@ public class WebApplicationContextFacesELResolver extends ELResolver {
 
 
 	/** Logger available to subclasses. */
-	protected final Log logger = LogFactory.getLog(getClass());
+	protected final Log logger = LogFactory.getLog(WebApplicationContextFacesELResolver.class);
 
 
 	@Override
@@ -81,6 +80,7 @@ public class WebApplicationContextFacesELResolver extends ELResolver {
 					}
 					elContext.setPropertyResolved(true);
 					try {
+						logger.info("[SPRING] 自定义日志---调用getBean："+beanName);
 						return wac.getBean(beanName);
 					}
 					catch (BeansException ex) {

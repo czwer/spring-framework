@@ -88,7 +88,7 @@ public interface InstantiationAwareBeanPostProcessor extends BeanPostProcessor {
 	 * @see #postProcessBeforeInstantiation
 	 */
 	default boolean postProcessAfterInstantiation(Object bean, String beanName) throws BeansException {
-		logger.info("[SPRING] 自定义日志【非常重要】---在实例化之后、属性填充之前进行干预（仅仅返回true，空方法）："+beanName);
+		logger.info("自定义日志---【InstantiationAwareBeanPostProcessor】InstantiationAwareBeanPostProcessor.postProcessAfterInstantiation方法:目前是空方法，返回true："+beanName);
 		return true;
 	}
 

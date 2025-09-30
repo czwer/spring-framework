@@ -40,6 +40,7 @@ import org.springframework.beans.testfixture.beans.TestBean;
  */
 @BenchmarkMode(Mode.Throughput)
 public class DefaultListableBeanFactoryBenchmark {
+	protected final Log logger = LogFactory.getLog(DefaultListableBeanFactoryBenchmark.class);
 
 	public static class Shared {
 		public DefaultListableBeanFactory beanFactory;
@@ -114,6 +115,7 @@ public class DefaultListableBeanFactoryBenchmark {
 
 	@Benchmark
 	public Object singletLookupByType(SingletonLookupState state) {
+		logger.info("[SPRING] 自定义日志---调用getBean：TestBean");
 		return state.beanFactory.getBean(TestBean.class);
 	}
 
@@ -134,6 +136,7 @@ public class DefaultListableBeanFactoryBenchmark {
 	// See SPR-6870
 	@Benchmark
 	public Object singletLookupByTypeManyBeans(SingletonLookupState state) {
+		logger.info("[SPRING] 自定义日志---调用getBean：B");
 		return state.beanFactory.getBean(B.class);
 	}
 

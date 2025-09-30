@@ -16,52 +16,11 @@
 
 package org.springframework.beans.factory.support;
 
-import java.beans.PropertyEditor;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
-
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.PropertyEditorRegistrar;
-import org.springframework.beans.PropertyEditorRegistry;
-import org.springframework.beans.PropertyEditorRegistrySupport;
-import org.springframework.beans.SimpleTypeConverter;
-import org.springframework.beans.TypeConverter;
-import org.springframework.beans.TypeMismatchException;
-import org.springframework.beans.factory.BeanCreationException;
-import org.springframework.beans.factory.BeanCurrentlyInCreationException;
-import org.springframework.beans.factory.BeanDefinitionStoreException;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryUtils;
-import org.springframework.beans.factory.BeanIsAbstractException;
-import org.springframework.beans.factory.BeanIsNotAFactoryException;
-import org.springframework.beans.factory.BeanNotOfRequiredTypeException;
-import org.springframework.beans.factory.CannotLoadBeanClassException;
-import org.springframework.beans.factory.FactoryBean;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
-import org.springframework.beans.factory.SmartFactoryBean;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.config.BeanDefinitionHolder;
-import org.springframework.beans.factory.config.BeanExpressionContext;
-import org.springframework.beans.factory.config.BeanExpressionResolver;
-import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.beans.factory.config.DestructionAwareBeanPostProcessor;
-import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor;
-import org.springframework.beans.factory.config.Scope;
-import org.springframework.beans.factory.config.SmartInstantiationAwareBeanPostProcessor;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.*;
+import org.springframework.beans.factory.*;
+import org.springframework.beans.factory.config.*;
 import org.springframework.core.DecoratingClassLoader;
 import org.springframework.core.NamedThreadLocal;
 import org.springframework.core.ResolvableType;
@@ -70,14 +29,14 @@ import org.springframework.core.log.LogMessage;
 import org.springframework.core.metrics.ApplicationStartup;
 import org.springframework.core.metrics.StartupStep;
 import org.springframework.lang.Nullable;
-import org.springframework.util.Assert;
-import org.springframework.util.ClassUtils;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
-import org.springframework.util.StringValueResolver;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.springframework.util.*;
+
+import java.beans.PropertyEditor;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 /**
  * Abstract base class for {@link org.springframework.beans.factory.BeanFactory}
  * implementations, providing the full capabilities of the
@@ -246,17 +205,21 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	protected <T> T doGetBean(
 			String name, @Nullable Class<T> requiredType, @Nullable Object[] args, boolean typeCheckOnly)
 			throws BeansException {
-		logger.info("[SPRING] 自定义日志【非常重要】---【获取Bean】↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓："+name);
+		logger.info("[SPRING] 自定义日志【非常重要】---【doGetBean】↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓："+name);
 		if (requiredType != null){
-			logger.info("[SPRING] 自定义日志---【获取Bean】doGetBean步骤：1-0：beanName："+name+",beanType："+requiredType.getName());
+			logger.info("[SPRING] 自定义日志---【doGetBean】beanName："+name+",beanType："+requiredType.getName());
 		}else {
-			logger.info("[SPRING] 自定义日志---【获取Bean】doGetBean步骤：1-1：beanName："+name);
+			logger.info("[SPRING] 自定义日志---【doGetBean】beanName："+name);
+		}
+		if (name.charAt(0) != BeanFactory.FACTORY_BEAN_PREFIX_CHAR){
+			logger.info("[SPRING] 自定义日志---【doGetBean】beanName："+name+"是FactoryBean名称");
 		}
 		String beanName = transformedBeanName(name);
+		logger.info("[SPRING] 自定义日志---【doGetBean】"+name+"获取bean名称："+beanName);
 		Object beanInstance;
 
 		// Eagerly check singleton cache for manually registered singletons.
-		logger.info("[SPRING] 自定义日志---【获取Bean】doGetBean步骤：2，调用getSingleton方法："+beanName);
+		logger.info("[SPRING] 自定义日志---【doGetBean】调用getSingleton方法："+beanName);
 		Object sharedInstance = getSingleton(beanName);
 		if (sharedInstance != null && args == null) {
 			if (logger.isTraceEnabled()) {
@@ -268,7 +231,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 					logger.trace("Returning cached instance of singleton bean '" + beanName + "'");
 				}
 			}
-			logger.info("[SPRING] 自定义日志---【获取Bean】doGetBean步骤：3，调用getObjectForBeanInstance方法："+beanName);
+			logger.info("[SPRING] 自定义日志---【doGetBean】调用getObjectForBeanInstance方法-1："+beanName);
 			beanInstance = getObjectForBeanInstance(sharedInstance, name, beanName, null);
 		}
 
@@ -281,31 +244,36 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
 			// Check if bean definition exists in this factory.
 			BeanFactory parentBeanFactory = getParentBeanFactory();
+			if (parentBeanFactory != null){
+				logger.info("[SPRING] 自定义日志---【doGetBean】存在父BeanFactory：beanName："+beanName);
+			}else {
+				logger.info("[SPRING] 自定义日志---【doGetBean】不存在父BeanFactory：beanName："+beanName);
+			}
 			if (parentBeanFactory != null && !containsBeanDefinition(beanName)) {
 				// Not found -> check parent.
 				String nameToLookup = originalBeanName(name);
 				if (parentBeanFactory instanceof AbstractBeanFactory abf) {
-					logger.info("[SPRING] 自定义日志---【获取Bean】doGetBean步骤：4-0，parentBeanFactory is AbstractBeanFactory 调用doGetBean方法：beanName："+beanName);
+					logger.info("[SPRING] 自定义日志---【doGetBean】从父容器中获取Bean实例（AbstractBeanFactory）：beanName："+beanName);
 					return abf.doGetBean(nameToLookup, requiredType, args, typeCheckOnly);
 				}
 				else if (args != null) {
 					// Delegation to parent with explicit args.
-					logger.info("[SPRING] 自定义日志---【获取Bean】doGetBean步骤：4-1，调用parentBeanFactory中getBean方法：beanName："+beanName);
+					logger.info("[SPRING] 自定义日志---【doGetBean】从父容器中获取Bean实例（含参数）,调用getBean："+nameToLookup);
 					return (T) parentBeanFactory.getBean(nameToLookup, args);
 				}
 				else if (requiredType != null) {
 					// No args -> delegate to standard getBean method.
-					logger.info("[SPRING] 自定义日志---【获取Bean】doGetBean步骤：4-2，调用parentBeanFactory中getBean方法：beanName："+beanName);
+					logger.info("[SPRING] 自定义日志---【doGetBean】从父容器中获取Bean实例（对返回类型有要求），调用getBean：beanName："+nameToLookup+",requiredType："+requiredType.getName());
 					return parentBeanFactory.getBean(nameToLookup, requiredType);
 				}
 				else {
-					logger.info("[SPRING] 自定义日志---【获取Bean】doGetBean步骤：4-3，调用parentBeanFactory中getBean方法：beanName："+beanName);
+					logger.info("[SPRING] 自定义日志---【doGetBean】从父容器中获取Bean实例，调用getBean：beanName："+nameToLookup);
 					return (T) parentBeanFactory.getBean(nameToLookup);
 				}
 			}
 
 			if (!typeCheckOnly) {
-				logger.info("[SPRING] 自定义日志---【获取Bean】doGetBean步骤：5，调用markBeanAsCreated方法：beanName："+beanName);
+				logger.info("[SPRING] 自定义日志---【doGetBean】调用markBeanAsCreated方法，标记实例创建中：beanName："+beanName);
 				markBeanAsCreated(beanName);
 			}
 
@@ -315,21 +283,24 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				if (requiredType != null) {
 					beanCreation.tag("beanType", requiredType::toString);
 				}
+				logger.info("[SPRING] 自定义日志---【doGetBean】调用getMergedLocalBeanDefinition方法，获取经过合并处理后的完整Bean定义（如果有父Bean定义）：beanName："+beanName);
 				RootBeanDefinition mbd = getMergedLocalBeanDefinition(beanName);
+				logger.info("[SPRING] 自定义日志---【doGetBean】调用checkMergedBeanDefinition方法，检查合并后的Bean定义：beanName："+beanName);
 				checkMergedBeanDefinition(mbd, beanName, args);
 
 				// Guarantee initialization of beans that the current bean depends on.
 				String[] dependsOn = mbd.getDependsOn();
 				if (dependsOn != null) {
 					for (String dep : dependsOn) {
+						logger.info("[SPRING] 自定义日志---【doGetBean】存在依赖其他的Bean，beanName："+beanName+"，依赖的Bean："+dep);
 						if (isDependent(beanName, dep)) {
 							throw new BeanCreationException(mbd.getResourceDescription(), beanName,
 									"Circular depends-on relationship between '" + beanName + "' and '" + dep + "'");
 						}
-						logger.info("[SPRING] 自定义日志---【获取Bean】doGetBean步骤：6-0，调用registerDependentBean方法："+beanName);
+						logger.info("[SPRING] 自定义日志---【doGetBean】调用registerDependentBean方法：注册两个Bean之间的依赖关系"+beanName);
 						registerDependentBean(dep, beanName);
 						try {
-							logger.info("[SPRING] 自定义日志---【获取Bean】doGetBean步骤：6-1，调用getBean方法："+beanName);
+							logger.info("[SPRING] 自定义日志---【doGetBean】beanName："+beanName+"，获取依赖的Bean："+dep);
 							getBean(dep);
 						}
 						catch (NoSuchBeanDefinitionException ex) {
@@ -348,14 +319,16 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 							throw ex;
 						}
 					}
+				}else {
+					logger.info("[SPRING] 自定义日志---【doGetBean】不存在依赖其他的Bean：beanName："+beanName);
 				}
 
 				// Create bean instance.
 				if (mbd.isSingleton()) {
-					logger.info("[SPRING] 自定义日志---【获取Bean】doGetBean步骤：7-0，调用getSingleton方法："+beanName);
+					logger.info("[SPRING] 自定义日志---【doGetBean】【作用域：单例Bean】调用getSingleton方法："+beanName);
 					sharedInstance = getSingleton(beanName, () -> {
 						try {
-							logger.info("[SPRING] 自定义日志---【获取Bean】doGetBean步骤：7-1，调用createBean方法："+beanName);
+							logger.info("[SPRING] 自定义日志---【doGetBean】【作用域：单例Bean】，调用createBean方法："+beanName);
 							return createBean(beanName, mbd, args);
 						}
 						catch (BeansException ex) {
@@ -366,24 +339,25 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 							throw ex;
 						}
 					});
-					logger.info("[SPRING] 自定义日志---【获取Bean】doGetBean步骤：7-2，调用getObjectForBeanInstance方法："+beanName);
+					logger.info("[SPRING] 自定义日志---【doGetBean】【作用域：单例Bean】，调用getObjectForBeanInstance方法-2："+beanName);
 					beanInstance = getObjectForBeanInstance(sharedInstance, name, beanName, mbd);
 				}
 
 				else if (mbd.isPrototype()) {
+
 					// It's a prototype -> create a new instance.
 					Object prototypeInstance = null;
 					try {
-						logger.info("[SPRING] 自定义日志---【获取Bean】doGetBean步骤：8-0，调用beforePrototypeCreation方法："+beanName);
+						logger.info("[SPRING] 自定义日志---【doGetBean】【作用域：原型Bean（每次获取都会创建新的）】调用beforePrototypeCreation方法："+beanName);
 						beforePrototypeCreation(beanName);
-						logger.info("[SPRING] 自定义日志---【获取Bean】doGetBean步骤：8-1，调用createBean方法："+beanName);
+						logger.info("[SPRING] 自定义日志---【doGetBean】【作用域：原型Bean（每次获取都会创建新的）】调用createBean方法："+beanName);
 						prototypeInstance = createBean(beanName, mbd, args);
 					}
 					finally {
-						logger.info("[SPRING] 自定义日志---【获取Bean】doGetBean步骤：8-2，调用afterPrototypeCreation方法："+beanName);
+						logger.info("[SPRING] 自定义日志---【doGetBean】【作用域：原型Bean（每次获取都会创建新的）】调用afterPrototypeCreation方法："+beanName);
 						afterPrototypeCreation(beanName);
 					}
-					logger.info("[SPRING] 自定义日志---【获取Bean】doGetBean步骤：8-3，调用getObjectForBeanInstance方法："+beanName);
+					logger.info("[SPRING] 自定义日志---【doGetBean】【作用域：原型Bean（每次获取都会创建新的）】调用getObjectForBeanInstance方法-3："+beanName);
 					beanInstance = getObjectForBeanInstance(prototypeInstance, name, beanName, mbd);
 				}
 
@@ -398,18 +372,18 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 					}
 					try {
 						Object scopedInstance = scope.get(beanName, () -> {
-							logger.info("[SPRING] 自定义日志---【获取Bean】doGetBean步骤：9-0，调用beforePrototypeCreation方法："+beanName);
+							logger.info("[SPRING] 自定义日志---【doGetBean】【作用域：自定义】调用beforePrototypeCreation方法："+beanName);
 							beforePrototypeCreation(beanName);
 							try {
-								logger.info("[SPRING] 自定义日志---【获取Bean】doGetBean步骤：9-1，调用createBean方法："+beanName);
+								logger.info("[SPRING] 自定义日志---【doGetBean】【作用域：自定义】调用createBean方法："+beanName);
 								return createBean(beanName, mbd, args);
 							}
 							finally {
-								logger.info("[SPRING] 自定义日志---【获取Bean】doGetBean步骤：9-2，调用afterPrototypeCreation方法："+beanName);
+								logger.info("[SPRING] 自定义日志---【doGetBean】【作用域：自定义】调用afterPrototypeCreation方法："+beanName);
 								afterPrototypeCreation(beanName);
 							}
 						});
-						logger.info("[SPRING] 自定义日志---【获取Bean】doGetBean步骤：9-3，调用getObjectForBeanInstance方法："+beanName);
+						logger.info("[SPRING] 自定义日志---【doGetBean】【作用域：自定义】调用getObjectForBeanInstance方法-4："+beanName);
 						beanInstance = getObjectForBeanInstance(scopedInstance, name, beanName, mbd);
 					}
 					catch (IllegalStateException ex) {
@@ -426,14 +400,14 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			finally {
 				beanCreation.end();
 				if (!isCacheBeanMetadata()) {
-					logger.info("[SPRING] 自定义日志---【获取Bean】doGetBean步骤：10，调用clearMergedBeanDefinition方法："+beanName);
+					logger.info("[SPRING] 自定义日志---【doGetBean】doGetBean步骤：10，调用clearMergedBeanDefinition方法："+beanName);
 					clearMergedBeanDefinition(beanName);
 				}
 			}
 		}
-		logger.info("[SPRING] 自定义日志---【获取Bean】doGetBean步骤：11，调用adaptBeanInstance方法："+beanName);
+		logger.info("[SPRING] 自定义日志---【doGetBean】调用adaptBeanInstance方法："+beanName);
 		Object o = adaptBeanInstance(name, beanInstance, requiredType);
-		logger.info("[SPRING] [SPRING] 自定义日志【非常重要】---【获取Bean】↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑："+name);
+		logger.info("[SPRING] [SPRING] 自定义日志【非常重要】---【doGetBean】↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑："+name);
 		return (T) o;
 	}
 
@@ -442,6 +416,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		// Check if required type matches the type of the actual bean instance.
 		if (requiredType != null && !requiredType.isInstance(bean)) {
 			try {
+				logger.info("[SPRING] 自定义日志---【adaptBeanInstance】转换bean实例为期望的类型："+name+",requiredType："+requiredType.getName());
 				Object convertedBean = getTypeConverter().convertIfNecessary(bean, requiredType);
 				if (convertedBean == null) {
 					throw new BeanNotOfRequiredTypeException(name, requiredType, bean.getClass());
@@ -499,6 +474,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				if (BeanFactoryUtils.isFactoryDereference(name)) {
 					return true;
 				}
+				logger.info("[SPRING] 自定义日志---调用getBean："+FACTORY_BEAN_PREFIX + beanName);
 				FactoryBean<?> factoryBean = (FactoryBean<?>) getBean(FACTORY_BEAN_PREFIX + beanName);
 				return factoryBean.isSingleton();
 			}
@@ -533,6 +509,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			return false;
 		}
 		if (isFactoryBean(beanName, mbd)) {
+			logger.info("[SPRING] 自定义日志---调用getBean："+FACTORY_BEAN_PREFIX + beanName);
 			FactoryBean<?> fb = (FactoryBean<?>) getBean(FACTORY_BEAN_PREFIX + beanName);
 			return ((fb instanceof SmartFactoryBean<?> smartFactoryBean && smartFactoryBean.isPrototype()) ||
 					!fb.isSingleton());
@@ -1897,14 +1874,17 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		// Don't let calling code try to dereference the factory if the bean isn't a factory.
 		if (BeanFactoryUtils.isFactoryDereference(name)) {
 			if (beanInstance instanceof NullBean) {
+				logger.info("[SPRING] 自定义日志---【getObjectForBeanInstance】实例是NullBean，直接返回："+beanName);
 				return beanInstance;
 			}
 			if (!(beanInstance instanceof FactoryBean)) {
+				logger.info("[SPRING] 自定义日志---【getObjectForBeanInstance】如果不是FactoryBean，抛出异常，抛出异常："+beanName);
 				throw new BeanIsNotAFactoryException(beanName, beanInstance.getClass());
 			}
 			if (mbd != null) {
 				mbd.isFactoryBean = true;
 			}
+			logger.info("[SPRING] 自定义日志---【getObjectForBeanInstance】返回FactoryBean本身："+beanName);
 			return beanInstance;
 		}
 
@@ -1912,6 +1892,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		// If it's a FactoryBean, we use it to create a bean instance, unless the
 		// caller actually wants a reference to the factory.
 		if (!(beanInstance instanceof FactoryBean<?> factoryBean)) {
+			logger.info("[SPRING] 自定义日志---【getObjectForBeanInstance】如果Bean实例不是FactoryBean，直接返回实例："+beanName);
 			return beanInstance;
 		}
 
@@ -1929,8 +1910,11 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				mbd = getMergedLocalBeanDefinition(beanName);
 			}
 			boolean synthetic = (mbd != null && mbd.isSynthetic());
-			logger.info("[SPRING] 自定义日志---getObjectForBeanInstance中，调用getObjectFromFactoryBean方法："+beanName);
+			logger.info("[SPRING] 自定义日志---【getObjectForBeanInstance】synthetic值为："+synthetic+",beanName："+beanName);
+			logger.info("[SPRING] 自定义日志---【getObjectForBeanInstance】★★★ 【核心】：从FactoryBean获取产品对象 ★★★："+beanName);
 			object = getObjectFromFactoryBean(factoryBean, beanName, !synthetic);
+		}else {
+			logger.info("[SPRING] 自定义日志---【getObjectForBeanInstance】beanInstance是FactoryBean，且用户请求的是其产品对象，从缓存中返回："+beanName);
 		}
 		return object;
 	}

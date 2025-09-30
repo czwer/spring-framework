@@ -16,18 +16,13 @@
 
 package org.springframework.web.servlet.support;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.TimeZone;
-
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.jsp.jstl.core.Config;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.NoSuchMessageException;
@@ -49,6 +44,8 @@ import org.springframework.web.util.HtmlUtils;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.web.util.UrlPathHelper;
 import org.springframework.web.util.WebUtils;
+
+import java.util.*;
 
 /**
  * Context holder for request-specific state, like current web application context, current locale,
@@ -72,7 +69,7 @@ import org.springframework.web.util.WebUtils;
  * @see org.springframework.web.servlet.view.UrlBasedViewResolver#setRequestContextAttribute
  */
 public class RequestContext {
-
+	protected final Log logger = LogFactory.getLog(RequestContext.class);
 	/**
 	 * Default theme name used if the RequestContext cannot find a ThemeResolver.
 	 * Only applies to non-DispatcherServlet requests.
@@ -253,6 +250,7 @@ public class RequestContext {
 		this.urlPathHelper = new UrlPathHelper();
 
 		if (this.webApplicationContext.containsBean(RequestContextUtils.REQUEST_DATA_VALUE_PROCESSOR_BEAN_NAME)) {
+			logger.info("[SPRING] 自定义日志---调用getBean："+ RequestContextUtils.REQUEST_DATA_VALUE_PROCESSOR_BEAN_NAME);
 			this.requestDataValueProcessor = this.webApplicationContext.getBean(
 					RequestContextUtils.REQUEST_DATA_VALUE_PROCESSOR_BEAN_NAME, RequestDataValueProcessor.class);
 		}

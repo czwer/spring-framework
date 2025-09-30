@@ -16,29 +16,9 @@
 
 package org.springframework.orm.jpa.support;
 
-import java.beans.PropertyDescriptor;
-import java.io.Serializable;
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Member;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.TreeSet;
-import java.util.concurrent.ConcurrentHashMap;
-
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.PersistenceContextType;
-import jakarta.persistence.PersistenceProperty;
-import jakarta.persistence.PersistenceUnit;
-import jakarta.persistence.SynchronizationType;
-
+import jakarta.persistence.*;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.aot.generate.GeneratedClass;
 import org.springframework.aot.generate.GeneratedMethod;
 import org.springframework.aot.generate.GeneratedMethods;
@@ -47,21 +27,13 @@ import org.springframework.aot.generate.MethodReference.ArgumentCodeGenerator;
 import org.springframework.aot.hint.RuntimeHints;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.PropertyValues;
-import org.springframework.beans.factory.BeanCreationException;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
-import org.springframework.beans.factory.ListableBeanFactory;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.beans.factory.*;
 import org.springframework.beans.factory.annotation.InjectionMetadata;
 import org.springframework.beans.factory.annotation.InjectionMetadata.InjectedElement;
 import org.springframework.beans.factory.aot.BeanRegistrationAotContribution;
 import org.springframework.beans.factory.aot.BeanRegistrationAotProcessor;
 import org.springframework.beans.factory.aot.BeanRegistrationCode;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.beans.factory.config.DestructionAwareBeanPostProcessor;
-import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor;
-import org.springframework.beans.factory.config.NamedBeanHolder;
+import org.springframework.beans.factory.config.*;
 import org.springframework.beans.factory.support.MergedBeanDefinitionPostProcessor;
 import org.springframework.beans.factory.support.RegisteredBean;
 import org.springframework.beans.factory.support.RootBeanDefinition;
@@ -74,19 +46,17 @@ import org.springframework.javapoet.MethodSpec;
 import org.springframework.jndi.JndiLocatorDelegate;
 import org.springframework.jndi.JndiTemplate;
 import org.springframework.lang.Nullable;
-import org.springframework.orm.jpa.EntityManagerFactoryInfo;
-import org.springframework.orm.jpa.EntityManagerFactoryUtils;
-import org.springframework.orm.jpa.EntityManagerProxy;
-import org.springframework.orm.jpa.ExtendedEntityManagerCreator;
-import org.springframework.orm.jpa.SharedEntityManagerCreator;
-import org.springframework.util.Assert;
-import org.springframework.util.ClassUtils;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.ObjectUtils;
-import org.springframework.util.ReflectionUtils;
-import org.springframework.util.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.springframework.orm.jpa.*;
+import org.springframework.util.*;
+
+import java.beans.PropertyDescriptor;
+import java.io.Serializable;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Member;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * BeanPostProcessor that processes {@link jakarta.persistence.PersistenceUnit}
@@ -352,7 +322,7 @@ public class PersistenceAnnotationBeanPostProcessor implements InstantiationAwar
 
 	@Override
 	public void postProcessMergedBeanDefinition(RootBeanDefinition beanDefinition, Class<?> beanType, String beanName) {
-		logger.info("[SPRING] 自定义日志---检查是否有 @PersistenceUnit和 @PersistenceContext等注解信息等注解，如果有，就创建一个 InjectionMetadata 对象（调用时机：Bean 定义合并后，实例化前）");
+		logger.info("[SPRING] 自定义日志---【MergedBeanDefinitionPostProcessor】PersistenceAnnotationBeanPostProcessor.postProcessMergedBeanDefinition方法调用：检查是否有 @PersistenceUnit和 @PersistenceContext等注解信息等注解，如果有，就创建一个 InjectionMetadata 对象（调用时机：Bean 定义合并后，实例化前）");
 		findInjectionMetadata(beanDefinition, beanType, beanName);
 	}
 
@@ -603,6 +573,7 @@ public class PersistenceAnnotationBeanPostProcessor implements InstantiationAwar
 		}
 		else {
 			// Plain variant: just find a default bean
+			logger.info("[SPRING] 自定义日志---调用getBean：EntityManagerFactory");
 			return this.beanFactory.getBean(EntityManagerFactory.class);
 		}
 	}

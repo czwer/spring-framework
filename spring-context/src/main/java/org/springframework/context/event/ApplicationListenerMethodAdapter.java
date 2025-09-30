@@ -16,42 +16,27 @@
 
 package org.springframework.context.event;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.lang.reflect.UndeclaredThrowableException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.StringJoiner;
-import java.util.concurrent.CompletionStage;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
-
 import org.springframework.aop.support.AopUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.PayloadApplicationEvent;
 import org.springframework.context.expression.AnnotatedElementKey;
-import org.springframework.core.BridgeMethodResolver;
-import org.springframework.core.CoroutinesUtils;
-import org.springframework.core.KotlinDetector;
-import org.springframework.core.Ordered;
-import org.springframework.core.ReactiveAdapter;
-import org.springframework.core.ReactiveAdapterRegistry;
-import org.springframework.core.ResolvableType;
+import org.springframework.core.*;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.Order;
 import org.springframework.lang.Nullable;
-import org.springframework.util.Assert;
-import org.springframework.util.ClassUtils;
-import org.springframework.util.ObjectUtils;
-import org.springframework.util.ReflectionUtils;
-import org.springframework.util.StringUtils;
+import org.springframework.util.*;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.lang.reflect.UndeclaredThrowableException;
+import java.util.*;
+import java.util.concurrent.CompletionStage;
 
 /**
  * {@link GenericApplicationListener} adapter that delegates the processing of
@@ -409,6 +394,7 @@ public class ApplicationListenerMethodAdapter implements GenericApplicationListe
 	 */
 	protected Object getTargetBean() {
 		Assert.notNull(this.applicationContext, "ApplicationContext must not be null");
+		logger.info("[SPRING] 自定义日志---调用getBean："+this.beanName);
 		return this.applicationContext.getBean(this.beanName);
 	}
 

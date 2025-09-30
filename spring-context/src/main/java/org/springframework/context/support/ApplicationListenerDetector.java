@@ -16,19 +16,18 @@
 
 package org.springframework.context.support;
 
-import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.beans.factory.config.DestructionAwareBeanPostProcessor;
 import org.springframework.beans.factory.support.MergedBeanDefinitionPostProcessor;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ApplicationEventMulticaster;
 import org.springframework.lang.Nullable;
+
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * {@code BeanPostProcessor} that detects beans which implement the {@code ApplicationListener}
@@ -59,6 +58,7 @@ class ApplicationListenerDetector implements DestructionAwareBeanPostProcessor, 
 
 	@Override
 	public void postProcessMergedBeanDefinition(RootBeanDefinition beanDefinition, Class<?> beanType, String beanName) {
+		logger.info("[SPRING] 自定义日志---【MergedBeanDefinitionPostProcessor】ApplicationListenerDetector.postProcessMergedBeanDefinition方法调用："+beanName);
 		if (ApplicationListener.class.isAssignableFrom(beanType)) {
 			this.singletonNames.put(beanName, beanDefinition.isSingleton());
 		}

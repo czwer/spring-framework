@@ -16,9 +16,6 @@
 
 package org.springframework.beans.factory.support;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
@@ -29,6 +26,9 @@ import org.springframework.beans.factory.FactoryBeanNotInitializedException;
 import org.springframework.core.AttributeAccessor;
 import org.springframework.core.ResolvableType;
 import org.springframework.lang.Nullable;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Support base class for singleton registries which need to handle
@@ -132,24 +132,29 @@ public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanReg
 			try {
 				Object object = this.factoryBeanObjectCache.get(beanName);
 				if (object == null) {
+					logger.info("[SPRING] 自定义日志---【getObjectFromFactoryBean】调用doGetObjectFromFactoryBean方法-1："+beanName);
 					object = doGetObjectFromFactoryBean(factory, beanName);
 					// Only post-process and store if not put there already during getObject() call above
 					// (for example, because of circular reference processing triggered by custom getBean calls)
 					Object alreadyThere = this.factoryBeanObjectCache.get(beanName);
 					if (alreadyThere != null) {
+						logger.info("[SPRING] 自定义日志---【getObjectFromFactoryBean】可以从缓存获取Bean实例-2："+beanName);
 						object = alreadyThere;
 					}
 					else {
+
 						if (shouldPostProcess) {
 							if (locked) {
 								if (isSingletonCurrentlyInCreation(beanName)) {
 									// Temporarily return non-post-processed object, not storing it yet
+									logger.info("[SPRING] 自定义日志---【getObjectFromFactoryBean】暂时返回未经后处理的对象，尚未存储："+beanName);
 									return object;
 								}
+								logger.info("[SPRING] 自定义日志---【getObjectFromFactoryBean】调用beforeSingletonCreation方法："+beanName);
 								beforeSingletonCreation(beanName);
 							}
 							try {
-								logger.info("[SPRING] 自定义日志---getObjectFromFactoryBean中，调用postProcessObjectFromFactoryBean方法："+beanName);
+								logger.info("[SPRING] 自定义日志---【getObjectFromFactoryBean】应用BeanPostProcessors.postProcessAfterInitialization方法："+beanName);
 								object = postProcessObjectFromFactoryBean(object, beanName);
 							}
 							catch (Throwable ex) {
@@ -158,14 +163,21 @@ public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanReg
 							}
 							finally {
 								if (locked) {
+									logger.info("[SPRING] 自定义日志---【getObjectFromFactoryBean】调用afterSingletonCreation方法："+beanName);
 									afterSingletonCreation(beanName);
 								}
 							}
+							logger.info("[SPRING] 自定义日志---【getObjectFromFactoryBean】调用FactoryBean的getObject()方法获取Bean实例，应用BeanPostProcessors："+beanName);
+						}else {
+							logger.info("[SPRING] 自定义日志---【getObjectFromFactoryBean】调用FactoryBean的getObject()方法获取Bean实例，跳过应用BeanPostProcessors："+beanName);
 						}
 						if (containsSingleton(beanName)) {
+							logger.info("[SPRING] 自定义日志---【getObjectFromFactoryBean】将最终对象放入缓存："+beanName);
 							this.factoryBeanObjectCache.put(beanName, object);
 						}
 					}
+				}else {
+					logger.info("[SPRING] 自定义日志---【getObjectFromFactoryBean】可以从缓存获取Bean实例-1："+beanName);
 				}
 				return object;
 			}
@@ -176,14 +188,19 @@ public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanReg
 			}
 		}
 		else {
+			logger.info("[SPRING] 自定义日志---【getObjectFromFactoryBean】调用doGetObjectFromFactoryBean方法-2："+beanName);
 			Object object = doGetObjectFromFactoryBean(factory, beanName);
 			if (shouldPostProcess) {
 				try {
+					logger.info("[SPRING] 自定义日志---【getObjectFromFactoryBean】应用BeanPostProcessors.postProcessAfterInitialization方法："+beanName);
 					object = postProcessObjectFromFactoryBean(object, beanName);
+					logger.info("[SPRING] 自定义日志---【getObjectFromFactoryBean】调用FactoryBean的getObject()方法获取Bean实例，应用BeanPostProcessors："+beanName);
 				}
 				catch (Throwable ex) {
 					throw new BeanCreationException(beanName, "Post-processing of FactoryBean's object failed", ex);
 				}
+			}else {
+				logger.info("[SPRING] 自定义日志---【getObjectFromFactoryBean】调用FactoryBean的getObject()方法获取Bean实例，跳过应用BeanPostProcessors："+beanName);
 			}
 			return object;
 		}
@@ -200,7 +217,7 @@ public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanReg
 	private Object doGetObjectFromFactoryBean(FactoryBean<?> factory, String beanName) throws BeanCreationException {
 		Object object;
 		try {
-			logger.info("[SPRING] 自定义日志【非常重要】---调用factory.getObject()方法，factory："+factory.getClass().getName()+",beanName："+beanName);
+			logger.info("[SPRING] 自定义日志---【doGetObjectFromFactoryBean】调用factory.getObject()方法，factory："+factory.getClass().getName()+",beanName："+beanName);
 			object = factory.getObject();
 		}
 		catch (FactoryBeanNotInitializedException ex) {

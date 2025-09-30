@@ -16,16 +16,18 @@
 
 package org.springframework.aop.target;
 
-import java.io.IOException;
-import java.io.NotSerializableException;
-import java.io.ObjectInputStream;
-import java.io.ObjectStreamException;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanDefinitionStoreException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+
+import java.io.IOException;
+import java.io.NotSerializableException;
+import java.io.ObjectInputStream;
+import java.io.ObjectStreamException;
 
 /**
  * Base class for dynamic {@link org.springframework.aop.TargetSource} implementations
@@ -45,7 +47,7 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
  */
 @SuppressWarnings("serial")
 public abstract class AbstractPrototypeBasedTargetSource extends AbstractBeanFactoryBasedTargetSource {
-
+	protected final Log logger = LogFactory.getLog(AbstractPrototypeBasedTargetSource.class);
 	@Override
 	public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
 		super.setBeanFactory(beanFactory);
@@ -66,6 +68,7 @@ public abstract class AbstractPrototypeBasedTargetSource extends AbstractBeanFac
 		if (logger.isDebugEnabled()) {
 			logger.debug("Creating new instance of bean '" + getTargetBeanName() + "'");
 		}
+		logger.info("[SPRING] 自定义日志---调用getBean："+getTargetBeanName());
 		return getBeanFactory().getBean(getTargetBeanName());
 	}
 

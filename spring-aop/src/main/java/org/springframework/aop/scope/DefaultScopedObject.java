@@ -16,10 +16,12 @@
 
 package org.springframework.aop.scope;
 
-import java.io.Serializable;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.util.Assert;
+
+import java.io.Serializable;
 
 /**
  * Default implementation of the {@link ScopedObject} interface.
@@ -36,7 +38,7 @@ import org.springframework.util.Assert;
  */
 @SuppressWarnings("serial")
 public class DefaultScopedObject implements ScopedObject, Serializable {
-
+	Log logger = LogFactory.getLog(DefaultScopedObject.class);
 	private final ConfigurableBeanFactory beanFactory;
 
 	private final String targetBeanName;
@@ -57,6 +59,7 @@ public class DefaultScopedObject implements ScopedObject, Serializable {
 
 	@Override
 	public Object getTargetObject() {
+		logger.info("[SPRING] 自定义日志---调用getBean："+this.targetBeanName);
 		return this.beanFactory.getBean(this.targetBeanName);
 	}
 

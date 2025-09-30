@@ -194,6 +194,7 @@ public class PropertyPathFactoryBean implements FactoryBean<Object>, BeanNameAwa
 
 		if (this.targetBeanWrapper == null && this.beanFactory.isSingleton(this.targetBeanName)) {
 			// Eagerly fetch singleton target bean, and determine result type.
+			logger.info("[SPRING] 自定义日志---调用getBean："+this.targetBeanName);
 			Object bean = this.beanFactory.getBean(this.targetBeanName);
 			this.targetBeanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(bean);
 			this.resultType = this.targetBeanWrapper.getPropertyType(this.propertyPath);
@@ -217,6 +218,7 @@ public class PropertyPathFactoryBean implements FactoryBean<Object>, BeanNameAwa
 			// Fetch prototype target bean...
 			Assert.state(this.beanFactory != null, "No BeanFactory available");
 			Assert.state(this.targetBeanName != null, "No target bean name specified");
+			logger.info("[SPRING] 自定义日志---调用getBean："+this.targetBeanName);
 			Object bean = this.beanFactory.getBean(this.targetBeanName);
 			target = PropertyAccessorFactory.forBeanPropertyAccess(bean);
 		}

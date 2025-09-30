@@ -16,18 +16,17 @@
 
 package org.springframework.test.context.bean.override;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
+
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * An internal class used to track {@link BeanOverrideHandler}-related state after
@@ -63,6 +62,7 @@ class BeanOverrideRegistry {
 		Assert.notNull(beanFactory, "ConfigurableBeanFactory must not be null");
 		this.beanFactory = beanFactory;
 		BeanFactory parentBeanFactory = beanFactory.getParentBeanFactory();
+		logger.info("[SPRING] 自定义日志---调用getBean："+BEAN_NAME);
 		this.parent = (parentBeanFactory != null && parentBeanFactory.containsBean(BEAN_NAME) ?
 				parentBeanFactory.getBean(BEAN_NAME, BeanOverrideRegistry.class) : null);
 	}
@@ -131,6 +131,7 @@ class BeanOverrideRegistry {
 	Object getBeanForHandler(BeanOverrideHandler handler, Class<?> requiredType) {
 		String beanName = this.handlerToBeanNameMap.get(handler);
 		if (beanName != null) {
+			logger.info("[SPRING] 自定义日志---调用getBean："+beanName);
 			return this.beanFactory.getBean(beanName, requiredType);
 		}
 		if (this.parent != null) {

@@ -16,17 +16,8 @@
 
 package org.springframework.beans.factory.aot;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Executable;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Parameter;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.aot.hint.ExecutableMode;
 import org.springframework.beans.BeanInstantiationException;
 import org.springframework.beans.BeanUtils;
@@ -36,12 +27,7 @@ import org.springframework.beans.factory.UnsatisfiedDependencyException;
 import org.springframework.beans.factory.config.ConstructorArgumentValues;
 import org.springframework.beans.factory.config.ConstructorArgumentValues.ValueHolder;
 import org.springframework.beans.factory.config.DependencyDescriptor;
-import org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory;
-import org.springframework.beans.factory.support.BeanDefinitionValueResolver;
-import org.springframework.beans.factory.support.InstanceSupplier;
-import org.springframework.beans.factory.support.RegisteredBean;
-import org.springframework.beans.factory.support.RootBeanDefinition;
-import org.springframework.beans.factory.support.SimpleInstantiationStrategy;
+import org.springframework.beans.factory.support.*;
 import org.springframework.core.MethodParameter;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
@@ -51,6 +37,13 @@ import org.springframework.util.ReflectionUtils;
 import org.springframework.util.function.ThrowingBiFunction;
 import org.springframework.util.function.ThrowingFunction;
 import org.springframework.util.function.ThrowingSupplier;
+
+import java.lang.reflect.*;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Specialized {@link InstanceSupplier} that provides the factory {@link Method}
@@ -82,7 +75,7 @@ import org.springframework.util.function.ThrowingSupplier;
  * @see AutowiredArguments
  */
 public final class BeanInstanceSupplier<T> extends AutowiredElementResolver implements InstanceSupplier<T> {
-
+	private final Log logger = LogFactory.getLog(BeanInstanceSupplier.class);
 	private final ExecutableLookup lookup;
 
 	@Nullable
@@ -378,6 +371,7 @@ public final class BeanInstanceSupplier<T> extends AutowiredElementResolver impl
 			Object target = null;
 			String factoryBeanName = registeredBean.getMergedBeanDefinition().getFactoryBeanName();
 			if (factoryBeanName != null) {
+				logger.info("[SPRING] 自定义日志---调用getBean："+factoryBeanName);
 				target = registeredBean.getBeanFactory().getBean(factoryBeanName, method.getDeclaringClass());
 			}
 			else if (!Modifier.isStatic(method.getModifiers())) {

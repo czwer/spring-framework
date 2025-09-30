@@ -255,6 +255,7 @@ public class GenericGroovyApplicationContext extends GenericApplicationContext i
 	@Nullable
 	public Object getProperty(String property) {
 		if (containsBean(property)) {
+			logger.info("[SPRING] 自定义日志---调用getBean："+property);
 			return getBean(property);
 		}
 		else if (this.contextWrapper.isReadableProperty(property)) {

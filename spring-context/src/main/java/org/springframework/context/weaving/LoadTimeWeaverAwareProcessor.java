@@ -100,6 +100,7 @@ public class LoadTimeWeaverAwareProcessor implements BeanPostProcessor, BeanFact
 			if (ltw == null) {
 				Assert.state(this.beanFactory != null,
 						"BeanFactory required if no LoadTimeWeaver explicitly specified");
+				logger.info("[SPRING] 自定义日志---调用getBean："+ConfigurableApplicationContext.LOAD_TIME_WEAVER_BEAN_NAME);
 				ltw = this.beanFactory.getBean(
 						ConfigurableApplicationContext.LOAD_TIME_WEAVER_BEAN_NAME, LoadTimeWeaver.class);
 			}

@@ -16,18 +16,10 @@
 
 package org.springframework.beans.factory.annotation;
 
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Method;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.function.Predicate;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryUtils;
-import org.springframework.beans.factory.ListableBeanFactory;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
-import org.springframework.beans.factory.NoUniqueBeanDefinitionException;
+import org.springframework.beans.factory.*;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
@@ -36,6 +28,12 @@ import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
+
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Method;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.function.Predicate;
 
 /**
  * Convenience methods performing bean lookups related to Spring-specific annotations,
@@ -47,7 +45,7 @@ import org.springframework.util.Assert;
  * @see BeanFactoryUtils
  */
 public abstract class BeanFactoryAnnotationUtils {
-
+	protected static final Log logger = LogFactory.getLog(BeanFactoryAnnotationUtils.class);
 	/**
 	 * Retrieve all beans of type {@code T} from the given {@code BeanFactory} declaring a
 	 * qualifier (for example, via {@code <qualifier>} or {@code @Qualifier}) matching the given
@@ -67,6 +65,7 @@ public abstract class BeanFactoryAnnotationUtils {
 		Map<String, T> result = new LinkedHashMap<>(4);
 		for (String beanName : candidateBeans) {
 			if (isQualifierMatch(qualifier::equals, beanName, beanFactory)) {
+				logger.info("[SPRING] 自定义日志---调用getBean："+beanName);
 				result.put(beanName, beanFactory.getBean(beanName, beanType));
 			}
 		}
@@ -97,6 +96,7 @@ public abstract class BeanFactoryAnnotationUtils {
 		}
 		else if (beanFactory.containsBean(qualifier) && beanFactory.isTypeMatch(qualifier, beanType)) {
 			// Fallback: target bean at least found by bean name.
+			logger.info("[SPRING] 自定义日志---调用getBean："+qualifier);
 			return beanFactory.getBean(qualifier, beanType);
 		}
 		else {
@@ -127,6 +127,7 @@ public abstract class BeanFactoryAnnotationUtils {
 			}
 		}
 		if (matchingBean != null) {
+			logger.info("[SPRING] 自定义日志---调用getBean："+matchingBean);
 			return beanFactory.getBean(matchingBean, beanType);
 		}
 		else if (beanFactory.containsBean(qualifier) && beanFactory.isTypeMatch(qualifier, beanType)) {

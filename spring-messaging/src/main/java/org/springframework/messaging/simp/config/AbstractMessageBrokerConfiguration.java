@@ -16,14 +16,8 @@
 
 package org.springframework.messaging.simp.config;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Executor;
-import java.util.function.Supplier;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
@@ -32,15 +26,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.SmartApplicationListener;
 import org.springframework.lang.Nullable;
 import org.springframework.messaging.MessageHandler;
-import org.springframework.messaging.converter.ByteArrayMessageConverter;
-import org.springframework.messaging.converter.CompositeMessageConverter;
-import org.springframework.messaging.converter.DefaultContentTypeResolver;
-import org.springframework.messaging.converter.GsonMessageConverter;
-import org.springframework.messaging.converter.JsonbMessageConverter;
-import org.springframework.messaging.converter.KotlinSerializationJsonMessageConverter;
-import org.springframework.messaging.converter.MappingJackson2MessageConverter;
-import org.springframework.messaging.converter.MessageConverter;
-import org.springframework.messaging.converter.StringMessageConverter;
+import org.springframework.messaging.converter.*;
 import org.springframework.messaging.handler.invocation.HandlerMethodArgumentResolver;
 import org.springframework.messaging.handler.invocation.HandlerMethodReturnValueHandler;
 import org.springframework.messaging.simp.SimpLogging;
@@ -49,12 +35,7 @@ import org.springframework.messaging.simp.annotation.support.SimpAnnotationMetho
 import org.springframework.messaging.simp.broker.AbstractBrokerMessageHandler;
 import org.springframework.messaging.simp.broker.SimpleBrokerMessageHandler;
 import org.springframework.messaging.simp.stomp.StompBrokerRelayMessageHandler;
-import org.springframework.messaging.simp.user.DefaultUserDestinationResolver;
-import org.springframework.messaging.simp.user.MultiServerUserRegistry;
-import org.springframework.messaging.simp.user.SimpUserRegistry;
-import org.springframework.messaging.simp.user.UserDestinationMessageHandler;
-import org.springframework.messaging.simp.user.UserDestinationResolver;
-import org.springframework.messaging.simp.user.UserRegistryMessageHandler;
+import org.springframework.messaging.simp.user.*;
 import org.springframework.messaging.support.AbstractSubscribableChannel;
 import org.springframework.messaging.support.ExecutorSubscribableChannel;
 import org.springframework.messaging.support.ImmutableMessageChannelInterceptor;
@@ -62,15 +43,14 @@ import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.ExecutorConfigurationSupport;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
-import org.springframework.util.Assert;
-import org.springframework.util.ClassUtils;
-import org.springframework.util.CustomizableThreadCreator;
-import org.springframework.util.MimeTypeUtils;
-import org.springframework.util.PathMatcher;
-import org.springframework.util.StringUtils;
+import org.springframework.util.*;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.OptionalValidatorFactoryBean;
+
+import java.util.*;
+import java.util.concurrent.Executor;
+import java.util.function.Supplier;
 
 /**
  * Provides essential configuration for handling messages with simple messaging
@@ -99,7 +79,7 @@ import org.springframework.validation.beanvalidation.OptionalValidatorFactoryBea
  * @since 4.0
  */
 public abstract class AbstractMessageBrokerConfiguration implements ApplicationContextAware {
-
+	protected final Log logger = LogFactory.getLog(AbstractMessageBrokerConfiguration.class);
 	private static final String MVC_VALIDATOR_NAME = "mvcValidator";
 
 	private static final boolean jackson2Present;
@@ -589,6 +569,7 @@ public abstract class AbstractMessageBrokerConfiguration implements ApplicationC
 		Validator validator = getValidator();
 		if (validator == null) {
 			if (this.applicationContext != null && this.applicationContext.containsBean(MVC_VALIDATOR_NAME)) {
+				logger.info("[SPRING] 自定义日志---调用getBean："+MVC_VALIDATOR_NAME);
 				validator = this.applicationContext.getBean(MVC_VALIDATOR_NAME, Validator.class);
 			}
 			else if (ClassUtils.isPresent("jakarta.validation.Validator", getClass().getClassLoader())) {

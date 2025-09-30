@@ -16,13 +16,15 @@
 
 package org.springframework.beans.factory.support;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * {@link AutowireCandidateResolver} implementation to use when no annotation
@@ -33,7 +35,7 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
  * @since 2.5
  */
 public class SimpleAutowireCandidateResolver implements AutowireCandidateResolver {
-
+	protected static final Log logger = LogFactory.getLog(SimpleAutowireCandidateResolver.class);
 	/**
 	 * Shared instance of {@code SimpleAutowireCandidateResolver}.
 	 * @since 5.2.7
@@ -101,6 +103,7 @@ public class SimpleAutowireCandidateResolver implements AutowireCandidateResolve
 		for (String beanName : BeanFactoryUtils.beanNamesForTypeIncludingAncestors(lbf, type,
 				includeNonSingletons, allowEagerInit)) {
 			if (AutowireUtils.isAutowireCandidate(lbf, beanName)) {
+				logger.info("[SPRING] 自定义日志---调用getBean："+beanName);
 				Object beanInstance = lbf.getBean(beanName);
 				if (!(beanInstance instanceof NullBean)) {
 					candidates.put(beanName, (T) beanInstance);

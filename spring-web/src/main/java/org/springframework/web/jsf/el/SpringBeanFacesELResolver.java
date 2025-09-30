@@ -16,18 +16,19 @@
 
 package org.springframework.web.jsf.el;
 
-import java.beans.FeatureDescriptor;
-import java.util.Iterator;
-
 import jakarta.el.ELContext;
 import jakarta.el.ELException;
 import jakarta.el.ELResolver;
 import jakarta.el.PropertyNotWritableException;
 import jakarta.faces.context.FacesContext;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.lang.Nullable;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.jsf.FacesContextUtils;
+
+import java.beans.FeatureDescriptor;
+import java.util.Iterator;
 
 /**
  * JSF {@code ELResolver} that delegates to the Spring root {@code WebApplicationContext},
@@ -70,6 +71,7 @@ import org.springframework.web.jsf.FacesContextUtils;
  * @see org.springframework.web.jsf.FacesContextUtils#getRequiredWebApplicationContext
  */
 public class SpringBeanFacesELResolver extends ELResolver {
+	protected final Log logger = LogFactory.getLog(SpringBeanFacesELResolver.class);
 
 	@Override
 	@Nullable
@@ -79,6 +81,7 @@ public class SpringBeanFacesELResolver extends ELResolver {
 			WebApplicationContext wac = getWebApplicationContext(elContext);
 			if (wac.containsBean(beanName)) {
 				elContext.setPropertyResolved(true);
+				logger.info("[SPRING] 自定义日志---调用getBean："+beanName);
 				return wac.getBean(beanName);
 			}
 		}
@@ -105,6 +108,7 @@ public class SpringBeanFacesELResolver extends ELResolver {
 			String beanName = property.toString();
 			WebApplicationContext wac = getWebApplicationContext(elContext);
 			if (wac.containsBean(beanName)) {
+				logger.info("[SPRING] 自定义日志---调用getBean："+beanName);
 				if (value == wac.getBean(beanName)) {
 					// Setting the bean reference to the same value is alright - can simply be ignored...
 					elContext.setPropertyResolved(true);

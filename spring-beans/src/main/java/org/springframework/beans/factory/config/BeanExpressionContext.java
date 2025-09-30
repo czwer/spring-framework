@@ -16,6 +16,8 @@
 
 package org.springframework.beans.factory.config;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
@@ -26,6 +28,7 @@ import org.springframework.util.Assert;
  * @since 3.0
  */
 public class BeanExpressionContext {
+	private static final Log logger = LogFactory.getLog(BeanExpressionContext.class);
 
 	private final ConfigurableBeanFactory beanFactory;
 
@@ -57,6 +60,7 @@ public class BeanExpressionContext {
 	@Nullable
 	public Object getObject(String key) {
 		if (this.beanFactory.containsBean(key)) {
+			logger.info("[SPRING] 自定义日志---调用getBean："+key);
 			return this.beanFactory.getBean(key);
 		}
 		else if (this.scope != null) {

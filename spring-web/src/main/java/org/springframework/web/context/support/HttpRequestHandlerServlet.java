@@ -16,13 +16,12 @@
 
 package org.springframework.web.context.support;
 
-import java.io.IOException;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.lang.Nullable;
@@ -31,6 +30,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.HttpRequestHandler;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.context.WebApplicationContext;
+
+import java.io.IOException;
 
 /**
  * Simple HttpServlet that delegates to an {@link HttpRequestHandler} bean defined
@@ -44,7 +45,7 @@ import org.springframework.web.context.WebApplicationContext;
  */
 @SuppressWarnings("serial")
 public class HttpRequestHandlerServlet extends HttpServlet {
-
+	protected final Log logger = LogFactory.getLog(HttpRequestHandlerServlet.class);
 	@Nullable
 	private HttpRequestHandler target;
 
@@ -52,6 +53,7 @@ public class HttpRequestHandlerServlet extends HttpServlet {
 	@Override
 	public void init() throws ServletException {
 		WebApplicationContext wac = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
+		logger.info("[SPRING] 自定义日志---调用getBean："+getServletName());
 		this.target = wac.getBean(getServletName(), HttpRequestHandler.class);
 	}
 

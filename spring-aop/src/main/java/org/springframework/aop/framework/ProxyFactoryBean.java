@@ -16,18 +16,10 @@
 
 package org.springframework.aop.framework;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.aopalliance.aop.Advice;
 import org.aopalliance.intercept.Interceptor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.aop.Advisor;
 import org.springframework.aop.TargetSource;
 import org.springframework.aop.framework.adapter.AdvisorAdapterRegistry;
@@ -35,18 +27,19 @@ import org.springframework.aop.framework.adapter.GlobalAdvisorAdapterRegistry;
 import org.springframework.aop.framework.adapter.UnknownAdviceTypeException;
 import org.springframework.aop.target.SingletonTargetSource;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanClassLoaderAware;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
-import org.springframework.beans.factory.BeanFactoryUtils;
-import org.springframework.beans.factory.FactoryBean;
-import org.springframework.beans.factory.FactoryBeanNotInitializedException;
-import org.springframework.beans.factory.ListableBeanFactory;
+import org.springframework.beans.factory.*;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ObjectUtils;
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * {@link org.springframework.beans.factory.FactoryBean} implementation that builds an
@@ -99,7 +92,7 @@ public class ProxyFactoryBean extends ProxyCreatorSupport
 	public static final String GLOBAL_SUFFIX = "*";
 
 
-	protected final Log logger = LogFactory.getLog(getClass());
+	protected final Log logger = LogFactory.getLog(ProxyFactoryBean.class);
 
 	@Nullable
 	private String[] interceptorNames;
@@ -441,6 +434,7 @@ public class ProxyFactoryBean extends ProxyCreatorSupport
 					Object advice;
 					if (this.singleton || this.beanFactory.isSingleton(name)) {
 						// Add the real Advisor/Advice to the chain.
+						logger.info("[SPRING] 自定义日志---调用getBean："+name);
 						advice = this.beanFactory.getBean(name);
 					}
 					else {
@@ -475,6 +469,7 @@ public class ProxyFactoryBean extends ProxyCreatorSupport
 					throw new IllegalStateException("No BeanFactory available anymore (probably due to " +
 							"serialization) - cannot resolve prototype advisor '" + ppa.getBeanName() + "'");
 				}
+				logger.info("[SPRING] 自定义日志---调用getBean："+ppa.getBeanName());
 				Object bean = this.beanFactory.getBean(ppa.getBeanName());
 				Advisor refreshedAdvisor = namedBeanToAdvisor(bean);
 				freshAdvisors.add(refreshedAdvisor);
@@ -499,11 +494,13 @@ public class ProxyFactoryBean extends ProxyCreatorSupport
 			List<Object> beans = new ArrayList<>(globalAdvisorNames.length + globalInterceptorNames.length);
 			for (String name : globalAdvisorNames) {
 				if (name.startsWith(prefix)) {
+					logger.info("[SPRING] 自定义日志---调用getBean："+name);
 					beans.add(beanFactory.getBean(name));
 				}
 			}
 			for (String name : globalInterceptorNames) {
 				if (name.startsWith(prefix)) {
+					logger.info("[SPRING] 自定义日志---调用getBean："+name);
 					beans.add(beanFactory.getBean(name));
 				}
 			}
@@ -546,6 +543,7 @@ public class ProxyFactoryBean extends ProxyCreatorSupport
 			if (logger.isDebugEnabled()) {
 				logger.debug("Refreshing target with name '" + this.targetName + "'");
 			}
+			logger.info("[SPRING] 自定义日志---调用getBean："+this.targetName);
 			Object target = this.beanFactory.getBean(this.targetName);
 			return (target instanceof TargetSource targetSource ? targetSource : new SingletonTargetSource(target));
 		}

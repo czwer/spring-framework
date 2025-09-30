@@ -16,14 +16,16 @@
 
 package org.springframework.web.context.request.async;
 
-import java.util.concurrent.Callable;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.web.context.request.NativeWebRequest;
+
+import java.util.concurrent.Callable;
 
 /**
  * Holder for a {@link Callable}, a timeout value, and a task executor.
@@ -35,6 +37,7 @@ import org.springframework.web.context.request.NativeWebRequest;
  * @param <V> the value type
  */
 public class WebAsyncTask<V> implements BeanFactoryAware {
+	protected final Log logger = LogFactory.getLog(WebAsyncTask.class);
 
 	private final Callable<V> callable;
 
@@ -152,6 +155,7 @@ public class WebAsyncTask<V> implements BeanFactoryAware {
 		}
 		else if (this.executorName != null) {
 			Assert.state(this.beanFactory != null, "BeanFactory is required to look up an executor bean by name");
+			logger.info("[SPRING] 自定义日志---调用getBean："+this.executorName);
 			return this.beanFactory.getBean(this.executorName, AsyncTaskExecutor.class);
 		}
 		else {

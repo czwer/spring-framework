@@ -18,6 +18,8 @@ package org.springframework.r2dbc.connection.lookup;
 
 import io.r2dbc.spi.ConnectionFactory;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -36,7 +38,7 @@ import org.springframework.util.Assert;
  * @see BeanFactory
  */
 public class BeanFactoryConnectionFactoryLookup implements ConnectionFactoryLookup, BeanFactoryAware {
-
+	protected final Log logger = LogFactory.getLog(BeanFactoryConnectionFactoryLookup.class);
 	@Nullable
 	private BeanFactory beanFactory;
 
@@ -75,6 +77,7 @@ public class BeanFactoryConnectionFactoryLookup implements ConnectionFactoryLook
 
 		Assert.state(this.beanFactory != null, "BeanFactory is required");
 		try {
+			logger.info("[SPRING] 自定义日志---调用getBean："+connectionFactoryName);
 			return this.beanFactory.getBean(connectionFactoryName, ConnectionFactory.class);
 		}
 		catch (BeansException ex) {

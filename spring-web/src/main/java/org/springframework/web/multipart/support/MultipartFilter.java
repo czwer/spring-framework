@@ -16,18 +16,19 @@
 
 package org.springframework.web.multipart.support;
 
-import java.io.IOException;
-
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.MultipartResolver;
+
+import java.io.IOException;
 
 /**
  * Servlet Filter that resolves multipart requests via a {@link MultipartResolver}.
@@ -65,7 +66,7 @@ import org.springframework.web.multipart.MultipartResolver;
  * @see org.springframework.web.servlet.DispatcherServlet
  */
 public class MultipartFilter extends OncePerRequestFilter {
-
+	protected final Log logger = LogFactory.getLog(MultipartFilter.class);
 	/**
 	 * The default name for the multipart resolver bean.
 	 */
@@ -158,6 +159,7 @@ public class MultipartFilter extends OncePerRequestFilter {
 			if (logger.isDebugEnabled()) {
 				logger.debug("Using MultipartResolver '" + beanName + "' for MultipartFilter");
 			}
+			logger.info("[SPRING] 自定义日志---调用getBean："+beanName);
 			return wac.getBean(beanName, MultipartResolver.class);
 		}
 		else {

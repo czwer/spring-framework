@@ -16,17 +16,10 @@
 
 package org.springframework.beans.factory.config;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.Serializable;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.util.Map;
-import java.util.Optional;
-
 import kotlin.reflect.KProperty;
 import kotlin.reflect.jvm.ReflectJvmMapping;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.InjectionPoint;
@@ -39,6 +32,14 @@ import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.lang.Nullable;
 import org.springframework.util.ObjectUtils;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.util.Map;
+import java.util.Optional;
+
 /**
  * Descriptor for a specific dependency that is about to be injected.
  * Wraps a constructor parameter, a method parameter or a field,
@@ -49,7 +50,7 @@ import org.springframework.util.ObjectUtils;
  */
 @SuppressWarnings("serial")
 public class DependencyDescriptor extends InjectionPoint implements Serializable {
-
+	protected final Log logger = LogFactory.getLog(DependencyDescriptor.class);
 	private final Class<?> declaringClass;
 
 	@Nullable
@@ -232,6 +233,7 @@ public class DependencyDescriptor extends InjectionPoint implements Serializable
 	 */
 	@Nullable
 	public Object resolveShortcut(BeanFactory beanFactory) throws BeansException {
+		logger.info("[SPRING] 自定义日志---【DependencyDescriptor】DependencyDescriptor.resolveShortcut:空逻辑：");
 		return null;
 	}
 
@@ -250,7 +252,7 @@ public class DependencyDescriptor extends InjectionPoint implements Serializable
 	 */
 	public Object resolveCandidate(String beanName, Class<?> requiredType, BeanFactory beanFactory)
 			throws BeansException {
-
+		logger.info("[SPRING] 自定义日志---调用getBean："+beanName);
 		return beanFactory.getBean(beanName);
 	}
 

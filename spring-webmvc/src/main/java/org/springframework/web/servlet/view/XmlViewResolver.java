@@ -16,8 +16,8 @@
 
 package org.springframework.web.servlet.view;
 
-import java.util.Locale;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.DisposableBean;
@@ -32,6 +32,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.lang.Nullable;
 import org.springframework.web.context.support.GenericWebApplicationContext;
 import org.springframework.web.servlet.View;
+
+import java.util.Locale;
 
 /**
  * A {@link org.springframework.web.servlet.ViewResolver} implementation that uses
@@ -60,7 +62,7 @@ import org.springframework.web.servlet.View;
 @Deprecated
 public class XmlViewResolver extends AbstractCachingViewResolver
 		implements Ordered, InitializingBean, DisposableBean {
-
+	protected final Log logger = LogFactory.getLog(XmlViewResolver.class);
 	/** Default if no other location is supplied. */
 	public static final String DEFAULT_LOCATION = "/WEB-INF/views.xml";
 
@@ -123,6 +125,7 @@ public class XmlViewResolver extends AbstractCachingViewResolver
 	protected View loadView(String viewName, Locale locale) throws BeansException {
 		BeanFactory factory = initFactory();
 		try {
+			logger.info("[SPRING] 自定义日志---调用getBean："+viewName);
 			return factory.getBean(viewName, View.class);
 		}
 		catch (NoSuchBeanDefinitionException ex) {

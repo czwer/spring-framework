@@ -16,15 +16,16 @@
 
 package org.springframework.aop.support;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-
 import org.aopalliance.aop.Advice;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
 
 /**
  * Abstract BeanFactory-based PointcutAdvisor that allows for any Advice
@@ -41,7 +42,7 @@ import org.springframework.util.Assert;
  */
 @SuppressWarnings("serial")
 public abstract class AbstractBeanFactoryPointcutAdvisor extends AbstractPointcutAdvisor implements BeanFactoryAware {
-
+	protected final Log logger = LogFactory.getLog(AbstractBeanFactoryPointcutAdvisor.class);
 	@Nullable
 	private String adviceBeanName;
 
@@ -102,6 +103,7 @@ public abstract class AbstractBeanFactoryPointcutAdvisor extends AbstractPointcu
 
 		if (this.beanFactory.isSingleton(this.adviceBeanName)) {
 			// Rely on singleton semantics provided by the factory.
+			logger.info("[SPRING] 自定义日志---调用getBean："+this.adviceBeanName);
 			advice = this.beanFactory.getBean(this.adviceBeanName, Advice.class);
 			this.advice = advice;
 			return advice;

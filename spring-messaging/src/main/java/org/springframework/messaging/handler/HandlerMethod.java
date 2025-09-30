@@ -16,18 +16,17 @@
 
 package org.springframework.messaging.handler;
 
-import java.lang.reflect.Method;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.core.annotation.AnnotatedMethod;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
+
+import java.lang.reflect.Method;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Encapsulates information about a handler method consisting of a
@@ -180,6 +179,7 @@ public class HandlerMethod extends AnnotatedMethod {
 		Object handler = this.bean;
 		if (this.bean instanceof String beanName) {
 			Assert.state(this.beanFactory != null, "Cannot resolve bean name without BeanFactory");
+			logger.info("[SPRING] 自定义日志---调用getBean："+beanName);
 			handler = this.beanFactory.getBean(beanName);
 		}
 		return new HandlerMethod(this, handler);

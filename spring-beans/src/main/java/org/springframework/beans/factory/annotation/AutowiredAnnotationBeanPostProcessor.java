@@ -16,29 +16,8 @@
 
 package org.springframework.beans.factory.annotation;
 
-import java.beans.PropertyDescriptor;
-import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.AccessibleObject;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Member;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.aot.generate.AccessControl;
 import org.springframework.aot.generate.GeneratedClass;
 import org.springframework.aot.generate.GeneratedMethod;
@@ -50,29 +29,12 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.PropertyValues;
 import org.springframework.beans.TypeConverter;
-import org.springframework.beans.factory.BeanCreationException;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
-import org.springframework.beans.factory.InjectionPoint;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
-import org.springframework.beans.factory.UnsatisfiedDependencyException;
-import org.springframework.beans.factory.aot.AutowiredArgumentsCodeGenerator;
-import org.springframework.beans.factory.aot.AutowiredFieldValueResolver;
-import org.springframework.beans.factory.aot.AutowiredMethodArgumentsResolver;
-import org.springframework.beans.factory.aot.BeanRegistrationAotContribution;
-import org.springframework.beans.factory.aot.BeanRegistrationAotProcessor;
-import org.springframework.beans.factory.aot.BeanRegistrationCode;
-import org.springframework.beans.factory.aot.CodeWarnings;
+import org.springframework.beans.factory.*;
+import org.springframework.beans.factory.aot.*;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.config.DependencyDescriptor;
 import org.springframework.beans.factory.config.SmartInstantiationAwareBeanPostProcessor;
-import org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory;
-import org.springframework.beans.factory.support.AutowireCandidateResolver;
-import org.springframework.beans.factory.support.DefaultListableBeanFactory;
-import org.springframework.beans.factory.support.LookupOverride;
-import org.springframework.beans.factory.support.MergedBeanDefinitionPostProcessor;
-import org.springframework.beans.factory.support.RegisteredBean;
-import org.springframework.beans.factory.support.RootBeanDefinition;
+import org.springframework.beans.factory.support.*;
 import org.springframework.core.BridgeMethodResolver;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.Ordered;
@@ -87,12 +49,14 @@ import org.springframework.core.type.classreading.SimpleMetadataReaderFactory;
 import org.springframework.javapoet.ClassName;
 import org.springframework.javapoet.CodeBlock;
 import org.springframework.lang.Nullable;
-import org.springframework.util.Assert;
-import org.springframework.util.ClassUtils;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.ObjectUtils;
-import org.springframework.util.ReflectionUtils;
-import org.springframework.util.StringUtils;
+import org.springframework.util.*;
+
+import java.beans.PropertyDescriptor;
+import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.*;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * {@link org.springframework.beans.factory.config.BeanPostProcessor BeanPostProcessor}
@@ -290,7 +254,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 
 	@Override
 	public void postProcessMergedBeanDefinition(RootBeanDefinition beanDefinition, Class<?> beanType, String beanName) {
-		logger.info("[SPRING] 自定义日志---检查是否有 @Autowired 等注解，如果有，就创建一个 InjectionMetadata 对象（调用时机：Bean 定义合并后，实例化前）");
+		logger.info("[SPRING] 自定义日志---【MergedBeanDefinitionPostProcessor】AutowiredAnnotationBeanPostProcessor.postProcessMergedBeanDefinition方法调用：检查是否有 @Autowired 等注解，如果有，就创建一个 InjectionMetadata 对象（调用时机：Bean 定义合并后，实例化前）");
 		// Register externally managed config members on bean definition.
 		findInjectionMetadata(beanName, beanType, beanDefinition);
 
@@ -944,6 +908,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 
 		@Override
 		public Object resolveShortcut(BeanFactory beanFactory) {
+			logger.info("[SPRING] 自定义日志---【DependencyDescriptor】ShortcutDependencyDescriptor.resolveShortcut：调用getBean："+this.shortcut);
 			return beanFactory.getBean(this.shortcut, getDependencyType());
 		}
 	}

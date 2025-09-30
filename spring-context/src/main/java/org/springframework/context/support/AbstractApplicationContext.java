@@ -826,6 +826,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	protected void initMessageSource() {
 		ConfigurableListableBeanFactory beanFactory = getBeanFactory();
 		if (beanFactory.containsLocalBean(MESSAGE_SOURCE_BEAN_NAME)) {
+			logger.info("[SPRING] 自定义日志---调用getBean："+MESSAGE_SOURCE_BEAN_NAME);
 			this.messageSource = beanFactory.getBean(MESSAGE_SOURCE_BEAN_NAME, MessageSource.class);
 			// Make MessageSource aware of parent MessageSource.
 			if (this.parent != null && this.messageSource instanceof HierarchicalMessageSource hms &&
@@ -860,6 +861,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	protected void initApplicationEventMulticaster() {
 		ConfigurableListableBeanFactory beanFactory = getBeanFactory();
 		if (beanFactory.containsLocalBean(APPLICATION_EVENT_MULTICASTER_BEAN_NAME)) {
+			logger.info("[SPRING] 自定义日志---调用getBean："+ APPLICATION_EVENT_MULTICASTER_BEAN_NAME);
 			this.applicationEventMulticaster =
 					beanFactory.getBean(APPLICATION_EVENT_MULTICASTER_BEAN_NAME, ApplicationEventMulticaster.class);
 			if (logger.isTraceEnabled()) {
@@ -887,6 +889,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	protected void initLifecycleProcessor() {
 		ConfigurableListableBeanFactory beanFactory = getBeanFactory();
 		if (beanFactory.containsLocalBean(LIFECYCLE_PROCESSOR_BEAN_NAME)) {
+			logger.info("[SPRING] 自定义日志---调用getBean："+LIFECYCLE_PROCESSOR_BEAN_NAME);
 			this.lifecycleProcessor = beanFactory.getBean(LIFECYCLE_PROCESSOR_BEAN_NAME, LifecycleProcessor.class);
 			if (logger.isTraceEnabled()) {
 				logger.trace("Using LifecycleProcessor [" + this.lifecycleProcessor + "]");
@@ -953,6 +956,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		// Initialize bootstrap executor for this context.
 		if (beanFactory.containsBean(BOOTSTRAP_EXECUTOR_BEAN_NAME) &&
 				beanFactory.isTypeMatch(BOOTSTRAP_EXECUTOR_BEAN_NAME, Executor.class)) {
+			logger.info("[SPRING] 自定义日志---调用getBean："+BOOTSTRAP_EXECUTOR_BEAN_NAME);
 			beanFactory.setBootstrapExecutor(
 					beanFactory.getBean(BOOTSTRAP_EXECUTOR_BEAN_NAME, Executor.class));
 		}
@@ -1285,30 +1289,35 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	@Override
 	public Object getBean(String name) throws BeansException {
 		assertBeanFactoryActive();
+		logger.info("[SPRING] 自定义日志---调用getBean："+name);
 		return getBeanFactory().getBean(name);
 	}
 
 	@Override
 	public <T> T getBean(String name, Class<T> requiredType) throws BeansException {
 		assertBeanFactoryActive();
+		logger.info("[SPRING] 自定义日志---调用getBean："+name);
 		return getBeanFactory().getBean(name, requiredType);
 	}
 
 	@Override
 	public Object getBean(String name, Object... args) throws BeansException {
 		assertBeanFactoryActive();
+		logger.info("[SPRING] 自定义日志---调用getBean："+name);
 		return getBeanFactory().getBean(name, args);
 	}
 
 	@Override
 	public <T> T getBean(Class<T> requiredType) throws BeansException {
 		assertBeanFactoryActive();
+		logger.info("[SPRING] 自定义日志---调用getBean："+requiredType.getName());
 		return getBeanFactory().getBean(requiredType);
 	}
 
 	@Override
 	public <T> T getBean(Class<T> requiredType, Object... args) throws BeansException {
 		assertBeanFactoryActive();
+		logger.info("[SPRING] 自定义日志---调用getBean："+requiredType.getName());
 		return getBeanFactory().getBean(requiredType, args);
 	}
 

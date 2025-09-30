@@ -16,24 +16,8 @@
 
 package org.springframework.context.annotation;
 
-import java.beans.PropertyDescriptor;
-import java.io.Serializable;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Field;
-import java.lang.reflect.Member;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.aop.TargetSource;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.aot.generate.AccessControl;
@@ -53,11 +37,7 @@ import org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPos
 import org.springframework.beans.factory.annotation.InjectionMetadata;
 import org.springframework.beans.factory.aot.BeanRegistrationAotContribution;
 import org.springframework.beans.factory.aot.BeanRegistrationCode;
-import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.beans.factory.config.DependencyDescriptor;
-import org.springframework.beans.factory.config.EmbeddedValueResolver;
-import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor;
+import org.springframework.beans.factory.config.*;
 import org.springframework.beans.factory.support.AutowireCandidateResolver;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.support.RegisteredBean;
@@ -69,15 +49,14 @@ import org.springframework.javapoet.ClassName;
 import org.springframework.javapoet.CodeBlock;
 import org.springframework.jndi.support.SimpleJndiBeanFactory;
 import org.springframework.lang.Nullable;
-import org.springframework.util.Assert;
-import org.springframework.util.ClassUtils;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.ObjectUtils;
-import org.springframework.util.ReflectionUtils;
-import org.springframework.util.StringUtils;
-import org.springframework.util.StringValueResolver;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.springframework.util.*;
+
+import java.beans.PropertyDescriptor;
+import java.io.Serializable;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.*;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 /**
  * {@link org.springframework.beans.factory.config.BeanPostProcessor} implementation
  * that supports common Java annotations out of the box, in particular the common
@@ -312,7 +291,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 
 	@Override
 	public void postProcessMergedBeanDefinition(RootBeanDefinition beanDefinition, Class<?> beanType, String beanName) {
-		logger.info("[SPRING] 自定义日志---检查是否有 @PostConstruct, @PreDestroy, @Resource等注解信息等注解，如果有，就创建一个 InjectionMetadata 对象（调用时机：Bean 定义合并后，实例化前）");
+		logger.info("[SPRING] 自定义日志---【MergedBeanDefinitionPostProcessor】CommonAnnotationBeanPostProcessor.postProcessMergedBeanDefinition方法调用：检查是否有 @PostConstruct, @PreDestroy, @Resource等注解信息等注解，如果有，就创建一个 InjectionMetadata 对象（调用时机：Bean 定义合并后，实例化前）："+beanName);
 		super.postProcessMergedBeanDefinition(beanDefinition, beanType, beanName);
 		InjectionMetadata metadata = findResourceMetadata(beanName, beanType, null);
 		metadata.checkConfigMembers(beanDefinition);
@@ -358,6 +337,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 	@Override
 	@Nullable
 	public Object postProcessBeforeInstantiation(Class<?> beanClass, String beanName) {
+		logger.info("[SPRING] 自定义日志---【InstantiationAwareBeanPostProcessor】调用CommonAnnotationBeanPostProcessor.postProcessBeforeInstantiation：空方法，beanName："+beanName);
 		return null;
 	}
 
@@ -571,6 +551,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 				throw new NoSuchBeanDefinitionException(element.lookupType,
 						"No JNDI factory configured - specify the 'jndiFactory' property");
 			}
+			logger.info("[SPRING] 自定义日志---调用getBean："+jndiName);
 			return this.jndiFactory.getBean(jndiName, element.lookupType);
 		}
 
@@ -613,6 +594,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 			}
 		}
 		else {
+			logger.info("[SPRING] 自定义日志---调用getBean："+name);
 			resource = factory.getBean(name, element.lookupType);
 			autowiredBeanNames = Collections.singleton(name);
 		}
@@ -807,6 +789,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 	 * or setter method, supporting the @EJB annotation.
 	 */
 	private class EjbRefElement extends LookupElement {
+		protected final Log logger = LogFactory.getLog(EjbRefElement.class);
 
 		private final String beanName;
 
@@ -841,6 +824,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 			if (StringUtils.hasLength(this.beanName)) {
 				if (beanFactory != null && beanFactory.containsBean(this.beanName)) {
 					// Local match found for explicitly specified local bean name.
+					logger.info("[SPRING] 自定义日志---调用getBean："+this.beanName);
 					Object bean = beanFactory.getBean(this.beanName, this.lookupType);
 					if (requestingBeanName != null && beanFactory instanceof ConfigurableBeanFactory configurableBeanFactory) {
 						configurableBeanFactory.registerDependentBean(this.beanName, requestingBeanName);

@@ -16,6 +16,8 @@
 
 package org.springframework.context.expression;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.expression.AccessException;
 import org.springframework.expression.EvaluationContext;
@@ -33,6 +35,7 @@ import org.springframework.util.Assert;
  * @since 3.0
  */
 public class BeanFactoryAccessor implements PropertyAccessor {
+	protected final transient Log logger = LogFactory.getLog(BeanFactoryAccessor.class);
 
 	@Override
 	public Class<?>[] getSpecificTargetClasses() {
@@ -47,6 +50,7 @@ public class BeanFactoryAccessor implements PropertyAccessor {
 	@Override
 	public TypedValue read(EvaluationContext context, @Nullable Object target, String name) throws AccessException {
 		Assert.state(target instanceof BeanFactory, "Target must be of type BeanFactory");
+		logger.info("[SPRING] 自定义日志---调用getBean："+name);
 		return new TypedValue(((BeanFactory) target).getBean(name));
 	}
 

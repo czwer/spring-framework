@@ -16,20 +16,10 @@
 
 package org.springframework.web.servlet.view;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Array;
-import java.net.URLEncoder;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -47,6 +37,17 @@ import org.springframework.web.servlet.support.RequestDataValueProcessor;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Array;
+import java.net.URLEncoder;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * View that redirects to an absolute, context relative, or current request
@@ -85,7 +86,7 @@ import org.springframework.web.util.WebUtils;
  * @see jakarta.servlet.http.HttpServletResponse#sendRedirect
  */
 public class RedirectView extends AbstractUrlBasedView implements SmartView {
-
+	protected final Log logger = LogFactory.getLog(RedirectView.class);
 	private static final Pattern URI_TEMPLATE_VARIABLE_PATTERN = Pattern.compile("\\{([^/]+?)\\}");
 
 
@@ -592,6 +593,7 @@ public class RedirectView extends AbstractUrlBasedView implements SmartView {
 		}
 
 		if (wac != null && wac.containsBean(RequestContextUtils.REQUEST_DATA_VALUE_PROCESSOR_BEAN_NAME)) {
+			logger.info("[SPRING] 自定义日志---调用getBean："+RequestContextUtils.REQUEST_DATA_VALUE_PROCESSOR_BEAN_NAME);
 			RequestDataValueProcessor processor = wac.getBean(
 					RequestContextUtils.REQUEST_DATA_VALUE_PROCESSOR_BEAN_NAME, RequestDataValueProcessor.class);
 			return processor.processUrl(request, targetUrl);

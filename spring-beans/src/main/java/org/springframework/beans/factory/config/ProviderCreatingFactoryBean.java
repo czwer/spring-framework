@@ -16,14 +16,15 @@
 
 package org.springframework.beans.factory.config;
 
-import java.io.Serializable;
-
 import jakarta.inject.Provider;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
+
+import java.io.Serializable;
 
 /**
  * A {@link org.springframework.beans.factory.FactoryBean} implementation that
@@ -84,7 +85,7 @@ public class ProviderCreatingFactoryBean extends AbstractFactoryBean<Provider<Ob
 	 */
 	@SuppressWarnings("serial")
 	private static class TargetBeanProvider implements Provider<Object>, Serializable {
-
+		public final Log logger = LogFactory.getLog(TargetBeanProvider.class);
 		private final BeanFactory beanFactory;
 
 		private final String targetBeanName;
@@ -96,6 +97,7 @@ public class ProviderCreatingFactoryBean extends AbstractFactoryBean<Provider<Ob
 
 		@Override
 		public Object get() throws BeansException {
+			logger.info("[SPRING] 自定义日志---调用getBean："+this.targetBeanName);
 			return this.beanFactory.getBean(this.targetBeanName);
 		}
 	}

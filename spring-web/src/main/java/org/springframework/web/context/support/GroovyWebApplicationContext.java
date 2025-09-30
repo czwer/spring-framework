@@ -16,12 +16,9 @@
 
 package org.springframework.web.context.support;
 
-import java.io.IOException;
-
 import groovy.lang.GroovyObject;
 import groovy.lang.GroovySystem;
 import groovy.lang.MetaClass;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanWrapper;
@@ -31,6 +28,8 @@ import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.groovy.GroovyBeanDefinitionReader;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.lang.Nullable;
+
+import java.io.IOException;
 
 /**
  * {@link org.springframework.web.context.WebApplicationContext} implementation which takes
@@ -182,6 +181,7 @@ public class GroovyWebApplicationContext extends AbstractRefreshableWebApplicati
 	@Nullable
 	public Object getProperty(String property) {
 		if (containsBean(property)) {
+			logger.info("[SPRING] 自定义日志---调用getBean："+property);
 			return getBean(property);
 		}
 		else if (this.contextWrapper.isReadableProperty(property)) {

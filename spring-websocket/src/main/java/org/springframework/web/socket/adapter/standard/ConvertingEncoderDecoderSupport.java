@@ -16,14 +16,9 @@
 
 package org.springframework.web.socket.adapter.standard;
 
-import java.nio.ByteBuffer;
-
-import jakarta.websocket.DecodeException;
-import jakarta.websocket.Decoder;
-import jakarta.websocket.EncodeException;
-import jakarta.websocket.Encoder;
-import jakarta.websocket.EndpointConfig;
-
+import jakarta.websocket.*;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -36,6 +31,8 @@ import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.web.context.ContextLoader;
+
+import java.nio.ByteBuffer;
 
 /**
  * Base class that can be used to implement a standard {@link jakarta.websocket.Encoder}
@@ -74,7 +71,7 @@ import org.springframework.web.context.ContextLoader;
  * @see ConvertingEncoderDecoderSupport.TextDecoder
  */
 public abstract class ConvertingEncoderDecoderSupport<T, M> {
-
+	protected final Log logger = LogFactory.getLog(ConvertingEncoderDecoderSupport.class);
 	private static final String CONVERSION_SERVICE_BEAN_NAME = "webSocketConversionService";
 
 
@@ -108,6 +105,7 @@ public abstract class ConvertingEncoderDecoderSupport<T, M> {
 		ApplicationContext applicationContext = getApplicationContext();
 		Assert.state(applicationContext != null, "Unable to locate the Spring ApplicationContext");
 		try {
+			logger.info("[SPRING] 自定义日志---调用getBean："+CONVERSION_SERVICE_BEAN_NAME);
 			return applicationContext.getBean(CONVERSION_SERVICE_BEAN_NAME, ConversionService.class);
 		}
 		catch (BeansException ex) {

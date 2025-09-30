@@ -111,6 +111,7 @@ public class MBeanExportConfiguration implements ImportAware, EnvironmentAware, 
 		}
 		if (StringUtils.hasText(server)) {
 			Assert.state(this.beanFactory != null, "No BeanFactory set");
+			logger.info("[SPRING] 自定义日志---调用getBean："+ server);
 			exporter.setServer(this.beanFactory.getBean(server, MBeanServer.class));
 		}
 	}

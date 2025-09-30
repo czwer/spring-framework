@@ -16,15 +16,8 @@
 
 package org.springframework.context.annotation;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Proxy;
-import java.util.Arrays;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.aop.scope.ScopedProxyFactoryBean;
 import org.springframework.aot.AotDetector;
 import org.springframework.asm.Opcodes;
@@ -41,13 +34,7 @@ import org.springframework.cglib.core.ClassGenerator;
 import org.springframework.cglib.core.ClassLoaderAwareGeneratorStrategy;
 import org.springframework.cglib.core.CodeGenerationException;
 import org.springframework.cglib.core.SpringNamingPolicy;
-import org.springframework.cglib.proxy.Callback;
-import org.springframework.cglib.proxy.CallbackFilter;
-import org.springframework.cglib.proxy.Enhancer;
-import org.springframework.cglib.proxy.Factory;
-import org.springframework.cglib.proxy.MethodInterceptor;
-import org.springframework.cglib.proxy.MethodProxy;
-import org.springframework.cglib.proxy.NoOp;
+import org.springframework.cglib.proxy.*;
 import org.springframework.cglib.transform.ClassEmitterTransformer;
 import org.springframework.cglib.transform.TransformingClassGenerator;
 import org.springframework.core.SmartClassLoader;
@@ -58,6 +45,12 @@ import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.ReflectionUtils;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Proxy;
+import java.util.Arrays;
 
 /**
  * Enhances {@link Configuration} classes by generating a CGLIB subclass which
@@ -366,6 +359,7 @@ class ConfigurationClassEnhancer {
 			// is the same as that of referring to a FactoryBean within XML. See SPR-6602.
 			String factoryBeanName = BeanFactory.FACTORY_BEAN_PREFIX + beanName;
 			if (factoryContainsBean(beanFactory, factoryBeanName) && factoryContainsBean(beanFactory, beanName)) {
+				logger.info("[SPRING] 自定义日志---调用getBean："+factoryBeanName);
 				Object factoryBean = beanFactory.getBean(factoryBeanName);
 				if (factoryBean instanceof ScopedProxyFactoryBean) {
 					// Scoped proxy factory beans are a special case and should not be further proxied
@@ -421,6 +415,7 @@ class ConfigurationClassEnhancer {
 						}
 					}
 				}
+				logger.info("[SPRING] 自定义日志---调用getBean："+beanName);
 				Object beanInstance = (useArgs ? beanFactory.getBean(beanName, beanMethodArgs) :
 						beanFactory.getBean(beanName));
 				if (!ClassUtils.isAssignableValue(beanMethod.getReturnType(), beanInstance)) {
@@ -559,6 +554,7 @@ class ConfigurationClassEnhancer {
 					factoryBean.getClass().getClassLoader(), new Class<?>[] {interfaceType},
 					(proxy, method, args) -> {
 						if (method.getName().equals("getObject") && args == null) {
+							logger.info("[SPRING] 自定义日志---调用getBean："+beanName);
 							return beanFactory.getBean(beanName);
 						}
 						return ReflectionUtils.invokeMethod(method, factoryBean, args);
@@ -601,6 +597,7 @@ class ConfigurationClassEnhancer {
 
 			((Factory) fbProxy).setCallback(0, (MethodInterceptor) (obj, method, args, proxy) -> {
 				if (method.getName().equals("getObject") && args.length == 0) {
+					logger.info("[SPRING] 自定义日志---调用getBean："+beanName);
 					return beanFactory.getBean(beanName);
 				}
 				return method.invoke(factoryBean, args);

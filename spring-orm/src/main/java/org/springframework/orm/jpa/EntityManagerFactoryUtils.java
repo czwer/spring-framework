@@ -16,37 +16,15 @@
 
 package org.springframework.orm.jpa;
 
-import java.util.Map;
-
-import jakarta.persistence.EntityExistsException;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.EntityNotFoundException;
-import jakarta.persistence.LockTimeoutException;
-import jakarta.persistence.NoResultException;
-import jakarta.persistence.NonUniqueResultException;
-import jakarta.persistence.OptimisticLockException;
-import jakarta.persistence.PersistenceException;
-import jakarta.persistence.PessimisticLockException;
-import jakarta.persistence.Query;
+import jakarta.persistence.*;
 import jakarta.persistence.QueryTimeoutException;
-import jakarta.persistence.SynchronizationType;
-import jakarta.persistence.TransactionRequiredException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.core.Ordered;
-import org.springframework.dao.CannotAcquireLockException;
-import org.springframework.dao.DataAccessException;
-import org.springframework.dao.DataAccessResourceFailureException;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.dao.IncorrectResultSizeDataAccessException;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
-import org.springframework.dao.PessimisticLockingFailureException;
+import org.springframework.dao.*;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.lang.Nullable;
 import org.springframework.transaction.support.ResourceHolderSynchronization;
@@ -54,6 +32,8 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+
+import java.util.Map;
 
 /**
  * Helper class featuring methods for JPA EntityManager handling,
@@ -105,6 +85,7 @@ public abstract class EntityManagerFactoryUtils {
 			String[] candidateNames =
 					BeanFactoryUtils.beanNamesForTypeIncludingAncestors(beanFactory, EntityManagerFactory.class);
 			for (String candidateName : candidateNames) {
+				logger.info("[SPRING] 自定义日志---调用getBean："+candidateName);
 				EntityManagerFactory emf = (EntityManagerFactory) beanFactory.getBean(candidateName);
 				if (emf instanceof EntityManagerFactoryInfo emfInfo &&
 						unitName.equals(emfInfo.getPersistenceUnitName())) {
@@ -113,10 +94,12 @@ public abstract class EntityManagerFactoryUtils {
 			}
 			// No matching persistence unit found - simply take the EntityManagerFactory
 			// with the persistence unit name as bean name (by convention).
+			logger.info("[SPRING] 自定义日志---调用getBean："+unitName);
 			return beanFactory.getBean(unitName, EntityManagerFactory.class);
 		}
 		else {
 			// Find unique EntityManagerFactory bean in the context, falling back to parent contexts.
+			logger.info("[SPRING] 自定义日志---调用getBean：EntityManagerFactory");
 			return beanFactory.getBean(EntityManagerFactory.class);
 		}
 	}

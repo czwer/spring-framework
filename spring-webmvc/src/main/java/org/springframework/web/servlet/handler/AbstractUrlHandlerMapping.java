@@ -16,16 +16,10 @@
 
 package org.springframework.web.servlet.handler;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.server.RequestPath;
@@ -42,6 +36,8 @@ import org.springframework.web.util.ServletRequestPathUtils;
 import org.springframework.web.util.UrlPathHelper;
 import org.springframework.web.util.pattern.PathPattern;
 import org.springframework.web.util.pattern.PathPatternParser;
+
+import java.util.*;
 
 /**
  * Abstract base class for URL-mapped {@link HandlerMapping} implementations.
@@ -62,7 +58,7 @@ import org.springframework.web.util.pattern.PathPatternParser;
  * @since 16.04.2003
  */
 public abstract class AbstractUrlHandlerMapping extends AbstractHandlerMapping implements MatchableHandlerMapping {
-
+	protected final Log logger = LogFactory.getLog(AbstractUrlHandlerMapping.class);
 	@Nullable
 	private Object rootHandler;
 
@@ -170,6 +166,7 @@ public abstract class AbstractUrlHandlerMapping extends AbstractHandlerMapping i
 		if (!this.lazyInitHandlers && handler instanceof String handlerName) {
 			ApplicationContext applicationContext = obtainApplicationContext();
 			if (applicationContext.isSingleton(handlerName)) {
+				logger.info("[SPRING] 自定义日志---调用getBean："+handlerName);
 				resolvedHandler = applicationContext.getBean(handlerName);
 			}
 		}
@@ -280,6 +277,7 @@ public abstract class AbstractUrlHandlerMapping extends AbstractHandlerMapping i
 			if (rawHandler != null) {
 				// Bean name or resolved handler?
 				if (rawHandler instanceof String handlerName) {
+					logger.info("[SPRING] 自定义日志---调用getBean："+handlerName);
 					rawHandler = obtainApplicationContext().getBean(handlerName);
 				}
 				validateHandler(rawHandler, request);
@@ -328,6 +326,7 @@ public abstract class AbstractUrlHandlerMapping extends AbstractHandlerMapping i
 		PathPattern pattern = matches.get(0);
 		handler = this.pathPatternHandlerMap.get(pattern);
 		if (handler instanceof String handlerName) {
+			logger.info("[SPRING] 自定义日志---调用getBean："+handlerName);
 			handler = obtainApplicationContext().getBean(handlerName);
 		}
 		validateHandler(handler, request);
@@ -389,6 +388,7 @@ public abstract class AbstractUrlHandlerMapping extends AbstractHandlerMapping i
 			}
 			// Bean name or resolved handler?
 			if (handler instanceof String handlerName) {
+				logger.info("[SPRING] 自定义日志---调用getBean："+handlerName);
 				handler = obtainApplicationContext().getBean(handlerName);
 			}
 			validateHandler(handler, request);
@@ -420,6 +420,7 @@ public abstract class AbstractUrlHandlerMapping extends AbstractHandlerMapping i
 		if (handler != null) {
 			// Bean name or resolved handler?
 			if (handler instanceof String handlerName) {
+				logger.info("[SPRING] 自定义日志---调用getBean："+handlerName);
 				handler = obtainApplicationContext().getBean(handlerName);
 			}
 			validateHandler(handler, request);

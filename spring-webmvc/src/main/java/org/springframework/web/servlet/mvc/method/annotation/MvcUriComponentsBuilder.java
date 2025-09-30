@@ -16,28 +16,14 @@
 
 package org.springframework.web.servlet.mvc.method.annotation;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.aot.AotDetector;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.cglib.core.SpringNamingPolicy;
-import org.springframework.cglib.proxy.Callback;
-import org.springframework.cglib.proxy.Enhancer;
-import org.springframework.cglib.proxy.Factory;
-import org.springframework.cglib.proxy.MethodInterceptor;
-import org.springframework.cglib.proxy.MethodProxy;
+import org.springframework.cglib.proxy.*;
 import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.core.MethodIntrospector;
 import org.springframework.core.MethodParameter;
@@ -47,14 +33,8 @@ import org.springframework.core.annotation.AnnotatedMethod;
 import org.springframework.lang.Nullable;
 import org.springframework.objenesis.ObjenesisException;
 import org.springframework.objenesis.SpringObjenesis;
-import org.springframework.util.AntPathMatcher;
-import org.springframework.util.Assert;
-import org.springframework.util.ObjectUtils;
-import org.springframework.util.PathMatcher;
-import org.springframework.util.ReflectionUtils;
+import org.springframework.util.*;
 import org.springframework.util.ReflectionUtils.MethodFilter;
-import org.springframework.util.StringUtils;
-import org.springframework.util.SystemPropertyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.request.RequestAttributes;
@@ -68,6 +48,11 @@ import org.springframework.web.servlet.mvc.method.RequestMappingInfoHandlerMappi
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.web.util.pattern.PathPatternParser;
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.*;
 
 /**
  * Creates instances of {@link org.springframework.web.util.UriComponentsBuilder}
@@ -620,6 +605,7 @@ public class MvcUriComponentsBuilder {
 		WebApplicationContext wac = getWebApplicationContext();
 		if (wac != null) {
 			try {
+				logger.info("[SPRING] 自定义日志---调用getBean："+MVC_URI_COMPONENTS_CONTRIBUTOR_BEAN_NAME);
 				return wac.getBean(MVC_URI_COMPONENTS_CONTRIBUTOR_BEAN_NAME, CompositeUriComponentsContributor.class);
 			}
 			catch (NoSuchBeanDefinitionException ex) {

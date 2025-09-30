@@ -16,6 +16,8 @@
 
 package org.springframework.aop.target;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.lang.Nullable;
 
@@ -59,7 +61,7 @@ import org.springframework.lang.Nullable;
  */
 @SuppressWarnings("serial")
 public class LazyInitTargetSource extends AbstractBeanFactoryBasedTargetSource {
-
+	protected final transient Log logger = LogFactory.getLog(LazyInitTargetSource.class);
 	@Nullable
 	private Object target;
 
@@ -67,6 +69,7 @@ public class LazyInitTargetSource extends AbstractBeanFactoryBasedTargetSource {
 	@Override
 	public synchronized Object getTarget() throws BeansException {
 		if (this.target == null) {
+			logger.info("[SPRING] 自定义日志---调用getBean："+getTargetBeanName());
 			this.target = getBeanFactory().getBean(getTargetBeanName());
 			postProcessTargetObject(this.target);
 		}

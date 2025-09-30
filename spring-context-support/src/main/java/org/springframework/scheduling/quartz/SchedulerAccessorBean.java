@@ -16,6 +16,8 @@
 
 package org.springframework.scheduling.quartz;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.impl.SchedulerRepository;
@@ -39,7 +41,7 @@ import org.springframework.util.Assert;
  * @see #setSchedulerName
  */
 public class SchedulerAccessorBean extends SchedulerAccessor implements BeanFactoryAware, InitializingBean {
-
+	protected final Log logger = LogFactory.getLog(SchedulerAccessorBean.class);
 	@Nullable
 	private String schedulerName;
 
@@ -102,6 +104,7 @@ public class SchedulerAccessorBean extends SchedulerAccessor implements BeanFact
 		if (this.beanFactory instanceof ListableBeanFactory lbf) {
 			String[] beanNames = lbf.getBeanNamesForType(Scheduler.class);
 			for (String beanName : beanNames) {
+				logger.info("[SPRING] 自定义日志---调用getBean："+beanName);
 				Scheduler schedulerBean = (Scheduler) lbf.getBean(beanName);
 				if (schedulerName.equals(schedulerBean.getSchedulerName())) {
 					return schedulerBean;
@@ -117,6 +120,7 @@ public class SchedulerAccessorBean extends SchedulerAccessor implements BeanFact
 
 	protected Scheduler findDefaultScheduler() {
 		if (this.beanFactory != null) {
+			logger.info("[SPRING] 自定义日志---调用getBean：Scheduler");
 			return this.beanFactory.getBean(Scheduler.class);
 		}
 		else {

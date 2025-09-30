@@ -57,6 +57,7 @@ public abstract class UiApplicationContextUtils {
 	 */
 	public static ThemeSource initThemeSource(ApplicationContext context) {
 		if (context.containsLocalBean(THEME_SOURCE_BEAN_NAME)) {
+			logger.info("[SPRING] 自定义日志---调用getBean："+THEME_SOURCE_BEAN_NAME);
 			ThemeSource themeSource = context.getBean(THEME_SOURCE_BEAN_NAME, ThemeSource.class);
 			// Make ThemeSource aware of parent ThemeSource.
 			if (context.getParent() instanceof ThemeSource pts && themeSource instanceof HierarchicalThemeSource hts) {

@@ -16,16 +16,8 @@
 
 package org.springframework.context.event;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Predicate;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.BeanFactory;
@@ -42,6 +34,10 @@ import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
+
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
 
 /**
  * Abstract implementation of the {@link ApplicationEventMulticaster} interface,
@@ -65,7 +61,7 @@ import org.springframework.util.ObjectUtils;
  */
 public abstract class AbstractApplicationEventMulticaster
 		implements ApplicationEventMulticaster, BeanClassLoaderAware, BeanFactoryAware {
-
+	protected final Log logger = LogFactory.getLog(AbstractApplicationEventMulticaster.class);
 	private final DefaultListenerRetriever defaultRetriever = new DefaultListenerRetriever();
 
 	final Map<ListenerCacheKey, CachedListenerRetriever> retrieverCache = new ConcurrentHashMap<>(64);
@@ -263,6 +259,7 @@ public abstract class AbstractApplicationEventMulticaster
 			for (String listenerBeanName : listenerBeans) {
 				try {
 					if (supportsEvent(beanFactory, listenerBeanName, eventType)) {
+						logger.info("[SPRING] 自定义日志---调用getBean："+ listenerBeanName);
 						ApplicationListener<?> listener =
 								beanFactory.getBean(listenerBeanName, ApplicationListener.class);
 
@@ -479,6 +476,7 @@ public abstract class AbstractApplicationEventMulticaster
 				BeanFactory beanFactory = getBeanFactory();
 				for (String listenerBeanName : applicationListenerBeans) {
 					try {
+						logger.info("[SPRING] 自定义日志---调用getBean："+listenerBeanName);
 						allListeners.add(beanFactory.getBean(listenerBeanName, ApplicationListener.class));
 					}
 					catch (NoSuchBeanDefinitionException ex) {
@@ -512,6 +510,7 @@ public abstract class AbstractApplicationEventMulticaster
 				BeanFactory beanFactory = getBeanFactory();
 				for (String listenerBeanName : this.applicationListenerBeans) {
 					try {
+						logger.info("[SPRING] 自定义日志---调用getBean："+listenerBeanName);
 						ApplicationListener<?> listener =
 								beanFactory.getBean(listenerBeanName, ApplicationListener.class);
 						if (!allListeners.contains(listener)) {

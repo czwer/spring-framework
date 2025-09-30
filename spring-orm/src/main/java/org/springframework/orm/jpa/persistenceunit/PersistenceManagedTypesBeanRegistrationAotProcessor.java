@@ -16,35 +16,13 @@
 
 package org.springframework.orm.jpa.persistenceunit;
 
-import java.lang.annotation.Annotation;
-import java.util.List;
-
-import javax.lang.model.element.Modifier;
-
-import jakarta.persistence.Convert;
-import jakarta.persistence.Converter;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.IdClass;
-import jakarta.persistence.PostLoad;
-import jakarta.persistence.PostPersist;
-import jakarta.persistence.PostRemove;
-import jakarta.persistence.PostUpdate;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreRemove;
-import jakarta.persistence.PreUpdate;
-
+import jakarta.persistence.*;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.aot.generate.GeneratedMethod;
 import org.springframework.aot.generate.GenerationContext;
-import org.springframework.aot.hint.BindingReflectionHintsRegistrar;
-import org.springframework.aot.hint.ExecutableMode;
-import org.springframework.aot.hint.MemberCategory;
-import org.springframework.aot.hint.ReflectionHints;
-import org.springframework.aot.hint.RuntimeHints;
-import org.springframework.beans.factory.aot.BeanRegistrationAotContribution;
-import org.springframework.beans.factory.aot.BeanRegistrationAotProcessor;
-import org.springframework.beans.factory.aot.BeanRegistrationCode;
-import org.springframework.beans.factory.aot.BeanRegistrationCodeFragments;
-import org.springframework.beans.factory.aot.BeanRegistrationCodeFragmentsDecorator;
+import org.springframework.aot.hint.*;
+import org.springframework.beans.factory.aot.*;
 import org.springframework.beans.factory.support.RegisteredBean;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.javapoet.CodeBlock;
@@ -52,6 +30,10 @@ import org.springframework.javapoet.ParameterizedTypeName;
 import org.springframework.lang.Nullable;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils;
+
+import javax.lang.model.element.Modifier;
+import java.lang.annotation.Annotation;
+import java.util.List;
 
 /**
  * {@link BeanRegistrationAotProcessor} implementations for persistence managed
@@ -83,7 +65,7 @@ class PersistenceManagedTypesBeanRegistrationAotProcessor implements BeanRegistr
 	}
 
 	private static final class JpaManagedTypesBeanRegistrationCodeFragments extends BeanRegistrationCodeFragmentsDecorator {
-
+		protected final Log logger = LogFactory.getLog(JpaManagedTypesBeanRegistrationCodeFragments.class);
 		private static final List<Class<? extends Annotation>> CALLBACK_TYPES = List.of(PreUpdate.class,
 				PostUpdate.class, PrePersist.class, PostPersist.class, PreRemove.class, PostRemove.class, PostLoad.class);
 
@@ -104,6 +86,7 @@ class PersistenceManagedTypesBeanRegistrationAotProcessor implements BeanRegistr
 		public CodeBlock generateInstanceSupplierCode(GenerationContext generationContext,
 				BeanRegistrationCode beanRegistrationCode,
 				boolean allowDirectSupplierShortcut) {
+			logger.info("[SPRING] 自定义日志---调用getBean："+this.registeredBean.getBeanName());
 			PersistenceManagedTypes persistenceManagedTypes = this.registeredBean.getBeanFactory()
 					.getBean(this.registeredBean.getBeanName(), PersistenceManagedTypes.class);
 			contributeHints(generationContext.getRuntimeHints(),

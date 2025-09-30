@@ -16,15 +16,16 @@
 
 package org.springframework.web.context.support;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.web.context.WebApplicationContext;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * HttpServletRequest decorator that makes all Spring beans in a
@@ -35,6 +36,7 @@ import org.springframework.web.context.WebApplicationContext;
  * @since 2.5
  */
 public class ContextExposingHttpServletRequest extends HttpServletRequestWrapper {
+	private static final Log logger = LogFactory.getLog(ContextExposingHttpServletRequest.class);
 
 	private final WebApplicationContext webApplicationContext;
 
@@ -86,6 +88,7 @@ public class ContextExposingHttpServletRequest extends HttpServletRequestWrapper
 		if ((this.explicitAttributes == null || !this.explicitAttributes.contains(name)) &&
 				(this.exposedContextBeanNames == null || this.exposedContextBeanNames.contains(name)) &&
 				this.webApplicationContext.containsBean(name)) {
+			logger.info("[SPRING] 自定义日志---调用getBean："+name);
 			return this.webApplicationContext.getBean(name);
 		}
 		else {

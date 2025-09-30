@@ -16,8 +16,8 @@
 
 package org.springframework.aop.aspectj.annotation;
 
-import java.io.Serializable;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.core.Ordered;
@@ -25,6 +25,8 @@ import org.springframework.core.annotation.OrderUtils;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
+
+import java.io.Serializable;
 
 /**
  * {@link org.springframework.aop.aspectj.AspectInstanceFactory} implementation
@@ -43,7 +45,7 @@ import org.springframework.util.ClassUtils;
  */
 @SuppressWarnings("serial")
 public class BeanFactoryAspectInstanceFactory implements MetadataAwareAspectInstanceFactory, Serializable {
-
+	protected final Log logger = LogFactory.getLog(BeanFactoryAspectInstanceFactory.class);
 	private final BeanFactory beanFactory;
 
 	private final String name;
@@ -87,6 +89,7 @@ public class BeanFactoryAspectInstanceFactory implements MetadataAwareAspectInst
 
 	@Override
 	public Object getAspectInstance() {
+		logger.info("[SPRING] 自定义日志---调用getBean："+this.name);
 		return this.beanFactory.getBean(this.name);
 	}
 
@@ -130,6 +133,7 @@ public class BeanFactoryAspectInstanceFactory implements MetadataAwareAspectInst
 		Class<?> type = this.beanFactory.getType(this.name);
 		if (type != null) {
 			if (Ordered.class.isAssignableFrom(type) && this.beanFactory.isSingleton(this.name)) {
+				logger.info("[SPRING] 自定义日志---调用getBean："+this.name);
 				return ((Ordered) this.beanFactory.getBean(this.name)).getOrder();
 			}
 			return OrderUtils.getOrder(type, Ordered.LOWEST_PRECEDENCE);

@@ -19,6 +19,8 @@ package org.springframework.web.jsf;
 import jakarta.faces.application.NavigationHandler;
 import jakarta.faces.context.FacesContext;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.lang.Nullable;
 import org.springframework.web.context.WebApplicationContext;
@@ -72,7 +74,7 @@ import org.springframework.web.context.WebApplicationContext;
  * @see DecoratingNavigationHandler
  */
 public class DelegatingNavigationHandlerProxy extends NavigationHandler {
-
+	private static final Log logger = LogFactory.getLog(DelegatingNavigationHandlerProxy.class);
 	/**
 	 * Default name of the target bean in the Spring application context:
 	 * "jsfNavigationHandler".
@@ -130,6 +132,7 @@ public class DelegatingNavigationHandlerProxy extends NavigationHandler {
 	 */
 	protected NavigationHandler getDelegate(FacesContext facesContext) {
 		String targetBeanName = getTargetBeanName(facesContext);
+		logger.info("[SPRING] 自定义日志---调用getBean："+targetBeanName);
 		return getBeanFactory(facesContext).getBean(targetBeanName, NavigationHandler.class);
 	}
 

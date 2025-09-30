@@ -16,20 +16,6 @@
 
 package org.springframework.web.servlet;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import jakarta.servlet.DispatcherType;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -37,7 +23,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -65,6 +50,10 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.util.ServletRequestPathUtils;
 import org.springframework.web.util.WebUtils;
+
+import java.io.IOException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Central dispatcher for HTTP request handlers/controllers, for example, for web UI controllers
@@ -163,7 +152,7 @@ import org.springframework.web.util.WebUtils;
  */
 @SuppressWarnings("serial")
 public class DispatcherServlet extends FrameworkServlet {
-
+	protected final Log logger = LogFactory.getLog(DispatcherServlet.class);
 	/** Well-known name for the MultipartResolver object in the bean factory for this namespace. */
 	public static final String MULTIPART_RESOLVER_BEAN_NAME = "multipartResolver";
 
@@ -525,6 +514,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	 */
 	private void initMultipartResolver(ApplicationContext context) {
 		try {
+			logger.info("[SPRING] 自定义日志---调用getBean："+MULTIPART_RESOLVER_BEAN_NAME);
 			this.multipartResolver = context.getBean(MULTIPART_RESOLVER_BEAN_NAME, MultipartResolver.class);
 			if (logger.isTraceEnabled()) {
 				logger.trace("Detected " + this.multipartResolver);
@@ -549,6 +539,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	 */
 	private void initLocaleResolver(ApplicationContext context) {
 		try {
+			logger.info("[SPRING] 自定义日志---调用getBean："+LOCALE_RESOLVER_BEAN_NAME);
 			this.localeResolver = context.getBean(LOCALE_RESOLVER_BEAN_NAME, LocaleResolver.class);
 			if (logger.isTraceEnabled()) {
 				logger.trace("Detected " + this.localeResolver);
@@ -575,6 +566,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	@Deprecated
 	private void initThemeResolver(ApplicationContext context) {
 		try {
+			logger.info("[SPRING] 自定义日志---调用getBean："+THEME_RESOLVER_BEAN_NAME);
 			this.themeResolver = context.getBean(THEME_RESOLVER_BEAN_NAME, ThemeResolver.class);
 			if (logger.isTraceEnabled()) {
 				logger.trace("Detected " + this.themeResolver);
@@ -613,6 +605,7 @@ public class DispatcherServlet extends FrameworkServlet {
 		}
 		else {
 			try {
+				logger.info("[SPRING] 自定义日志---调用getBean："+HANDLER_MAPPING_BEAN_NAME);
 				HandlerMapping hm = context.getBean(HANDLER_MAPPING_BEAN_NAME, HandlerMapping.class);
 				this.handlerMappings = Collections.singletonList(hm);
 			}
@@ -659,6 +652,7 @@ public class DispatcherServlet extends FrameworkServlet {
 		}
 		else {
 			try {
+				logger.info("[SPRING] 自定义日志---调用getBean："+HANDLER_ADAPTER_BEAN_NAME);
 				HandlerAdapter ha = context.getBean(HANDLER_ADAPTER_BEAN_NAME, HandlerAdapter.class);
 				this.handlerAdapters = Collections.singletonList(ha);
 			}
@@ -698,6 +692,7 @@ public class DispatcherServlet extends FrameworkServlet {
 		}
 		else {
 			try {
+				logger.info("[SPRING] 自定义日志---调用getBean："+HANDLER_EXCEPTION_RESOLVER_BEAN_NAME);
 				HandlerExceptionResolver her =
 						context.getBean(HANDLER_EXCEPTION_RESOLVER_BEAN_NAME, HandlerExceptionResolver.class);
 				this.handlerExceptionResolvers = Collections.singletonList(her);
@@ -724,6 +719,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	 */
 	private void initRequestToViewNameTranslator(ApplicationContext context) {
 		try {
+			logger.info("[SPRING] 自定义日志---调用getBean："+REQUEST_TO_VIEW_NAME_TRANSLATOR_BEAN_NAME);
 			this.viewNameTranslator =
 					context.getBean(REQUEST_TO_VIEW_NAME_TRANSLATOR_BEAN_NAME, RequestToViewNameTranslator.class);
 			if (logger.isTraceEnabled()) {
@@ -763,6 +759,7 @@ public class DispatcherServlet extends FrameworkServlet {
 		}
 		else {
 			try {
+				logger.info("[SPRING] 自定义日志---调用getBean："+VIEW_RESOLVER_BEAN_NAME);
 				ViewResolver vr = context.getBean(VIEW_RESOLVER_BEAN_NAME, ViewResolver.class);
 				this.viewResolvers = Collections.singletonList(vr);
 			}
@@ -789,6 +786,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	 */
 	private void initFlashMapManager(ApplicationContext context) {
 		try {
+			logger.info("[SPRING] 自定义日志---调用getBean："+FLASH_MAP_MANAGER_BEAN_NAME);
 			this.flashMapManager = context.getBean(FLASH_MAP_MANAGER_BEAN_NAME, FlashMapManager.class);
 			if (logger.isTraceEnabled()) {
 				logger.trace("Detected " + this.flashMapManager.getClass().getSimpleName());

@@ -16,9 +16,8 @@
 
 package org.springframework.jms.config;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.InitializingBean;
@@ -26,6 +25,9 @@ import org.springframework.lang.Nullable;
 import org.springframework.messaging.handler.annotation.support.DefaultMessageHandlerMethodFactory;
 import org.springframework.messaging.handler.annotation.support.MessageHandlerMethodFactory;
 import org.springframework.util.Assert;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Helper bean for registering {@link JmsListenerEndpoint} with a {@link JmsListenerEndpointRegistry}.
@@ -36,7 +38,7 @@ import org.springframework.util.Assert;
  * @see org.springframework.jms.annotation.JmsListenerConfigurer
  */
 public class JmsListenerEndpointRegistrar implements BeanFactoryAware, InitializingBean {
-
+	protected final static Log logger = LogFactory.getLog(JmsListenerEndpointRegistrar.class);
 	@Nullable
 	private JmsListenerEndpointRegistry endpointRegistry;
 
@@ -148,6 +150,7 @@ public class JmsListenerEndpointRegistrar implements BeanFactoryAware, Initializ
 		else if (this.containerFactoryBeanName != null) {
 			Assert.state(this.beanFactory != null, "BeanFactory must be set to obtain container factory by bean name");
 			// Consider changing this if live change of the factory is required...
+			logger.info("[SPRING] 自定义日志---调用getBean："+this.containerFactoryBeanName);
 			this.containerFactory = this.beanFactory.getBean(
 					this.containerFactoryBeanName, JmsListenerContainerFactory.class);
 			return this.containerFactory;

@@ -16,45 +16,22 @@
 
 package org.springframework.test.web.servlet.request;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URI;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpSession;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.Mergeable;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpInputMessage;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpOutputMessage;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.lang.Nullable;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.util.Assert;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
+import org.springframework.util.*;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.servlet.DispatcherServlet;
@@ -64,6 +41,13 @@ import org.springframework.web.servlet.support.SessionFlashMapManager;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.UrlPathHelper;
+
+import java.io.*;
+import java.net.URI;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.security.Principal;
+import java.util.*;
 
 /**
  * Base builder for {@link MockHttpServletRequest} required as input to
@@ -79,7 +63,7 @@ import org.springframework.web.util.UrlPathHelper;
  */
 public abstract class AbstractMockHttpServletRequestBuilder<B extends AbstractMockHttpServletRequestBuilder<B>>
 		implements ConfigurableSmartRequestBuilder<B>, Mergeable {
-
+	protected final Log logger = LogFactory.getLog(AbstractMockHttpServletRequestBuilder.class);
 	private final HttpMethod method;
 
 	@Nullable
@@ -928,6 +912,7 @@ public abstract class AbstractMockHttpServletRequestBuilder<B extends AbstractMo
 		try {
 			ServletContext servletContext = request.getServletContext();
 			WebApplicationContext wac = WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
+			logger.info("[SPRING] 自定义日志---调用getBean："+DispatcherServlet.FLASH_MAP_MANAGER_BEAN_NAME);
 			flashMapManager = wac.getBean(DispatcherServlet.FLASH_MAP_MANAGER_BEAN_NAME, FlashMapManager.class);
 		}
 		catch (IllegalStateException | NoSuchBeanDefinitionException ex) {

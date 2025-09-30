@@ -93,7 +93,7 @@ final class PostProcessorRegistrationDelegate {
 					beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false);
 			for (String ppName : postProcessorNames) {
 				if (beanFactory.isTypeMatch(ppName, PriorityOrdered.class)) {
-					logger.info("[SPRING] 自定义日志【非常重要】---invokeBeanFactoryPostProcessors步骤：2-2【获取Bean】："+ppName);
+					logger.info("[SPRING] 自定义日志【非常重要】---invokeBeanFactoryPostProcessors步骤：调用getBean："+ppName);
 					currentRegistryProcessors.add(beanFactory.getBean(ppName, BeanDefinitionRegistryPostProcessor.class));
 					processedBeans.add(ppName);
 				}
@@ -244,6 +244,7 @@ final class PostProcessorRegistrationDelegate {
 		List<String> nonOrderedPostProcessorNames = new ArrayList<>();
 		for (String ppName : postProcessorNames) {
 			if (beanFactory.isTypeMatch(ppName, PriorityOrdered.class)) {
+				logger.info("[SPRING] 自定义日志---调用getBean："+ppName);
 				BeanPostProcessor pp = beanFactory.getBean(ppName, BeanPostProcessor.class);
 				priorityOrderedPostProcessors.add(pp);
 				if (pp instanceof MergedBeanDefinitionPostProcessor) {
@@ -307,6 +308,7 @@ final class PostProcessorRegistrationDelegate {
 		String[] postProcessorNames = beanFactory.getBeanNamesForType(beanPostProcessorType, true, false);
 		List<T> postProcessors = new ArrayList<>();
 		for (String ppName : postProcessorNames) {
+			logger.info("[SPRING] 自定义日志---调用getBean："+ppName);
 			postProcessors.add(beanFactory.getBean(ppName, beanPostProcessorType));
 		}
 		sortPostProcessors(postProcessors, beanFactory);

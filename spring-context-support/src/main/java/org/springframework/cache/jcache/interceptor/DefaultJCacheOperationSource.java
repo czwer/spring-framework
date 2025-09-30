@@ -16,26 +16,20 @@
 
 package org.springframework.cache.jcache.interceptor;
 
-import java.util.Collection;
-import java.util.function.Supplier;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
-import org.springframework.beans.factory.NoUniqueBeanDefinitionException;
-import org.springframework.beans.factory.SmartInitializingSingleton;
+import org.springframework.beans.factory.*;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
-import org.springframework.cache.interceptor.CacheOperationInvocationContext;
-import org.springframework.cache.interceptor.CacheResolver;
-import org.springframework.cache.interceptor.KeyGenerator;
-import org.springframework.cache.interceptor.SimpleCacheResolver;
-import org.springframework.cache.interceptor.SimpleKeyGenerator;
+import org.springframework.cache.interceptor.*;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.function.SingletonSupplier;
 import org.springframework.util.function.SupplierUtils;
+
+import java.util.Collection;
+import java.util.function.Supplier;
 
 /**
  * The default {@link JCacheOperationSource} implementation delegating
@@ -48,7 +42,7 @@ import org.springframework.util.function.SupplierUtils;
  */
 public class DefaultJCacheOperationSource extends AnnotationJCacheOperationSource
 		implements BeanFactoryAware, SmartInitializingSingleton {
-
+	protected final Log logger = LogFactory.getLog(DefaultJCacheOperationSource.class);
 	@Nullable
 	private SingletonSupplier<CacheManager> cacheManager;
 
@@ -174,6 +168,7 @@ public class DefaultJCacheOperationSource extends AnnotationJCacheOperationSourc
 	protected <T> T getBean(Class<T> type) {
 		Assert.state(this.beanFactory != null, () -> "BeanFactory required for resolution of [" + type + "]");
 		try {
+			logger.info("[SPRING] 自定义日志---调用getBean："+type.getName());
 			return this.beanFactory.getBean(type);
 		}
 		catch (NoUniqueBeanDefinitionException ex) {
@@ -193,6 +188,7 @@ public class DefaultJCacheOperationSource extends AnnotationJCacheOperationSourc
 		if (getCacheManager() == null) {
 			Assert.state(this.beanFactory != null, "BeanFactory required for default CacheManager resolution");
 			try {
+				logger.info("[SPRING] 自定义日志---调用getBean：CacheManager");
 				this.cacheManager = SingletonSupplier.of(this.beanFactory.getBean(CacheManager.class));
 			}
 			catch (NoUniqueBeanDefinitionException ex) {

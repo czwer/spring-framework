@@ -16,11 +16,8 @@
 
 package org.springframework.web.method;
 
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.aop.scope.ScopedProxyUtils;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryUtils;
@@ -39,6 +36,11 @@ import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Encapsulates information about an {@link ControllerAdvice @ControllerAdvice}
  * Spring-managed bean without necessarily requiring it to be instantiated.
@@ -55,7 +57,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
  * @since 3.2
  */
 public class ControllerAdviceBean implements Ordered {
-
+	protected final transient Log logger = LogFactory.getLog(ControllerAdviceBean.class);
 	private final String beanName;
 
 	private final boolean isSingleton;
@@ -186,6 +188,7 @@ public class ControllerAdviceBean implements Ordered {
 	 */
 	public Object resolveBean() {
 		if (this.resolvedBean == null) {
+			logger.info("[SPRING] 自定义日志---调用getBean："+this.beanName);
 			Object resolvedBean = this.beanFactory.getBean(this.beanName);
 			// Don't cache non-singletons (for example, prototypes).
 			if (!this.isSingleton) {

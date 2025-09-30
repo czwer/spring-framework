@@ -16,16 +16,12 @@
 
 package org.springframework.orm.hibernate5;
 
-import java.util.Map;
-import java.util.function.Consumer;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.resource.beans.container.spi.BeanContainer;
 import org.hibernate.resource.beans.container.spi.ContainedBean;
 import org.hibernate.resource.beans.spi.BeanInstanceProducer;
 import org.hibernate.type.spi.TypeBootstrapContext;
-
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
@@ -33,6 +29,9 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.ConcurrentReferenceHashMap;
+
+import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * Spring's implementation of Hibernate's {@link BeanContainer} SPI,
@@ -149,6 +148,7 @@ public final class SpringBeanContainer implements BeanContainer {
 						this.beanFactory::destroyBean);
 			}
 			else {
+				logger.info("[SPRING] 自定义日志---调用getBean："+beanType.getName());
 				return new SpringContainedBean<>(this.beanFactory.getBean(beanType));
 			}
 		}
@@ -209,6 +209,7 @@ public final class SpringBeanContainer implements BeanContainer {
 				}
 			}
 			else {
+				logger.info("[SPRING] 自定义日志---调用getBean："+beanType.getName());
 				return (this.beanFactory.containsBean(name) ?
 						new SpringContainedBean<>(this.beanFactory.getBean(name, beanType)) :
 						new SpringContainedBean<>(this.beanFactory.getBean(beanType)));

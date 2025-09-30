@@ -16,15 +16,9 @@
 
 package org.springframework.test.web.servlet.setup;
 
-import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
 import jakarta.servlet.ServletContext;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.TypeConverter;
@@ -35,12 +29,7 @@ import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.beans.factory.config.DependencyDescriptor;
 import org.springframework.beans.factory.config.NamedBeanHolder;
 import org.springframework.beans.factory.support.StaticListableBeanFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.ApplicationEvent;
-import org.springframework.context.MessageSource;
-import org.springframework.context.MessageSourceResolvable;
-import org.springframework.context.NoSuchMessageException;
+import org.springframework.context.*;
 import org.springframework.context.support.DelegatingMessageSource;
 import org.springframework.core.ResolvableType;
 import org.springframework.core.env.Environment;
@@ -52,6 +41,13 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.ServletContextResourcePatternResolver;
+
+import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * A stub WebApplicationContext that accepts registrations of object instances.
@@ -67,7 +63,7 @@ import org.springframework.web.context.support.ServletContextResourcePatternReso
  * @since 3.2
  */
 class StubWebApplicationContext implements WebApplicationContext {
-
+	protected final Log logger = LogFactory.getLog(StubWebApplicationContext.class);
 	private final ServletContext servletContext;
 
 	private final StubBeanFactory beanFactory = new StubBeanFactory();
@@ -160,26 +156,31 @@ class StubWebApplicationContext implements WebApplicationContext {
 
 	@Override
 	public Object getBean(String name) throws BeansException {
+		logger.info("[SPRING] 自定义日志---调用getBean："+name);
 		return this.beanFactory.getBean(name);
 	}
 
 	@Override
 	public <T> T getBean(String name, Class<T> requiredType) throws BeansException {
+		logger.info("[SPRING] 自定义日志---调用getBean："+name);
 		return this.beanFactory.getBean(name, requiredType);
 	}
 
 	@Override
 	public Object getBean(String name, Object... args) throws BeansException {
+		logger.info("[SPRING] 自定义日志---调用getBean："+name);
 		return this.beanFactory.getBean(name, args);
 	}
 
 	@Override
 	public <T> T getBean(Class<T> requiredType) throws BeansException {
+		logger.info("[SPRING] 自定义日志---调用getBean："+requiredType.getName());
 		return this.beanFactory.getBean(requiredType);
 	}
 
 	@Override
 	public <T> T getBean(Class<T> requiredType, Object... args) throws BeansException {
+		logger.info("[SPRING] 自定义日志---调用getBean："+requiredType.getName());
 		return this.beanFactory.getBean(requiredType, args);
 	}
 

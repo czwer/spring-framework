@@ -16,21 +16,18 @@
 
 package org.springframework.web.filter;
 
-import java.io.IOException;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
-import jakarta.servlet.Filter;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
-
+import jakarta.servlet.*;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
+
+import java.io.IOException;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Proxy for a standard Servlet Filter, delegating to a Spring-managed bean that
@@ -84,7 +81,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
  * @see org.springframework.web.WebApplicationInitializer
  */
 public class DelegatingFilterProxy extends GenericFilterBean {
-
+	protected final Log logger = LogFactory.getLog(DelegatingFilterProxy.class);
 	@Nullable
 	private String contextAttribute;
 
@@ -339,6 +336,7 @@ public class DelegatingFilterProxy extends GenericFilterBean {
 	protected Filter initDelegate(WebApplicationContext wac) throws ServletException {
 		String targetBeanName = getTargetBeanName();
 		Assert.state(targetBeanName != null, "No target bean name set");
+		logger.info("[SPRING] 自定义日志---调用getBean："+targetBeanName);
 		Filter delegate = wac.getBean(targetBeanName, Filter.class);
 		if (isTargetFilterLifecycle()) {
 			delegate.init(getFilterConfig());

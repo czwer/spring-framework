@@ -75,6 +75,7 @@ public class DynamicPropertyRegistrarBeanInitializer implements BeanFactoryIniti
 				if (logger.isDebugEnabled()) {
 					logger.debug("Eagerly initializing DynamicPropertyRegistrar bean '%s'".formatted(name));
 				}
+				logger.info("[SPRING] 自定义日志---调用getBean："+name);
 				DynamicPropertyRegistrar registrar = beanFactory.getBean(name, DynamicPropertyRegistrar.class);
 				registrar.accept(registry);
 			}

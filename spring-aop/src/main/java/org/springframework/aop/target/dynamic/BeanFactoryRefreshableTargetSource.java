@@ -16,6 +16,8 @@
 
 package org.springframework.aop.target.dynamic;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.util.Assert;
 
@@ -36,6 +38,7 @@ import org.springframework.util.Assert;
  * @see #setRefreshCheckDelay
  */
 public class BeanFactoryRefreshableTargetSource extends AbstractRefreshableTargetSource {
+	private static final Log logger = LogFactory.getLog(BeanFactoryRefreshableTargetSource.class);
 
 	private final BeanFactory beanFactory;
 
@@ -74,6 +77,7 @@ public class BeanFactoryRefreshableTargetSource extends AbstractRefreshableTarge
 	 * @see org.springframework.beans.factory.BeanFactory#getBean
 	 */
 	protected Object obtainFreshBean(BeanFactory beanFactory, String beanName) {
+		logger.info("[SPRING] 自定义日志---调用getBean："+beanName);
 		return beanFactory.getBean(beanName);
 	}
 

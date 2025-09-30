@@ -547,7 +547,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 		@Override
 		public Object postProcessBeforeInitialization(Object bean, String beanName) {
 			if (bean instanceof ImportAware importAware) {
-				logger.info("[SPRING] 自定义日志---：在Bean初始化之前，为那些通过 @Import导入且实现了ImportAware接口的Bean注入导入源的注解元数据：" + beanName);
+				logger.info("[SPRING] 自定义日志---：在Bean初始化之前，为那些通过 @Import导入且实现了ImportAware接口的Bean注入导入源的注解元数据，调用getBean：" + beanName);
 				ImportRegistry ir = this.beanFactory.getBean(IMPORT_REGISTRY_BEAN_NAME, ImportRegistry.class);
 				AnnotationMetadata importingClass = ir.getImportingClassFor(ClassUtils.getUserClass(bean).getName());
 				if (importingClass != null) {
@@ -560,6 +560,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 
 
 	private static class ImportAwareAotContribution implements BeanFactoryInitializationAotContribution {
+		protected final Log logger = LogFactory.getLog(ImportAwareAotContribution.class);
 
 		private static final String BEAN_FACTORY_VARIABLE = BeanFactoryInitializationCode.BEAN_FACTORY_VARIABLE;
 
@@ -617,6 +618,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 		}
 
 		private Map<String, String> buildImportAwareMappings() {
+			logger.info("[SPRING] 自定义日志---调用getBean："+IMPORT_REGISTRY_BEAN_NAME);
 			ImportRegistry importRegistry = this.beanFactory.getBean(IMPORT_REGISTRY_BEAN_NAME, ImportRegistry.class);
 			Map<String, String> mappings = new LinkedHashMap<>();
 			for (String name : this.beanFactory.getBeanDefinitionNames()) {

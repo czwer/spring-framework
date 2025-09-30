@@ -16,20 +16,8 @@
 
 package org.springframework.web.reactive.result.view;
 
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.context.ApplicationContext;
@@ -42,6 +30,13 @@ import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.reactive.BindingContext;
 import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Base class for {@link View} implementations.
@@ -319,6 +314,7 @@ public abstract class AbstractView implements View, BeanNameAware, ApplicationCo
 	protected RequestDataValueProcessor getRequestDataValueProcessor() {
 		ApplicationContext context = getApplicationContext();
 		if (context != null && context.containsBean(REQUEST_DATA_VALUE_PROCESSOR_BEAN_NAME)) {
+			logger.info("[SPRING] 自定义日志---调用getBean："+REQUEST_DATA_VALUE_PROCESSOR_BEAN_NAME);
 			return context.getBean(REQUEST_DATA_VALUE_PROCESSOR_BEAN_NAME, RequestDataValueProcessor.class);
 		}
 		return null;

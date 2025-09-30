@@ -16,6 +16,8 @@
 
 package org.springframework.context.expression;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.expression.AccessException;
@@ -30,7 +32,7 @@ import org.springframework.util.Assert;
  * @since 3.0.4
  */
 public class BeanFactoryResolver implements BeanResolver {
-
+	protected final Log logger = LogFactory.getLog(BeanFactoryResolver.class);
 	private final BeanFactory beanFactory;
 
 
@@ -47,6 +49,7 @@ public class BeanFactoryResolver implements BeanResolver {
 	@Override
 	public Object resolve(EvaluationContext context, String beanName) throws AccessException {
 		try {
+			logger.info("[SPRING] 自定义日志---调用getBean："+beanName);
 			return this.beanFactory.getBean(beanName);
 		}
 		catch (BeansException ex) {

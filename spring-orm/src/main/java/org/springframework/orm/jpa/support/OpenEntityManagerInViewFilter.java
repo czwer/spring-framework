@@ -16,8 +16,6 @@
 
 package org.springframework.orm.jpa.support;
 
-import java.io.IOException;
-
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.PersistenceException;
@@ -25,7 +23,8 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.lang.Nullable;
 import org.springframework.orm.jpa.EntityManagerFactoryUtils;
@@ -38,6 +37,8 @@ import org.springframework.web.context.request.async.WebAsyncManager;
 import org.springframework.web.context.request.async.WebAsyncUtils;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import java.io.IOException;
 
 /**
  * Servlet Filter that binds a JPA EntityManager to the thread for the
@@ -65,7 +66,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
  * @see org.springframework.transaction.support.TransactionSynchronizationManager
  */
 public class OpenEntityManagerInViewFilter extends OncePerRequestFilter {
-
+	protected final Log logger = LogFactory.getLog(OpenEntityManagerInViewFilter.class);
 	/**
 	 * Default EntityManagerFactory bean name: "entityManagerFactory".
 	 * Only applies when no "persistenceUnitName" param has been specified.
@@ -227,9 +228,11 @@ public class OpenEntityManagerInViewFilter extends OncePerRequestFilter {
 		String emfBeanName = getEntityManagerFactoryBeanName();
 		String puName = getPersistenceUnitName();
 		if (StringUtils.hasLength(emfBeanName)) {
+			logger.info("[SPRING] 自定义日志---调用getBean："+ emfBeanName);
 			return wac.getBean(emfBeanName, EntityManagerFactory.class);
 		}
 		else if (!StringUtils.hasLength(puName) && wac.containsBean(DEFAULT_ENTITY_MANAGER_FACTORY_BEAN_NAME)) {
+			logger.info("[SPRING] 自定义日志---调用getBean："+ DEFAULT_ENTITY_MANAGER_FACTORY_BEAN_NAME);
 			return wac.getBean(DEFAULT_ENTITY_MANAGER_FACTORY_BEAN_NAME, EntityManagerFactory.class);
 		}
 		else {

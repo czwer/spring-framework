@@ -16,17 +16,15 @@
 
 package org.springframework.beans.factory.aot;
 
-import java.util.Set;
-
-import javax.lang.model.element.Element;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.beans.factory.config.DependencyDescriptor;
 import org.springframework.core.log.LogMessage;
+
+import javax.lang.model.element.Element;
+import java.util.Set;
 
 /**
  * Base class for resolvers that support autowiring related to an
@@ -69,6 +67,7 @@ abstract class AutowiredElementResolver {
 
 		@Override
 		public Object resolveShortcut(BeanFactory beanFactory) {
+			logger.info("[SPRING] 自定义日志---【DependencyDescriptor】ShortcutDependencyDescriptor.resolveShortcut：调用getBean"+this.shortcut);
 			return beanFactory.getBean(this.shortcut, getDependencyType());
 		}
 	}

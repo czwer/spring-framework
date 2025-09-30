@@ -16,6 +16,9 @@
 
 package org.springframework.aop.target;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * Simple {@link org.springframework.aop.TargetSource} implementation,
  * freshly obtaining the specified target bean from its containing
@@ -29,9 +32,10 @@ package org.springframework.aop.target;
  */
 @SuppressWarnings("serial")
 public class SimpleBeanTargetSource extends AbstractBeanFactoryBasedTargetSource {
-
+	protected final transient Log logger = LogFactory.getLog(SimpleBeanTargetSource.class);
 	@Override
 	public Object getTarget() throws Exception {
+		logger.info("[SPRING] 自定义日志---调用getBean："+getTargetBeanName());
 		return getBeanFactory().getBean(getTargetBeanName());
 	}
 

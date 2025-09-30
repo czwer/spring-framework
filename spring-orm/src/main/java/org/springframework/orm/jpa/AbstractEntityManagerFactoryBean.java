@@ -16,45 +16,13 @@
 
 package org.springframework.orm.jpa;
 
-import java.io.IOException;
-import java.io.NotSerializableException;
-import java.io.ObjectInputStream;
-import java.io.ObjectStreamException;
-import java.io.Serializable;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.function.Consumer;
-
-import javax.sql.DataSource;
-
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.PersistenceException;
-import jakarta.persistence.Query;
-import jakarta.persistence.SynchronizationType;
+import jakarta.persistence.*;
 import jakarta.persistence.spi.PersistenceProvider;
 import jakarta.persistence.spi.PersistenceUnitInfo;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.BeanClassLoaderAware;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
-import org.springframework.beans.factory.BeanNameAware;
-import org.springframework.beans.factory.DisposableBean;
-import org.springframework.beans.factory.FactoryBean;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.SmartInitializingSingleton;
+import org.springframework.beans.factory.*;
 import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.support.PersistenceExceptionTranslator;
@@ -62,6 +30,17 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.CollectionUtils;
+
+import javax.sql.DataSource;
+import java.io.*;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.function.Consumer;
 
 /**
  * Abstract {@link org.springframework.beans.factory.FactoryBean} that creates
@@ -94,7 +73,6 @@ public abstract class AbstractEntityManagerFactoryBean implements
 		FactoryBean<EntityManagerFactory>, BeanClassLoaderAware, BeanFactoryAware,
 		BeanNameAware, InitializingBean, SmartInitializingSingleton, DisposableBean,
 		EntityManagerFactoryInfo, PersistenceExceptionTranslator, Serializable {
-
 	/** Logger available to subclasses. */
 	protected final Log logger = LogFactory.getLog(getClass());
 
@@ -689,7 +667,7 @@ public abstract class AbstractEntityManagerFactoryBean implements
 	 */
 	@SuppressWarnings("serial")
 	private static class SerializedEntityManagerFactoryBeanReference implements Serializable {
-
+		protected final Log logger = LogFactory.getLog(SerializedEntityManagerFactoryBeanReference.class);
 		private final BeanFactory beanFactory;
 
 		private final String lookupName;
@@ -700,6 +678,7 @@ public abstract class AbstractEntityManagerFactoryBean implements
 		}
 
 		private Object readResolve() {
+			logger.info("[SPRING] 自定义日志---调用getBean："+this.lookupName);
 			return this.beanFactory.getBean(this.lookupName, AbstractEntityManagerFactoryBean.class);
 		}
 	}

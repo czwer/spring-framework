@@ -254,7 +254,7 @@ public class ScriptFactoryPostProcessor implements SmartInstantiationAwareBeanPo
 			String scriptFactoryBeanName = SCRIPT_FACTORY_NAME_PREFIX + beanName;
 			String scriptedObjectBeanName = SCRIPTED_OBJECT_NAME_PREFIX + beanName;
 			prepareScriptBeans(bd, scriptFactoryBeanName, scriptedObjectBeanName);
-
+			logger.info("[SPRING] 自定义日志---调用getBean："+ scriptFactoryBeanName);
 			ScriptFactory scriptFactory = this.scriptBeanFactory.getBean(scriptFactoryBeanName, ScriptFactory.class);
 			ScriptSource scriptSource = getScriptSource(scriptFactoryBeanName, scriptFactory.getScriptSourceLocator());
 			Class<?>[] interfaces = scriptFactory.getScriptInterfaces();
@@ -268,6 +268,7 @@ public class ScriptFactoryPostProcessor implements SmartInstantiationAwareBeanPo
 			}
 			else {
 				if (bd.isSingleton()) {
+					logger.info("[SPRING] 自定义日志---调用getBean："+scriptedObjectBeanName);
 					return this.scriptBeanFactory.getBean(scriptedObjectBeanName).getClass();
 				}
 			}
@@ -298,6 +299,7 @@ public class ScriptFactoryPostProcessor implements SmartInstantiationAwareBeanPo
 	@Override
 	@Nullable
 	public Object postProcessBeforeInstantiation(Class<?> beanClass, String beanName) {
+		logger.info("[SPRING] 自定义日志---【InstantiationAwareBeanPostProcessor】调用ScriptFactoryPostProcessor.postProcessBeforeInstantiation，beanName："+beanName);
 		// We only apply special treatment to ScriptFactory implementations here.
 		if (!ScriptFactory.class.isAssignableFrom(beanClass)) {
 			return null;
@@ -308,7 +310,7 @@ public class ScriptFactoryPostProcessor implements SmartInstantiationAwareBeanPo
 		String scriptFactoryBeanName = SCRIPT_FACTORY_NAME_PREFIX + beanName;
 		String scriptedObjectBeanName = SCRIPTED_OBJECT_NAME_PREFIX + beanName;
 		prepareScriptBeans(bd, scriptFactoryBeanName, scriptedObjectBeanName);
-
+		logger.info("[SPRING] 自定义日志---调用getBean："+scriptFactoryBeanName);
 		ScriptFactory scriptFactory = this.scriptBeanFactory.getBean(scriptFactoryBeanName, ScriptFactory.class);
 		ScriptSource scriptSource = getScriptSource(scriptFactoryBeanName, scriptFactory.getScriptSourceLocator());
 		boolean isFactoryBean = false;
@@ -343,6 +345,7 @@ public class ScriptFactoryPostProcessor implements SmartInstantiationAwareBeanPo
 		if (isFactoryBean) {
 			scriptedObjectBeanName = BeanFactory.FACTORY_BEAN_PREFIX + scriptedObjectBeanName;
 		}
+		logger.info("[SPRING] 自定义日志---调用getBean："+scriptedObjectBeanName);
 		return this.scriptBeanFactory.getBean(scriptedObjectBeanName);
 	}
 
@@ -361,6 +364,7 @@ public class ScriptFactoryPostProcessor implements SmartInstantiationAwareBeanPo
 				logger.info("[SPRING] 自定义日志---准备注册Bean定义："+scriptFactoryBeanName);
 				this.scriptBeanFactory.registerBeanDefinition(
 						scriptFactoryBeanName, createScriptFactoryBeanDefinition(bd));
+				logger.info("[SPRING] 自定义日志---调用getBean："+ scriptFactoryBeanName);
 				ScriptFactory scriptFactory =
 						this.scriptBeanFactory.getBean(scriptFactoryBeanName, ScriptFactory.class);
 				ScriptSource scriptSource =

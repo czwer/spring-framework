@@ -16,6 +16,8 @@
 
 package org.springframework.messaging.core;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -33,6 +35,7 @@ import org.springframework.util.Assert;
  */
 public class BeanFactoryMessageChannelDestinationResolver
 		implements DestinationResolver<MessageChannel>, BeanFactoryAware {
+	protected static final Log logger = LogFactory.getLog(BeanFactoryMessageChannelDestinationResolver.class);
 
 	@Nullable
 	private BeanFactory beanFactory;
@@ -67,6 +70,7 @@ public class BeanFactoryMessageChannelDestinationResolver
 	public MessageChannel resolveDestination(String name) {
 		Assert.state(this.beanFactory != null, "No BeanFactory configured");
 		try {
+			logger.info("[SPRING] 自定义日志---调用getBean："+name);
 			return this.beanFactory.getBean(name, MessageChannel.class);
 		}
 		catch (BeansException ex) {

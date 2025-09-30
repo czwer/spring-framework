@@ -16,18 +16,17 @@
 
 package org.springframework.aop.target;
 
-import java.io.Serializable;
-import java.util.Objects;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.aop.TargetSource;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
+
+import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Base class for {@link org.springframework.aop.TargetSource} implementations
@@ -57,7 +56,7 @@ public abstract class AbstractBeanFactoryBasedTargetSource implements TargetSour
 
 
 	/** Logger available to subclasses. */
-	protected final transient Log logger = LogFactory.getLog(getClass());
+	protected final transient Log logger = LogFactory.getLog(AbstractBeanFactoryBasedTargetSource.class);
 
 	/** Name of the target bean we will create on each invocation. */
 	@Nullable
@@ -144,6 +143,7 @@ public abstract class AbstractBeanFactoryBasedTargetSource implements TargetSour
 					if (logger.isTraceEnabled()) {
 						logger.trace("Getting bean with name '" + this.targetBeanName + "' for type determination");
 					}
+					logger.info("[SPRING] 自定义日志---调用getBean："+this.targetBeanName);
 					Object beanInstance = this.beanFactory.getBean(this.targetBeanName);
 					targetClass = beanInstance.getClass();
 				}

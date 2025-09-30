@@ -16,14 +16,8 @@
 
 package org.springframework.web.servlet.view;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.DisposableBean;
@@ -34,6 +28,8 @@ import org.springframework.core.Ordered;
 import org.springframework.lang.Nullable;
 import org.springframework.web.context.support.GenericWebApplicationContext;
 import org.springframework.web.servlet.View;
+
+import java.util.*;
 
 /**
  * A {@link org.springframework.web.servlet.ViewResolver} implementation that uses
@@ -65,7 +61,7 @@ import org.springframework.web.servlet.View;
 @Deprecated
 public class ResourceBundleViewResolver extends AbstractCachingViewResolver
 		implements Ordered, InitializingBean, DisposableBean {
-
+	protected final Log logger = LogFactory.getLog(ResourceBundleViewResolver.class);
 	/** The default basename if no other basename is supplied. */
 	public static final String DEFAULT_BASENAME = "views";
 
@@ -204,6 +200,7 @@ public class ResourceBundleViewResolver extends AbstractCachingViewResolver
 	protected View loadView(String viewName, Locale locale) throws Exception {
 		BeanFactory factory = initFactory(locale);
 		try {
+			logger.info("[SPRING] 自定义日志---调用getBean："+viewName);
 			return factory.getBean(viewName, View.class);
 		}
 		catch (NoSuchBeanDefinitionException ex) {

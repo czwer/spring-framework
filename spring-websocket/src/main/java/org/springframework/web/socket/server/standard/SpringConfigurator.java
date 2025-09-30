@@ -16,15 +16,10 @@
 
 package org.springframework.web.socket.server.standard;
 
-import java.util.Arrays;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import jakarta.websocket.server.ServerEndpoint;
 import jakarta.websocket.server.ServerEndpointConfig.Configurator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
@@ -32,6 +27,10 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.WebApplicationContext;
+
+import java.util.Arrays;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A {@link jakarta.websocket.server.ServerEndpointConfig.Configurator} for initializing
@@ -71,6 +70,7 @@ public class SpringConfigurator extends Configurator {
 
 		String beanName = ClassUtils.getShortNameAsProperty(endpointClass);
 		if (wac.containsBean(beanName)) {
+			logger.info("[SPRING] 自定义日志---调用getBean："+ beanName);
 			T endpoint = wac.getBean(beanName, endpointClass);
 			if (logger.isTraceEnabled()) {
 				logger.trace("Using @ServerEndpoint singleton " + endpoint);
@@ -89,6 +89,7 @@ public class SpringConfigurator extends Configurator {
 
 		beanName = getBeanNameByType(wac, endpointClass);
 		if (beanName != null) {
+			logger.info("[SPRING] 自定义日志---调用getBean："+beanName);
 			return (T) wac.getBean(beanName);
 		}
 

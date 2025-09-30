@@ -16,27 +16,29 @@
 
 package org.springframework.beans.factory.support;
 
-import java.io.IOException;
-import java.io.NotSerializableException;
-import java.io.ObjectInputStream;
-import java.io.ObjectStreamException;
-import java.io.Serial;
-import java.io.Serializable;
+import jakarta.inject.Provider;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.TypeConverter;
+import org.springframework.beans.factory.*;
+import org.springframework.beans.factory.config.*;
+import org.springframework.core.*;
+import org.springframework.core.annotation.MergedAnnotation;
+import org.springframework.core.annotation.MergedAnnotations;
+import org.springframework.core.annotation.MergedAnnotations.SearchStrategy;
+import org.springframework.core.log.LogMessage;
+import org.springframework.core.metrics.StartupStep;
+import org.springframework.lang.Contract;
+import org.springframework.lang.Nullable;
+import org.springframework.util.*;
+
+import java.io.*;
 import java.lang.annotation.Annotation;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.IdentityHashMap;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.ConcurrentHashMap;
@@ -45,54 +47,6 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
-
-import jakarta.inject.Provider;
-
-import org.springframework.beans.BeansException;
-import org.springframework.beans.TypeConverter;
-import org.springframework.beans.factory.BeanCreationException;
-import org.springframework.beans.factory.BeanCurrentlyInCreationException;
-import org.springframework.beans.factory.BeanDefinitionStoreException;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
-import org.springframework.beans.factory.BeanFactoryUtils;
-import org.springframework.beans.factory.BeanNotOfRequiredTypeException;
-import org.springframework.beans.factory.CannotLoadBeanClassException;
-import org.springframework.beans.factory.InjectionPoint;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
-import org.springframework.beans.factory.NoUniqueBeanDefinitionException;
-import org.springframework.beans.factory.ObjectFactory;
-import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.beans.factory.SmartFactoryBean;
-import org.springframework.beans.factory.SmartInitializingSingleton;
-import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.config.BeanDefinitionHolder;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.beans.factory.config.DependencyDescriptor;
-import org.springframework.beans.factory.config.NamedBeanHolder;
-import org.springframework.core.NamedThreadLocal;
-import org.springframework.core.OrderComparator;
-import org.springframework.core.Ordered;
-import org.springframework.core.ResolvableType;
-import org.springframework.core.SpringProperties;
-import org.springframework.core.annotation.MergedAnnotation;
-import org.springframework.core.annotation.MergedAnnotations;
-import org.springframework.core.annotation.MergedAnnotations.SearchStrategy;
-import org.springframework.core.log.LogMessage;
-import org.springframework.core.metrics.StartupStep;
-import org.springframework.lang.Contract;
-import org.springframework.lang.Nullable;
-import org.springframework.util.Assert;
-import org.springframework.util.ClassUtils;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.CompositeIterator;
-import org.springframework.util.ObjectUtils;
-import org.springframework.util.ReflectionUtils;
-import org.springframework.util.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 /**
  * Spring's default implementation of the {@link ConfigurableListableBeanFactory}
  * and {@link BeanDefinitionRegistry} interfaces: a full-fledged bean factory
@@ -444,6 +398,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	@Override
 	public <T> ObjectProvider<T> getBeanProvider(ResolvableType requiredType, boolean allowEagerInit) {
 		return new BeanObjectProvider<>() {
+			Log logger = LogFactory.getLog(BeanObjectProvider.class);
 			@Override
 			public T getObject() throws BeansException {
 				logger.info("[SPRING] 自定义日志---getObject步骤：3-0，调用resolveBean方法："+requiredType.getType().getTypeName());
@@ -511,6 +466,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			@SuppressWarnings("unchecked")
 			@Override
 			public Stream<T> stream() {
+				logger.info("[SPRING] 自定义日志---调用getBean："+requiredType.getType().getTypeName());
 				return Arrays.stream(beanNamesForStream(requiredType, true, allowEagerInit))
 						.map(name -> (T) getBean(name))
 						.filter(bean -> !(bean instanceof NullBean));
@@ -524,6 +480,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 				}
 				Map<String, T> matchingBeans = CollectionUtils.newLinkedHashMap(beanNames.length);
 				for (String beanName : beanNames) {
+					logger.info("[SPRING] 自定义日志---调用getBean："+beanName);
 					Object beanInstance = getBean(beanName);
 					if (!(beanInstance instanceof NullBean)) {
 						matchingBeans.put(beanName, (T) beanInstance);
@@ -535,6 +492,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			@SuppressWarnings("unchecked")
 			@Override
 			public Stream<T> stream(Predicate<Class<?>> customFilter, boolean includeNonSingletons) {
+				logger.info("[SPRING] 自定义日志---调用getBean："+requiredType.getType().getTypeName());
 				return Arrays.stream(beanNamesForStream(requiredType, includeNonSingletons, allowEagerInit))
 						.filter(name -> customFilter.test(getType(name)))
 						.map(name -> (T) getBean(name))
@@ -550,6 +508,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 				Map<String, T> matchingBeans = CollectionUtils.newLinkedHashMap(beanNames.length);
 				for (String beanName : beanNames) {
 					if (customFilter.test(getType(beanName))) {
+						logger.info("[SPRING] 自定义日志---调用getBean："+beanName);
 						Object beanInstance = getBean(beanName);
 						if (!(beanInstance instanceof NullBean)) {
 							matchingBeans.put(beanName, (T) beanInstance);
@@ -747,6 +706,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		Map<String, T> result = CollectionUtils.newLinkedHashMap(beanNames.length);
 		for (String beanName : beanNames) {
 			try {
+				logger.info("[SPRING] 自定义日志---调用getBean："+beanName);
 				Object beanInstance = getBean(beanName);
 				if (!(beanInstance instanceof NullBean)) {
 					result.put(beanName, (T) beanInstance);
@@ -795,6 +755,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		String[] beanNames = getBeanNamesForAnnotation(annotationType);
 		Map<String, Object> result = CollectionUtils.newLinkedHashMap(beanNames.length);
 		for (String beanName : beanNames) {
+			logger.info("[SPRING] 自定义日志---调用getBean："+beanName);
 			Object beanInstance = getBean(beanName);
 			if (!(beanInstance instanceof NullBean)) {
 				result.put(beanName, beanInstance);
@@ -1165,6 +1126,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 				String[] dependsOn = mbd.getDependsOn();
 				if (dependsOn != null) {
 					for (String dep : dependsOn) {
+						logger.info("[SPRING] 自定义日志---调用getBean："+dep);
 						getBean(dep);
 					}
 				}
@@ -1217,6 +1179,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 	private void instantiateSingleton(String beanName) {
 		if (isFactoryBean(beanName)) {
+			logger.info("[SPRING] 自定义日志---调用getBean："+FACTORY_BEAN_PREFIX + beanName);
 			Object bean = getBean(FACTORY_BEAN_PREFIX + beanName);
 			if (bean instanceof SmartFactoryBean<?> smartFactoryBean && smartFactoryBean.isEagerInit()) {
 				getBean(beanName);
@@ -1566,6 +1529,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			Map<String, Object> candidates = CollectionUtils.newLinkedHashMap(candidateNames.length);
 			for (String beanName : candidateNames) {
 				if (containsSingleton(beanName) && args == null) {
+					logger.info("[SPRING] 自定义日志---调用getBean："+beanName);
 					Object beanInstance = getBean(beanName);
 					candidates.put(beanName, (beanInstance instanceof NullBean ? null : beanInstance));
 				}
@@ -1613,26 +1577,30 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	@Nullable
 	public Object resolveDependency(DependencyDescriptor descriptor, @Nullable String requestingBeanName,
 			@Nullable Set<String> autowiredBeanNames, @Nullable TypeConverter typeConverter) throws BeansException {
-		logger.info("[SPRING] 自定义日志【重要】---解析特定的依赖描述符，用于自动装配：" + requestingBeanName);
 
 		descriptor.initParameterNameDiscovery(getParameterNameDiscoverer());
 		if (Optional.class == descriptor.getDependencyType()) {
+			logger.info("[SPRING] 自定义日志【重要】---【resolveDependency】依赖的类型是Optional，通过createOptionalDependency解决依赖：" + requestingBeanName);
 			return createOptionalDependency(descriptor, requestingBeanName);
 		}
 		else if (ObjectFactory.class == descriptor.getDependencyType() ||
 				ObjectProvider.class == descriptor.getDependencyType()) {
+			logger.info("[SPRING] 自定义日志【重要】---【resolveDependency】依赖的类型是ObjectFactory或ObjectProvider，通过DependencyObjectProvider解决依赖：" + requestingBeanName);
 			return new DependencyObjectProvider(descriptor, requestingBeanName);
 		}
 		else if (jakartaInjectProviderClass == descriptor.getDependencyType()) {
+			logger.info("[SPRING] 自定义日志【重要】---【resolveDependency】依赖的类型是jakartaInjectProviderClass，通过new Jsr330Factory().createDependencyProvider()解决依赖：" + requestingBeanName);
 			return new Jsr330Factory().createDependencyProvider(descriptor, requestingBeanName);
 		}
 		else if (descriptor.supportsLazyResolution()) {
 			Object result = getAutowireCandidateResolver().getLazyResolutionProxyIfNecessary(
 					descriptor, requestingBeanName);
 			if (result != null) {
+				logger.info("[SPRING] 自定义日志【重要】---【resolveDependency】支持延迟解决依赖：，通过getAutowireCandidateResolver().getLazyResolutionProxyIfNecessary()解决依赖：" + requestingBeanName);
 				return result;
 			}
 		}
+		logger.info("[SPRING] 自定义日志【重要】---【resolveDependency】doResolveDependency：" + requestingBeanName);
 		return doResolveDependency(descriptor, requestingBeanName, autowiredBeanNames, typeConverter);
 	}
 
@@ -1644,8 +1612,10 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		InjectionPoint previousInjectionPoint = ConstructorResolver.setCurrentInjectionPoint(descriptor);
 		try {
 			// Step 1: pre-resolved shortcut for single bean match, for example, from @Autowired
+			logger.info("[SPRING] 自定义日志【重要】---【doResolveDependency依赖解析核心】调用descriptor.resolveShortcut方法：快捷方式解析" + beanName);
 			Object shortcut = descriptor.resolveShortcut(this);
 			if (shortcut != null) {
+				logger.info("[SPRING] 自定义日志【重要】---【doResolveDependency依赖解析核心】调用descriptor.resolveShortcut方法后，方法结束：" + beanName+",shortcut："+shortcut.getClass().getName());
 				return shortcut;
 			}
 
@@ -1687,6 +1657,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 						if (autowiredBeanNames != null) {
 							autowiredBeanNames.add(dependencyName);
 						}
+						logger.info("[SPRING] 自定义日志---调用getBean："+dependencyName);
 						Object dependencyBean = getBean(dependencyName);
 						return resolveInstance(dependencyBean, descriptor, type, dependencyName);
 					}
@@ -2331,6 +2302,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			}
 			@Override
 			public Object resolveCandidate(String beanName, Class<?> requiredType, BeanFactory beanFactory) {
+				logger.info("[SPRING] 自定义日志---调用getBean："+beanName);
 				return (!ObjectUtils.isEmpty(args) ? beanFactory.getBean(beanName, args) :
 						super.resolveCandidate(beanName, requiredType, beanFactory));
 			}
@@ -2505,6 +2477,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 				DependencyDescriptor descriptorToUse = new DependencyDescriptor(this.descriptor) {
 					@Override
 					public Object resolveCandidate(String beanName, Class<?> requiredType, BeanFactory beanFactory) {
+						logger.info("[SPRING] 自定义日志---调用getBean："+beanName);
 						return beanFactory.getBean(beanName, args);
 					}
 				};
@@ -2631,6 +2604,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 		@Override
 		public Stream<Object> stream(Predicate<Class<?>> customFilter, boolean includeNonSingletons) {
+			logger.info("[SPRING] 自定义日志---调用getBean："+this.descriptor.getResolvableType().getType().getTypeName());
 			return Arrays.stream(beanNamesForStream(this.descriptor.getResolvableType(), includeNonSingletons, true))
 					.filter(name -> AutowireUtils.isAutowireCandidate(DefaultListableBeanFactory.this, name))
 					.filter(name -> customFilter.test(getType(name)))
@@ -2648,6 +2622,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			for (String beanName : beanNames) {
 				if (AutowireUtils.isAutowireCandidate(DefaultListableBeanFactory.this, beanName) &&
 						customFilter.test(getType(beanName))) {
+					logger.info("[SPRING] 自定义日志---调用getBean："+beanName);
 					Object beanInstance = getBean(beanName);
 					if (!(beanInstance instanceof NullBean)) {
 						matchingBeans.put(beanName, beanInstance);

@@ -16,24 +16,22 @@
 
 package org.springframework.beans.factory.config;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.FatalBeanException;
+import org.springframework.beans.factory.*;
+import org.springframework.lang.Nullable;
+import org.springframework.util.Assert;
+import org.springframework.util.ReflectionUtils;
+import org.springframework.util.StringUtils;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Properties;
-
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.FatalBeanException;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
-import org.springframework.beans.factory.FactoryBean;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.ListableBeanFactory;
-import org.springframework.lang.Nullable;
-import org.springframework.util.Assert;
-import org.springframework.util.ReflectionUtils;
-import org.springframework.util.StringUtils;
 
 /**
  * A {@link FactoryBean} implementation that takes an interface which must have one or more
@@ -350,6 +348,7 @@ public class ServiceLocatorFactoryBean implements FactoryBean<Object>, BeanFacto
 	 * Invocation handler that delegates service locator calls to the bean factory.
 	 */
 	private class ServiceLocatorInvocationHandler implements InvocationHandler {
+		protected final Log logger = LogFactory.getLog(ServiceLocatorInvocationHandler.class);
 
 		@Override
 		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
@@ -376,10 +375,12 @@ public class ServiceLocatorFactoryBean implements FactoryBean<Object>, BeanFacto
 				Assert.state(beanFactory != null, "No BeanFactory available");
 				if (StringUtils.hasLength(beanName)) {
 					// Service locator for a specific bean name
+					logger.info("[SPRING] 自定义日志---调用getBean："+beanName);
 					return beanFactory.getBean(beanName, serviceLocatorMethodReturnType);
 				}
 				else {
 					// Service locator for a bean type
+					logger.info("[SPRING] 自定义日志---调用getBean："+serviceLocatorMethodReturnType.getName());
 					return beanFactory.getBean(serviceLocatorMethodReturnType);
 				}
 			}

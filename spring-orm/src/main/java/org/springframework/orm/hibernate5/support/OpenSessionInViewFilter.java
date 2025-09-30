@@ -16,17 +16,16 @@
 
 package org.springframework.orm.hibernate5.support;
 
-import java.io.IOException;
-
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.FlushMode;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.orm.hibernate5.SessionFactoryUtils;
 import org.springframework.orm.hibernate5.SessionHolder;
@@ -37,6 +36,8 @@ import org.springframework.web.context.request.async.WebAsyncManager;
 import org.springframework.web.context.request.async.WebAsyncUtils;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import java.io.IOException;
 
 /**
  * Servlet Filter that binds a Hibernate Session to the thread for the entire
@@ -76,7 +77,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
  * @see SessionFactory#getCurrentSession()
  */
 public class OpenSessionInViewFilter extends OncePerRequestFilter {
-
+	protected final Log logger = LogFactory.getLog(OpenSessionInViewFilter.class);
 	/**
 	 * The default bean name used for the session factory.
 	 */
@@ -191,6 +192,7 @@ public class OpenSessionInViewFilter extends OncePerRequestFilter {
 			logger.debug("Using SessionFactory '" + getSessionFactoryBeanName() + "' for OpenSessionInViewFilter");
 		}
 		WebApplicationContext wac = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
+		logger.info("[SPRING] 自定义日志---调用getBean："+getSessionFactoryBeanName());
 		return wac.getBean(getSessionFactoryBeanName(), SessionFactory.class);
 	}
 

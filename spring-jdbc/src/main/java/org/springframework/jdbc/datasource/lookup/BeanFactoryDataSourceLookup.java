@@ -16,13 +16,15 @@
 
 package org.springframework.jdbc.datasource.lookup;
 
-import javax.sql.DataSource;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
+
+import javax.sql.DataSource;
 
 /**
  * {@link DataSourceLookup} implementation based on a Spring {@link BeanFactory}.
@@ -36,7 +38,7 @@ import org.springframework.util.Assert;
  * @see org.springframework.beans.factory.BeanFactory
  */
 public class BeanFactoryDataSourceLookup implements DataSourceLookup, BeanFactoryAware {
-
+	private final Log logger = LogFactory.getLog(BeanFactoryDataSourceLookup.class);
 	@Nullable
 	private BeanFactory beanFactory;
 
@@ -74,6 +76,7 @@ public class BeanFactoryDataSourceLookup implements DataSourceLookup, BeanFactor
 	public DataSource getDataSource(String dataSourceName) throws DataSourceLookupFailureException {
 		Assert.state(this.beanFactory != null, "BeanFactory is required");
 		try {
+			logger.info("[SPRING] 自定义日志---调用getBean："+ dataSourceName);
 			return this.beanFactory.getBean(dataSourceName, DataSource.class);
 		}
 		catch (BeansException ex) {

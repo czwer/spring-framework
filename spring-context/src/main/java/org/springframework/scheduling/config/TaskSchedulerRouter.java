@@ -226,6 +226,7 @@ public class TaskSchedulerRouter implements TaskScheduler, BeanNameAware, BeanFa
 
 	private <T> T resolveSchedulerBean(BeanFactory beanFactory, Class<T> schedulerType, boolean byName) {
 		if (byName) {
+			logger.info("[SPRING] 自定义日志---调用getBean："+DEFAULT_TASK_SCHEDULER_BEAN_NAME);
 			T scheduler = beanFactory.getBean(DEFAULT_TASK_SCHEDULER_BEAN_NAME, schedulerType);
 			if (this.beanName != null && this.beanFactory instanceof ConfigurableBeanFactory cbf) {
 				cbf.registerDependentBean(DEFAULT_TASK_SCHEDULER_BEAN_NAME, this.beanName);
@@ -240,6 +241,7 @@ public class TaskSchedulerRouter implements TaskScheduler, BeanNameAware, BeanFa
 			return holder.getBeanInstance();
 		}
 		else {
+			logger.info("[SPRING] 自定义日志---调用getBean："+schedulerType.getName());
 			return beanFactory.getBean(schedulerType);
 		}
 	}

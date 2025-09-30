@@ -16,15 +16,6 @@
 
 package org.springframework.web.reactive.handler;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.BiPredicate;
-
-import reactor.core.publisher.Mono;
-
 import org.springframework.beans.BeansException;
 import org.springframework.http.server.PathContainer;
 import org.springframework.http.server.reactive.observation.ServerRequestObservationContext;
@@ -33,6 +24,10 @@ import org.springframework.util.Assert;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.util.pattern.PathPattern;
 import org.springframework.web.util.pattern.PathPatternParser;
+import reactor.core.publisher.Mono;
+
+import java.util.*;
+import java.util.function.BiPredicate;
 
 /**
  * Abstract base class for URL-mapped
@@ -156,6 +151,7 @@ public abstract class AbstractUrlHandlerMapping extends AbstractHandlerMapping {
 
 		// Bean name or resolved handler?
 		if (handler instanceof String handlerName) {
+			logger.info("[SPRING] 自定义日志---调用getBean："+handlerName);
 			handler = obtainApplicationContext().getBean(handlerName);
 		}
 
@@ -232,6 +228,7 @@ public abstract class AbstractUrlHandlerMapping extends AbstractHandlerMapping {
 		// Eagerly resolve handler if referencing singleton via name.
 		if (!this.lazyInitHandlers && handler instanceof String handlerName) {
 			if (obtainApplicationContext().isSingleton(handlerName)) {
+				logger.info("[SPRING] 自定义日志---调用getBean："+handlerName);
 				resolvedHandler = obtainApplicationContext().getBean(handlerName);
 			}
 		}

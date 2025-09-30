@@ -20,6 +20,8 @@ import jakarta.jms.Destination;
 import jakarta.jms.JMSException;
 import jakarta.jms.Session;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -37,7 +39,7 @@ import org.springframework.util.Assert;
  * @see org.springframework.beans.factory.BeanFactory
  */
 public class BeanFactoryDestinationResolver implements DestinationResolver, BeanFactoryAware {
-
+	protected final Log logger = LogFactory.getLog(BeanFactoryDestinationResolver.class);
 	@Nullable
 	private BeanFactory beanFactory;
 
@@ -77,6 +79,7 @@ public class BeanFactoryDestinationResolver implements DestinationResolver, Bean
 
 		Assert.state(this.beanFactory != null, "BeanFactory is required");
 		try {
+			logger.info("[SPRING] 自定义日志---调用getBean："+destinationName);
 			return this.beanFactory.getBean(destinationName, Destination.class);
 		}
 		catch (BeansException ex) {

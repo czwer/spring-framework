@@ -16,6 +16,8 @@
 
 package org.springframework.aop.config;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.aop.aspectj.AspectInstanceFactory;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -34,7 +36,7 @@ import org.springframework.util.ClassUtils;
  * @since 2.0
  */
 public class SimpleBeanFactoryAwareAspectInstanceFactory implements AspectInstanceFactory, BeanFactoryAware {
-
+	protected final Log logger = LogFactory.getLog(SimpleBeanFactoryAwareAspectInstanceFactory.class);
 	@Nullable
 	private String aspectBeanName;
 
@@ -65,6 +67,7 @@ public class SimpleBeanFactoryAwareAspectInstanceFactory implements AspectInstan
 	public Object getAspectInstance() {
 		Assert.state(this.beanFactory != null, "No BeanFactory set");
 		Assert.state(this.aspectBeanName != null, "No 'aspectBeanName' set");
+		logger.info("[SPRING] 自定义日志---调用getBean："+this.aspectBeanName);
 		return this.beanFactory.getBean(this.aspectBeanName);
 	}
 
@@ -84,6 +87,7 @@ public class SimpleBeanFactoryAwareAspectInstanceFactory implements AspectInstan
 		if (this.beanFactory != null && this.aspectBeanName != null &&
 				this.beanFactory.isSingleton(this.aspectBeanName) &&
 				this.beanFactory.isTypeMatch(this.aspectBeanName, Ordered.class)) {
+			logger.info("[SPRING] 自定义日志---调用getBean："+this.aspectBeanName);
 			return ((Ordered) this.beanFactory.getBean(this.aspectBeanName)).getOrder();
 		}
 		return Ordered.LOWEST_PRECEDENCE;

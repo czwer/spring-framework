@@ -16,18 +16,8 @@
 
 package org.springframework.aop.interceptor;
 
-import java.lang.reflect.Method;
-import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Future;
-import java.util.function.Supplier;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -43,6 +33,11 @@ import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.util.StringValueResolver;
 import org.springframework.util.function.SingletonSupplier;
+
+import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.concurrent.*;
+import java.util.function.Supplier;
 
 /**
  * Base class for asynchronous method execution aspects, such as
@@ -72,7 +67,7 @@ public abstract class AsyncExecutionAspectSupport implements BeanFactoryAware {
 	public static final String DEFAULT_TASK_EXECUTOR_BEAN_NAME = "taskExecutor";
 
 
-	protected final Log logger = LogFactory.getLog(getClass());
+	protected final Log logger = LogFactory.getLog(AsyncExecutionAspectSupport.class);
 
 	private SingletonSupplier<Executor> defaultExecutor;
 
@@ -241,12 +236,14 @@ public abstract class AsyncExecutionAspectSupport implements BeanFactoryAware {
 				// Search for TaskExecutor bean... not plain Executor since that would
 				// match with ScheduledExecutorService as well, which is unusable for
 				// our purposes here. TaskExecutor is more clearly designed for it.
+				logger.info("[SPRING] 自定义日志---调用getBean：TaskExecutor");
 				return beanFactory.getBean(TaskExecutor.class);
 			}
 			catch (NoUniqueBeanDefinitionException ex) {
 				logger.debug("Could not find unique TaskExecutor bean. " +
 						"Continuing search for an Executor bean named 'taskExecutor'", ex);
 				try {
+					logger.info("[SPRING] 自定义日志---调用getBean："+DEFAULT_TASK_EXECUTOR_BEAN_NAME);
 					return beanFactory.getBean(DEFAULT_TASK_EXECUTOR_BEAN_NAME, Executor.class);
 				}
 				catch (NoSuchBeanDefinitionException ex2) {

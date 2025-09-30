@@ -16,35 +16,20 @@
 
 package org.springframework.beans.factory.support;
 
-import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Stream;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanCreationException;
-import org.springframework.beans.factory.BeanFactoryUtils;
-import org.springframework.beans.factory.BeanIsNotAFactoryException;
-import org.springframework.beans.factory.BeanNotOfRequiredTypeException;
-import org.springframework.beans.factory.FactoryBean;
-import org.springframework.beans.factory.ListableBeanFactory;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
-import org.springframework.beans.factory.NoUniqueBeanDefinitionException;
-import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.beans.factory.SmartFactoryBean;
+import org.springframework.beans.factory.*;
 import org.springframework.core.ResolvableType;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
+
+import java.lang.annotation.Annotation;
+import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * Static {@link org.springframework.beans.factory.BeanFactory} implementation
@@ -150,6 +135,7 @@ public class StaticListableBeanFactory implements ListableBeanFactory {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T getBean(String name, @Nullable Class<T> requiredType) throws BeansException {
+		logger.info("[SPRING] 自定义日志---调用getBean："+name);
 		Object bean = getBean(name);
 		if (requiredType != null && !requiredType.isInstance(bean)) {
 			throw new BeanNotOfRequiredTypeException(name, requiredType, bean.getClass());
@@ -163,6 +149,7 @@ public class StaticListableBeanFactory implements ListableBeanFactory {
 			throw new UnsupportedOperationException(
 					"StaticListableBeanFactory does not support explicit bean creation arguments");
 		}
+		logger.info("[SPRING] 自定义日志---调用getBean："+name);
 		return getBean(name);
 	}
 
@@ -170,6 +157,7 @@ public class StaticListableBeanFactory implements ListableBeanFactory {
 	public <T> T getBean(Class<T> requiredType) throws BeansException {
 		String[] beanNames = getBeanNamesForType(requiredType);
 		if (beanNames.length == 1) {
+			logger.info("[SPRING] 自定义日志---调用getBean："+beanNames[0]);
 			return getBean(beanNames[0], requiredType);
 		}
 		else if (beanNames.length > 1) {
@@ -186,6 +174,7 @@ public class StaticListableBeanFactory implements ListableBeanFactory {
 			throw new UnsupportedOperationException(
 					"StaticListableBeanFactory does not support explicit bean creation arguments");
 		}
+		logger.info("[SPRING] 自定义日志---调用getBean："+requiredType.getName());
 		return getBean(requiredType);
 	}
 
@@ -206,6 +195,7 @@ public class StaticListableBeanFactory implements ListableBeanFactory {
 
 	@Override
 	public boolean isSingleton(String name) throws NoSuchBeanDefinitionException {
+		logger.info("[SPRING] 自定义日志---调用getBean："+name);
 		Object bean = getBean(name);
 		// In case of FactoryBean, return singleton status of created object.
 		if (bean instanceof FactoryBean<?> factoryBean) {
@@ -216,6 +206,7 @@ public class StaticListableBeanFactory implements ListableBeanFactory {
 
 	@Override
 	public boolean isPrototype(String name) throws NoSuchBeanDefinitionException {
+		logger.info("[SPRING] 自定义日志---调用getBean："+name);
 		Object bean = getBean(name);
 		// In case of FactoryBean, return prototype status of created object.
 		return ((bean instanceof SmartFactoryBean<?> smartFactoryBean && smartFactoryBean.isPrototype()) ||
@@ -296,7 +287,7 @@ public class StaticListableBeanFactory implements ListableBeanFactory {
 			public T getObject() throws BeansException {
 				String[] beanNames = getBeanNamesForType(requiredType);
 				if (beanNames.length == 1) {
-					logger.info("[SPRING] 自定义日志---getObject步骤：1-0，调用getBean方法");
+					logger.info("[SPRING] 自定义日志---getObject步骤：1-0，调用getBean："+beanNames[0]);
 					return (T) getBean(beanNames[0], requiredType);
 				}
 				else if (beanNames.length > 1) {
@@ -310,7 +301,7 @@ public class StaticListableBeanFactory implements ListableBeanFactory {
 			public T getObject(Object... args) throws BeansException {
 				String[] beanNames = getBeanNamesForType(requiredType);
 				if (beanNames.length == 1) {
-					logger.info("[SPRING] 自定义日志---getObject步骤：1-1，调用getBean方法");
+					logger.info("[SPRING] 自定义日志---getObject步骤：1-1，调用getBean方法："+beanNames[0]);
 					return (T) getBean(beanNames[0], args);
 				}
 				else if (beanNames.length > 1) {
@@ -325,6 +316,7 @@ public class StaticListableBeanFactory implements ListableBeanFactory {
 			public T getIfAvailable() throws BeansException {
 				String[] beanNames = getBeanNamesForType(requiredType);
 				if (beanNames.length == 1) {
+					logger.info("[SPRING] 自定义日志---调用getBean："+beanNames[0]);
 					return (T) getBean(beanNames[0]);
 				}
 				else if (beanNames.length > 1) {
@@ -339,6 +331,7 @@ public class StaticListableBeanFactory implements ListableBeanFactory {
 			public T getIfUnique() throws BeansException {
 				String[] beanNames = getBeanNamesForType(requiredType);
 				if (beanNames.length == 1) {
+					logger.info("[SPRING] 自定义日志---调用getBean："+beanNames[0]);
 					return (T) getBean(beanNames[0]);
 				}
 				else {
@@ -347,6 +340,7 @@ public class StaticListableBeanFactory implements ListableBeanFactory {
 			}
 			@Override
 			public Stream<T> stream() {
+				logger.info("[SPRING] 自定义日志---调用getBean："+requiredType.getType().getTypeName());
 				return Arrays.stream(getBeanNamesForType(requiredType)).map(name -> (T) getBean(name));
 			}
 		};
@@ -416,6 +410,7 @@ public class StaticListableBeanFactory implements ListableBeanFactory {
 				Class<?> objectType = factoryBean.getObjectType();
 				if ((includeNonSingletons || factoryBean.isSingleton()) &&
 						objectType != null && (type == null || type.isAssignableFrom(objectType))) {
+					logger.info("[SPRING] 自定义日志---调用getBean："+ beanName);
 					matches.put(beanName, getBean(beanName, type));
 				}
 			}
@@ -451,6 +446,7 @@ public class StaticListableBeanFactory implements ListableBeanFactory {
 		Map<String, Object> results = new LinkedHashMap<>();
 		for (String beanName : this.beans.keySet()) {
 			if (findAnnotationOnBean(beanName, annotationType) != null) {
+				logger.info("[SPRING] 自定义日志---调用getBean："+beanName);
 				results.put(beanName, getBean(beanName));
 			}
 		}

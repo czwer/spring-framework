@@ -16,40 +16,13 @@
 
 package org.springframework.jmx.export;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.management.DynamicMBean;
-import javax.management.JMException;
-import javax.management.MBeanException;
-import javax.management.MBeanServer;
-import javax.management.MalformedObjectNameException;
-import javax.management.NotCompliantMBeanException;
-import javax.management.NotificationListener;
-import javax.management.ObjectName;
-import javax.management.StandardMBean;
-import javax.management.modelmbean.ModelMBean;
-import javax.management.modelmbean.ModelMBeanInfo;
-import javax.management.modelmbean.RequiredModelMBean;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.aop.scope.ScopedProxyUtils;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.aop.target.LazyInitTargetSource;
-import org.springframework.beans.factory.BeanClassLoaderAware;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
-import org.springframework.beans.factory.CannotLoadBeanClassException;
-import org.springframework.beans.factory.DisposableBean;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.ListableBeanFactory;
-import org.springframework.beans.factory.SmartInitializingSingleton;
+import org.springframework.beans.factory.*;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.jmx.export.assembler.AutodetectCapableMBeanInfoAssembler;
@@ -67,6 +40,12 @@ import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
+
+import javax.management.*;
+import javax.management.modelmbean.ModelMBean;
+import javax.management.modelmbean.ModelMBeanInfo;
+import javax.management.modelmbean.RequiredModelMBean;
+import java.util.*;
 
 /**
  * JMX exporter that allows for exposing any <i>Spring-managed bean</i> to a
@@ -101,7 +80,7 @@ import org.springframework.util.ObjectUtils;
  */
 public class MBeanExporter extends MBeanRegistrationSupport implements MBeanExportOperations,
 		BeanClassLoaderAware, BeanFactoryAware, InitializingBean, SmartInitializingSingleton, DisposableBean {
-
+	protected final Log logger = LogFactory.getLog(MBeanExporter.class);
 	/**
 	 * Auto-detection mode indicating that no auto-detection should be used.
 	 * @deprecated as of 6.1, in favor of the {@link #setAutodetect "autodetect" flag}
@@ -613,6 +592,7 @@ public class MBeanExporter extends MBeanRegistrationSupport implements MBeanExpo
 					return objectName;
 				}
 				else {
+					logger.info("[SPRING] 自定义日志---调用getBean："+beanName);
 					Object bean = this.beanFactory.getBean(beanName);
 					ObjectName objectName = registerBeanInstance(bean, beanKey);
 					replaceNotificationListenerBeanNameKeysIfNecessary(beanName, objectName);
@@ -896,6 +876,7 @@ public class MBeanExporter extends MBeanRegistrationSupport implements MBeanExpo
 						boolean lazyInit = isBeanDefinitionLazyInit(this.beanFactory, beanName);
 						Object beanInstance = null;
 						if (!lazyInit) {
+							logger.info("[SPRING] 自定义日志---调用getBean："+beanName);
 							beanInstance = this.beanFactory.getBean(beanName);
 							if (!beanClass.isInstance(beanInstance)) {
 								continue;

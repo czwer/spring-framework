@@ -16,28 +16,18 @@
 
 package org.springframework.jndi.support;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import javax.naming.NameNotFoundException;
-import javax.naming.NamingException;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanDefinitionStoreException;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanNotOfRequiredTypeException;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
-import org.springframework.beans.factory.NoUniqueBeanDefinitionException;
-import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.*;
 import org.springframework.core.ResolvableType;
 import org.springframework.jndi.JndiLocatorSupport;
 import org.springframework.jndi.TypeMismatchNamingException;
 import org.springframework.lang.Nullable;
+
+import javax.naming.NameNotFoundException;
+import javax.naming.NamingException;
+import java.util.*;
 
 /**
  * Simple JNDI-based implementation of Spring's
@@ -108,6 +98,7 @@ public class SimpleJndiBeanFactory extends JndiLocatorSupport implements BeanFac
 
 	@Override
 	public Object getBean(String name) throws BeansException {
+		logger.info("[SPRING] 自定义日志---调用getBean："+name);
 		return getBean(name, Object.class);
 	}
 
@@ -138,11 +129,13 @@ public class SimpleJndiBeanFactory extends JndiLocatorSupport implements BeanFac
 			throw new UnsupportedOperationException(
 					"SimpleJndiBeanFactory does not support explicit bean creation arguments");
 		}
+		logger.info("[SPRING] 自定义日志---调用getBean："+name);
 		return getBean(name);
 	}
 
 	@Override
 	public <T> T getBean(Class<T> requiredType) throws BeansException {
+		logger.info("[SPRING] 自定义日志---调用getBean："+requiredType.getSimpleName());
 		return getBean(requiredType.getSimpleName(), requiredType);
 	}
 
@@ -152,6 +145,7 @@ public class SimpleJndiBeanFactory extends JndiLocatorSupport implements BeanFac
 			throw new UnsupportedOperationException(
 					"SimpleJndiBeanFactory does not support explicit bean creation arguments");
 		}
+		logger.info("[SPRING] 自定义日志---调用getBean："+requiredType.getName());
 		return getBean(requiredType);
 	}
 
@@ -160,18 +154,19 @@ public class SimpleJndiBeanFactory extends JndiLocatorSupport implements BeanFac
 		return new ObjectProvider<>() {
 			@Override
 			public T getObject() throws BeansException {
-				logger.info("[SPRING] 自定义日志---getObject步骤：1-0，调用getBean方法："+requiredType.getName());
+				logger.info("[SPRING] 自定义日志---getObject步骤：1-0，调用getBean："+requiredType.getName());
 				return getBean(requiredType);
 			}
 			@Override
 			public T getObject(Object... args) throws BeansException {
-				logger.info("[SPRING] 自定义日志---getObject步骤：1-1，调用getBean方法："+requiredType.getName());
+				logger.info("[SPRING] 自定义日志---getObject步骤：1-1，调用getBean："+requiredType.getName());
 				return getBean(requiredType, args);
 			}
 			@Override
 			@Nullable
 			public T getIfAvailable() throws BeansException {
 				try {
+					logger.info("[SPRING] 自定义日志---调用getBean："+requiredType.getName());
 					return getBean(requiredType);
 				}
 				catch (NoUniqueBeanDefinitionException ex) {
@@ -185,6 +180,7 @@ public class SimpleJndiBeanFactory extends JndiLocatorSupport implements BeanFac
 			@Nullable
 			public T getIfUnique() throws BeansException {
 				try {
+					logger.info("[SPRING] 自定义日志---调用getBean："+requiredType.getName());
 					return getBean(requiredType);
 				}
 				catch (NoSuchBeanDefinitionException ex) {

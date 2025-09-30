@@ -16,14 +16,9 @@
 
 package org.springframework.test.context.bean.override.mockito;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mockito.Mockito;
-
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -36,6 +31,10 @@ import org.springframework.lang.Nullable;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.support.AbstractTestExecutionListener;
 import org.springframework.util.ClassUtils;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * {@code TestExecutionListener} that resets any mock beans that have been marked
@@ -126,6 +125,7 @@ public class MockitoResetTestExecutionListener extends AbstractTestExecutionList
 			}
 		}
 		try {
+			logger.info("[SPRING] 自定义日志---调用getBean：MockBeans");
 			beanFactory.getBean(MockBeans.class).resetAll(reset);
 		}
 		catch (NoSuchBeanDefinitionException ex) {
@@ -152,6 +152,7 @@ public class MockitoResetTestExecutionListener extends AbstractTestExecutionList
 	private static boolean isStandardBeanOrSingletonFactoryBean(BeanFactory beanFactory, String beanName) {
 		String factoryBeanName = BeanFactory.FACTORY_BEAN_PREFIX + beanName;
 		if (beanFactory.containsBean(factoryBeanName)) {
+			logger.info("[SPRING] 自定义日志---调用getBean："+factoryBeanName);
 			FactoryBean<?> factoryBean = (FactoryBean<?>) beanFactory.getBean(factoryBeanName);
 			return factoryBean.isSingleton();
 		}

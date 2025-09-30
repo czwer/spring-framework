@@ -16,16 +16,9 @@
 
 package org.springframework.web.server.adapter;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Function;
-
 import io.micrometer.observation.ObservationRegistry;
-import reactor.blockhound.BlockHound;
-import reactor.blockhound.integration.BlockHoundIntegration;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
@@ -46,6 +39,14 @@ import org.springframework.web.server.handler.FilteringWebHandler;
 import org.springframework.web.server.i18n.LocaleContextResolver;
 import org.springframework.web.server.session.DefaultWebSessionManager;
 import org.springframework.web.server.session.WebSessionManager;
+import reactor.blockhound.BlockHound;
+import reactor.blockhound.integration.BlockHoundIntegration;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * This builder has two purposes:
@@ -67,7 +68,7 @@ import org.springframework.web.server.session.WebSessionManager;
  * @see HttpWebHandlerAdapter
  */
 public final class WebHttpHandlerBuilder {
-
+	protected static final Log logger = LogFactory.getLog(WebHttpHandlerBuilder.class);
 	/** Well-known name for the target WebHandler in the bean factory. */
 	public static final String WEB_HANDLER_BEAN_NAME = "webHandler";
 
@@ -177,7 +178,7 @@ public final class WebHttpHandlerBuilder {
 	 * @return the prepared builder
 	 */
 	public static WebHttpHandlerBuilder applicationContext(ApplicationContext context) {
-
+		logger.info("[SPRING] 自定义日志---调用getBean："+ WEB_HANDLER_BEAN_NAME);
 		WebHttpHandlerBuilder builder = new WebHttpHandlerBuilder(
 				context.getBean(WEB_HANDLER_BEAN_NAME, WebHandler.class), context);
 
