@@ -555,8 +555,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 	@Override
 	public void refresh() throws BeansException, IllegalStateException {
-		logger.info("[SPRING] 自定义日志【非常重要】---↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓");
-		logger.info("[SPRING] 自定义日志【非常重要】---调用AbstractApplicationContext的refresh方法：开始");
+		logger.info("[SPRING] 自定义日志【非常重要】---【refresh】↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓");
+		logger.info("[SPRING] 自定义日志【非常重要】---【refresh】调用AbstractApplicationContext的refresh方法：开始");
 		this.startupShutdownLock.lock();
 		try {
 			this.startupShutdownThread = Thread.currentThread();
@@ -564,53 +564,53 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			StartupStep contextRefresh = this.applicationStartup.start("spring.context.refresh");
 
 			// Prepare this context for refreshing.
-			logger.info("[SPRING] 自定义日志【非常重要】---调用AbstractApplicationContext的refresh方法，准备刷新（prepareRefresh）");
+			logger.info("[SPRING] 自定义日志【非常重要】---【refresh】调用AbstractApplicationContext的refresh方法，准备刷新（prepareRefresh）");
 			prepareRefresh();
 
 			// Tell the subclass to refresh the internal bean factory.
-			logger.info("[SPRING] 自定义日志【非常重要】---调用AbstractApplicationContext的refresh方法（obtainFreshBeanFactory）");
+			logger.info("[SPRING] 自定义日志【非常重要】---【refresh】调用AbstractApplicationContext的refresh方法（obtainFreshBeanFactory）");
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
-			logger.info("[SPRING] 自定义日志【非常重要】---调用AbstractApplicationContext的refresh方法（obtainFreshBeanFactory）,返回："+beanFactory.getClass().getName());
+			logger.info("[SPRING] 自定义日志【非常重要】---【refresh】调用AbstractApplicationContext的refresh方法（obtainFreshBeanFactory）,返回："+beanFactory.getClass().getName());
 			// Prepare the bean factory for use in this context.
-			logger.info("[SPRING] 自定义日志【非常重要】---调用AbstractApplicationContext的refresh方法（prepareBeanFactory）");
+			logger.info("[SPRING] 自定义日志【非常重要】---【refresh】调用AbstractApplicationContext的refresh方法（prepareBeanFactory）");
 			prepareBeanFactory(beanFactory);
 
 			try {
 				// Allows post-processing of the bean factory in context subclasses.
-				logger.info("[SPRING] 自定义日志【非常重要】---调用AbstractApplicationContext的refresh方法（postProcessBeanFactory）");
+				logger.info("[SPRING] 自定义日志【非常重要】---【refresh】调用AbstractApplicationContext的refresh方法（postProcessBeanFactory）");
 				postProcessBeanFactory(beanFactory);
 
 				StartupStep beanPostProcess = this.applicationStartup.start("spring.context.beans.post-process");
 				// Invoke factory processors registered as beans in the context.
-				logger.info("[SPRING] 自定义日志【非常重要】---调用AbstractApplicationContext的refresh方法（invokeBeanFactoryPostProcessors）：执行BeanFactory后处理器");
+				logger.info("[SPRING] 自定义日志【非常重要】---【refresh】调用AbstractApplicationContext的refresh方法（invokeBeanFactoryPostProcessors）：执行BeanFactory后处理器");
 				invokeBeanFactoryPostProcessors(beanFactory);
 				// Register bean processors that intercept bean creation.
-				logger.info("[SPRING] 自定义日志【非常重要】---调用AbstractApplicationContext的refresh方法（registerBeanPostProcessors）：注册Bean后处理器");
+				logger.info("[SPRING] 自定义日志【非常重要】---【refresh】调用AbstractApplicationContext的refresh方法（registerBeanPostProcessors）：注册Bean后处理器");
 				registerBeanPostProcessors(beanFactory);
 				beanPostProcess.end();
 
 				// Initialize message source for this context.
-				logger.info("[SPRING] 自定义日志【非常重要】---调用AbstractApplicationContext的refresh方法（initMessageSource）：初始化消息源，初始化国际化相关的MessageSource Bean，用于处理消息的国际化");
+				logger.info("[SPRING] 自定义日志【非常重要】---【refresh】调用AbstractApplicationContext的refresh方法（initMessageSource）：初始化消息源，初始化国际化相关的MessageSource Bean，用于处理消息的国际化");
 				initMessageSource();
 
 				// Initialize event multicaster for this context.
-				logger.info("[SPRING] 自定义日志【非常重要】---调用AbstractApplicationContext的refresh方法（initApplicationEventMulticaster）：初始化应用事件广播器");
+				logger.info("[SPRING] 自定义日志【非常重要】---【refresh】调用AbstractApplicationContext的refresh方法（initApplicationEventMulticaster）：初始化应用事件广播器");
 				initApplicationEventMulticaster();
 
 				// Initialize other special beans in specific context subclasses.
-				logger.info("[SPRING] 自定义日志【非常重要】---调用AbstractApplicationContext的refresh方法（onRefresh）：模板方法，允许子类在容器刷新时执行特定的初始化逻辑");
+				logger.info("[SPRING] 自定义日志【非常重要】---【refresh】调用AbstractApplicationContext的refresh方法（onRefresh）：模板方法，允许子类在容器刷新时执行特定的初始化逻辑");
 				onRefresh();
 
 				// Check for listener beans and register them.
-				logger.info("[SPRING] 自定义日志【非常重要】---调用AbstractApplicationContext的refresh方法（registerListeners）：注册所有实现ApplicationListener接口的Bean");
+				logger.info("[SPRING] 自定义日志【非常重要】---【refresh】调用AbstractApplicationContext的refresh方法（registerListeners）：注册所有实现ApplicationListener接口的Bean");
 				registerListeners();
 
 				// Instantiate all remaining (non-lazy-init) singletons.
-				logger.info("[SPRING] 自定义日志【非常重要】---调用AbstractApplicationContext的refresh方法（finishBeanFactoryInitialization）：完成BeanFactory初始化");
+				logger.info("[SPRING] 自定义日志【非常重要】---【refresh】调用AbstractApplicationContext的refresh方法（finishBeanFactoryInitialization）：完成BeanFactory初始化");
 				finishBeanFactoryInitialization(beanFactory);
 
 				// Last step: publish corresponding event.
-				logger.info("[SPRING] 自定义日志【非常重要】---调用AbstractApplicationContext的refresh方法（finishRefresh）：");
+				logger.info("[SPRING] 自定义日志【非常重要】---【refresh】调用AbstractApplicationContext的refresh方法（finishRefresh）：");
 				finishRefresh();
 			}
 
@@ -638,8 +638,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			this.startupShutdownThread = null;
 			this.startupShutdownLock.unlock();
 		}
-		logger.info("[SPRING] 自定义日志【非常重要】---调用AbstractApplicationContext的refresh方法：结束");
-		logger.info("[SPRING] 自定义日志【非常重要】---↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑");
+		logger.info("[SPRING] 自定义日志【非常重要】---【refresh】调用AbstractApplicationContext的refresh方法：结束");
+		logger.info("[SPRING] 自定义日志【非常重要】---【refresh】↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑");
 	}
 
 	/**

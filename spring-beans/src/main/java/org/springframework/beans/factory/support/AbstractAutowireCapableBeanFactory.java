@@ -1160,7 +1160,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	@Nullable
 	protected Object applyBeanPostProcessorsBeforeInstantiation(Class<?> beanClass, String beanName) {
 		List<InstantiationAwareBeanPostProcessor> instantiationAware = getBeanPostProcessorCache().instantiationAware;
-		instantiationAware.forEach(i->{logger.info("[SPRING] 自定义日志---【resolveBeforeInstantiation】存在InstantiationAwareBeanPostProcessor："+i.getClass().getName()+",beanName："+beanName);});
+		instantiationAware.forEach(i->{logger.info("[SPRING] 自定义日志---【applyBeanPostProcessorsBeforeInstantiation】存在InstantiationAwareBeanPostProcessor-postProcessBeforeInstantiation："+i.getClass().getName()+",beanName："+beanName);});
 		for (InstantiationAwareBeanPostProcessor bp : getBeanPostProcessorCache().instantiationAware) {
 			Object result = bp.postProcessBeforeInstantiation(beanClass, beanName);
 			if (result != null) {
@@ -1440,7 +1440,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// to support styles of field injection.
 		if (!mbd.isSynthetic() && hasInstantiationAwareBeanPostProcessors()) {
 			List<InstantiationAwareBeanPostProcessor> instantiationAware = getBeanPostProcessorCache().instantiationAware;
-			instantiationAware.forEach(i->{logger.info("[SPRING] 自定义日志---【populateBean】存在InstantiationAwareBeanPostProcessor："+i.getClass().getName()+",beanName："+beanName);});
+			instantiationAware.forEach(i->{logger.info("[SPRING] 自定义日志---【populateBean】存在InstantiationAwareBeanPostProcessor-postProcessAfterInstantiation："+i.getClass().getName()+",beanName："+beanName);});
 			for (InstantiationAwareBeanPostProcessor bp : getBeanPostProcessorCache().instantiationAware) {
 				if (!bp.postProcessAfterInstantiation(bw.getWrappedInstance(), beanName)) {
 					logger.info("[SPRING] 自定义日志---【populateBean】调用InstantiationAwareBeanPostProcessor.postProcessAfterInstantiation方法：false,直接返回，不再继续属性填充-1,InstantiationAwareBeanPostProcessor："+bp.getClass().getName()+",beanName："+beanName);
@@ -1456,12 +1456,12 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			MutablePropertyValues newPvs = new MutablePropertyValues(pvs);
 			// Add property values based on autowire by name if applicable.
 			if (resolvedAutowireMode == AUTOWIRE_BY_NAME) {
-				logger.info("[SPRING] 自定义日志---【populateBean】autowireByName："+beanName);
+				logger.info("[SPRING] 自定义日志---【populateBean】按名称自动装配："+beanName);
 				autowireByName(beanName, mbd, bw, newPvs);
 			}
 			// Add property values based on autowire by type if applicable.
 			if (resolvedAutowireMode == AUTOWIRE_BY_TYPE) {
-				logger.info("[SPRING] 自定义日志---【populateBean】autowireByType："+beanName);
+				logger.info("[SPRING] 自定义日志---【populateBean】按类型自动装配："+beanName);
 				autowireByType(beanName, mbd, bw, newPvs);
 			}
 			pvs = newPvs;
@@ -1471,7 +1471,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				pvs = mbd.getPropertyValues();
 			}
 			List<InstantiationAwareBeanPostProcessor> instantiationAware = getBeanPostProcessorCache().instantiationAware;
-			instantiationAware.forEach(i->{logger.info("[SPRING] 自定义日志---【populateBean】存在InstantiationAwareBeanPostProcessor："+i.getClass().getName()+",beanName："+beanName);});
+			instantiationAware.forEach(i->{logger.info("[SPRING] 自定义日志---【populateBean】存在InstantiationAwareBeanPostProcessor-postProcessProperties："+i.getClass().getName()+",beanName："+beanName);});
 			for (InstantiationAwareBeanPostProcessor bp : getBeanPostProcessorCache().instantiationAware) {
 				logger.info("[SPRING] 自定义日志---【populateBean】调用InstantiationAwareBeanPostProcessor.postProcessProperties方法："+beanName);
 				PropertyValues pvsToUse = bp.postProcessProperties(pvs, bw.getWrappedInstance(), beanName);

@@ -16,22 +16,6 @@
 
 package org.springframework.beans;
 
-import java.beans.ConstructorProperties;
-import java.beans.PropertyDescriptor;
-import java.beans.PropertyEditor;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.RecordComponent;
-import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import kotlin.jvm.JvmClassMappingKt;
 import kotlin.reflect.KClass;
 import kotlin.reflect.KFunction;
@@ -39,19 +23,17 @@ import kotlin.reflect.KParameter;
 import kotlin.reflect.full.KClasses;
 import kotlin.reflect.jvm.KCallablesJvm;
 import kotlin.reflect.jvm.ReflectJvmMapping;
-
-import org.springframework.core.DefaultParameterNameDiscoverer;
-import org.springframework.core.KotlinDetector;
-import org.springframework.core.MethodParameter;
-import org.springframework.core.ParameterNameDiscoverer;
-import org.springframework.core.ResolvableType;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.core.*;
 import org.springframework.lang.Nullable;
-import org.springframework.util.Assert;
-import org.springframework.util.ClassUtils;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.ConcurrentReferenceHashMap;
-import org.springframework.util.ReflectionUtils;
-import org.springframework.util.StringUtils;
+import org.springframework.util.*;
+
+import java.beans.ConstructorProperties;
+import java.beans.PropertyDescriptor;
+import java.beans.PropertyEditor;
+import java.lang.reflect.*;
+import java.util.*;
 
 /**
  * Static convenience methods for JavaBeans: for instantiating beans,
@@ -70,6 +52,7 @@ import org.springframework.util.StringUtils;
  * @author Sebastien Deleuze
  */
 public abstract class BeanUtils {
+	protected static final Log logger = LogFactory.getLog(BeanUtils.class);
 
 	private static final ParameterNameDiscoverer parameterNameDiscoverer =
 			new DefaultParameterNameDiscoverer();
@@ -193,6 +176,7 @@ public abstract class BeanUtils {
 				int parameterCount = ctor.getParameterCount();
 				Assert.isTrue(args.length <= parameterCount, "Can't specify more arguments than constructor parameters");
 				if (parameterCount == 0) {
+					logger.info("[SPRING] 自定义日志---【创建实例】通过【无参构造函数】创建实例，Bean Class:"+ctor.getClass().getName());
 					return ctor.newInstance();
 				}
 				Class<?>[] parameterTypes = ctor.getParameterTypes();
@@ -206,6 +190,7 @@ public abstract class BeanUtils {
 						argsWithDefaultValues[i] = args[i];
 					}
 				}
+				logger.info("[SPRING] 自定义日志---【创建实例】通过【有参构造函数】创建实例，Bean Class:"+ctor.getClass().getName());
 				return ctor.newInstance(argsWithDefaultValues);
 			}
 		}
