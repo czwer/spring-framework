@@ -90,7 +90,7 @@ class ConstructorResolver {
 	@SuppressWarnings("NullAway")
 	public BeanWrapper autowireConstructor(String beanName, RootBeanDefinition mbd,
 			@Nullable Constructor<?>[] chosenCtors, @Nullable Object[] explicitArgs) {
-		logger.info("[SPRING] 自定义日志【重要】---构造器注入：" + beanName);
+		logger.info("[SPRING] 自定义日志【关键流程-autowireConstructor】---" + beanName);
 		BeanWrapperImpl bw = new BeanWrapperImpl();
 		this.beanFactory.initBeanWrapper(bw);
 

@@ -418,17 +418,18 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			this.earlyApplicationEvents.add(applicationEvent);
 		}
 		else if (this.applicationEventMulticaster != null) {
-			logger.info("[SPRING] 自定义日志---发布事件（广播）："+applicationEvent.getClass().getName()+",timestamp："+applicationEvent.getTimestamp());
+			logger.info("[SPRING] 自定义日志---【发布事件广播】"+applicationEvent.getClass().getName()+",timestamp："+applicationEvent.getTimestamp());
 			this.applicationEventMulticaster.multicastEvent(applicationEvent, eventType);
 		}
 
 		// Publish event via parent context as well...
 		if (this.parent != null) {
 			if (this.parent instanceof AbstractApplicationContext abstractApplicationContext) {
-				logger.info("[SPRING] 自定义日志---发布事件："+event.getClass().getName()+",timestamp："+applicationEvent.getTimestamp());
+				logger.info("[SPRING] 自定义日志---【发布事件】"+event.getClass().getName()+",timestamp："+applicationEvent.getTimestamp());
 				abstractApplicationContext.publishEvent(event, typeHint);
 			}
 			else {
+				logger2.info("[SPRING] 自定义日志---【发布事件】"+event.getClass().getName());
 				this.parent.publishEvent(event);
 			}
 		}
@@ -564,20 +565,20 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			StartupStep contextRefresh = this.applicationStartup.start("spring.context.refresh");
 
 			// Prepare this context for refreshing.
-			logger.info("[SPRING] 自定义日志【非常重要】---【AbstractApplicationContext_refresh】准备刷新（prepareRefresh）");
+			logger.info("[SPRING] 自定义日志---【AbstractApplicationContext_refresh】准备刷新（prepareRefresh）");
 			prepareRefresh();
 
 			// Tell the subclass to refresh the internal bean factory.
-			logger.info("[SPRING] 自定义日志【非常重要】---【AbstractApplicationContext_refresh】调用obtainFreshBeanFactory");
+			logger.info("[SPRING] 自定义日志---【AbstractApplicationContext_refresh】调用obtainFreshBeanFactory");
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
-			logger.info("[SPRING] 自定义日志【非常重要】---【AbstractApplicationContext_refresh】调用obtainFreshBeanFactory,返回："+beanFactory.getClass().getName());
+			logger.info("[SPRING] 自定义日志---【AbstractApplicationContext_refresh】调用obtainFreshBeanFactory,返回："+beanFactory.getClass().getName());
 			// Prepare the bean factory for use in this context.
-			logger.info("[SPRING] 自定义日志【非常重要】---【AbstractApplicationContext_refresh】调用prepareBeanFactory");
+			logger.info("[SPRING] 自定义日志---【AbstractApplicationContext_refresh】调用prepareBeanFactory");
 			prepareBeanFactory(beanFactory);
 
 			try {
 				// Allows post-processing of the bean factory in context subclasses.
-				logger.info("[SPRING] 自定义日志【非常重要】---【AbstractApplicationContext_refresh】调用postProcessBeanFactory");
+				logger.info("[SPRING] 自定义日志---【AbstractApplicationContext_refresh】调用postProcessBeanFactory");
 				postProcessBeanFactory(beanFactory);
 
 				StartupStep beanPostProcess = this.applicationStartup.start("spring.context.beans.post-process");
@@ -590,19 +591,19 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				beanPostProcess.end();
 
 				// Initialize message source for this context.
-				logger.info("[SPRING] 自定义日志【非常重要】---【AbstractApplicationContext_refresh】调用initMessageSource：初始化消息源，初始化国际化相关的MessageSource Bean，用于处理消息的国际化");
+				logger.info("[SPRING] 自定义日志---【AbstractApplicationContext_refresh】调用initMessageSource：初始化消息源，初始化国际化相关的MessageSource Bean，用于处理消息的国际化");
 				initMessageSource();
 
 				// Initialize event multicaster for this context.
-				logger.info("[SPRING] 自定义日志【非常重要】---【AbstractApplicationContext_refresh】调用initApplicationEventMulticaster：初始化应用事件广播器");
+				logger.info("[SPRING] 自定义日志---【AbstractApplicationContext_refresh】调用initApplicationEventMulticaster：初始化应用事件广播器");
 				initApplicationEventMulticaster();
 
 				// Initialize other special beans in specific context subclasses.
-				logger.info("[SPRING] 自定义日志【非常重要】---【AbstractApplicationContext_refresh】调用onRefresh：模板方法，允许子类在容器刷新时执行特定的初始化逻辑");
+				logger.info("[SPRING] 自定义日志---【AbstractApplicationContext_refresh】调用onRefresh：模板方法，允许子类在容器刷新时执行特定的初始化逻辑");
 				onRefresh();
 
 				// Check for listener beans and register them.
-				logger.info("[SPRING] 自定义日志【非常重要】---【AbstractApplicationContext_refresh】调用registerListeners：注册所有实现ApplicationListener接口的Bean");
+				logger.info("[SPRING] 自定义日志---【AbstractApplicationContext_refresh】调用registerListeners：注册所有实现ApplicationListener接口的Bean");
 				registerListeners();
 
 				// Instantiate all remaining (non-lazy-init) singletons.
@@ -610,7 +611,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				finishBeanFactoryInitialization(beanFactory);
 
 				// Last step: publish corresponding event.
-				logger.info("[SPRING] 自定义日志【非常重要】---【AbstractApplicationContext_refresh】调用finishRefresh：");
+				logger.info("[SPRING] 自定义日志---【AbstractApplicationContext_refresh】调用finishRefresh：");
 				finishRefresh();
 			}
 
@@ -710,49 +711,49 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 */
 	protected void prepareBeanFactory(ConfigurableListableBeanFactory beanFactory) {
 		// Tell the internal bean factory to use the context's class loader etc.
-		logger.info("[SPRING] 自定义日志【重要】---调用AbstractApplicationContext的refresh方法（prepareBeanFactory）设置类加载器");
+		logger.info("[SPRING] 自定义日志---调用AbstractApplicationContext的refresh方法（prepareBeanFactory）设置类加载器");
 		beanFactory.setBeanClassLoader(getClassLoader());
-		logger.info("[SPRING] 自定义日志【重要】---调用AbstractApplicationContext的refresh方法（prepareBeanFactory）设置SPEL表达式解析器：StandardBeanExpressionResolver");
+		logger.info("[SPRING] 自定义日志---调用AbstractApplicationContext的refresh方法（prepareBeanFactory）设置SPEL表达式解析器：StandardBeanExpressionResolver");
 		beanFactory.setBeanExpressionResolver(new StandardBeanExpressionResolver(beanFactory.getBeanClassLoader()));
-		logger.info("[SPRING] 自定义日志【重要】---调用AbstractApplicationContext的refresh方法（prepareBeanFactory）添加属性编辑器注册器：ResourceEditorRegistrar");
+		logger.info("[SPRING] 自定义日志---调用AbstractApplicationContext的refresh方法（prepareBeanFactory）添加属性编辑器注册器：ResourceEditorRegistrar");
 		beanFactory.addPropertyEditorRegistrar(new ResourceEditorRegistrar(this, getEnvironment()));
 
 		// Configure the bean factory with context callbacks.
-		logger.info("[SPRING] 自定义日志【重要】---调用AbstractApplicationContext的refresh方法（prepareBeanFactory），【添加BeanPostProcessor】ApplicationContextAwareProcessor，处理Aware接口回调");
+		logger.info("[SPRING] 自定义日志---调用AbstractApplicationContext的refresh方法（prepareBeanFactory），【添加BeanPostProcessor】ApplicationContextAwareProcessor，处理Aware接口回调");
 		beanFactory.addBeanPostProcessor(new ApplicationContextAwareProcessor(this));
-		logger.info("[SPRING] 自定义日志【重要】---调用AbstractApplicationContext的refresh方法（prepareBeanFactory）忽略依赖注入接口：EnvironmentAware");
+		logger.info("[SPRING] 自定义日志---调用AbstractApplicationContext的refresh方法（prepareBeanFactory）忽略依赖注入接口：EnvironmentAware");
 		beanFactory.ignoreDependencyInterface(EnvironmentAware.class);
-		logger.info("[SPRING] 自定义日志【重要】---调用AbstractApplicationContext的refresh方法（prepareBeanFactory）忽略依赖注入接口：EmbeddedValueResolverAware");
+		logger.info("[SPRING] 自定义日志---调用AbstractApplicationContext的refresh方法（prepareBeanFactory）忽略依赖注入接口：EmbeddedValueResolverAware");
 		beanFactory.ignoreDependencyInterface(EmbeddedValueResolverAware.class);
-		logger.info("[SPRING] 自定义日志【重要】---调用AbstractApplicationContext的refresh方法（prepareBeanFactory）忽略依赖注入接口：ResourceLoaderAware");
+		logger.info("[SPRING] 自定义日志---调用AbstractApplicationContext的refresh方法（prepareBeanFactory）忽略依赖注入接口：ResourceLoaderAware");
 		beanFactory.ignoreDependencyInterface(ResourceLoaderAware.class);
-		logger.info("[SPRING] 自定义日志【重要】---调用AbstractApplicationContext的refresh方法（prepareBeanFactory）忽略依赖注入接口：ApplicationEventPublisherAware");
+		logger.info("[SPRING] 自定义日志---调用AbstractApplicationContext的refresh方法（prepareBeanFactory）忽略依赖注入接口：ApplicationEventPublisherAware");
 		beanFactory.ignoreDependencyInterface(ApplicationEventPublisherAware.class);
-		logger.info("[SPRING] 自定义日志【重要】---调用AbstractApplicationContext的refresh方法（prepareBeanFactory）忽略依赖注入接口：MessageSourceAware");
+		logger.info("[SPRING] 自定义日志---调用AbstractApplicationContext的refresh方法（prepareBeanFactory）忽略依赖注入接口：MessageSourceAware");
 		beanFactory.ignoreDependencyInterface(MessageSourceAware.class);
-		logger.info("[SPRING] 自定义日志【重要】---调用AbstractApplicationContext的refresh方法（prepareBeanFactory）忽略依赖注入接口：ApplicationContextAware");
+		logger.info("[SPRING] 自定义日志---调用AbstractApplicationContext的refresh方法（prepareBeanFactory）忽略依赖注入接口：ApplicationContextAware");
 		beanFactory.ignoreDependencyInterface(ApplicationContextAware.class);
-		logger.info("[SPRING] 自定义日志【重要】---调用AbstractApplicationContext的refresh方法（prepareBeanFactory）忽略依赖注入接口：ApplicationStartupAware");
+		logger.info("[SPRING] 自定义日志---调用AbstractApplicationContext的refresh方法（prepareBeanFactory）忽略依赖注入接口：ApplicationStartupAware");
 		beanFactory.ignoreDependencyInterface(ApplicationStartupAware.class);
 
 		// BeanFactory interface not registered as resolvable type in a plain factory.
 		// MessageSource registered (and found for autowiring) as a bean.
-		logger.info("[SPRING] 自定义日志【重要】---调用AbstractApplicationContext的refresh方法（prepareBeanFactory）注册可解析的依赖：BeanFactory");
+		logger.info("[SPRING] 自定义日志---调用AbstractApplicationContext的refresh方法（prepareBeanFactory）注册可解析的依赖：BeanFactory");
 		beanFactory.registerResolvableDependency(BeanFactory.class, beanFactory);
-		logger.info("[SPRING] 自定义日志【重要】---调用AbstractApplicationContext的refresh方法（prepareBeanFactory）注册可解析的依赖：ResourceLoader");
+		logger.info("[SPRING] 自定义日志---调用AbstractApplicationContext的refresh方法（prepareBeanFactory）注册可解析的依赖：ResourceLoader");
 		beanFactory.registerResolvableDependency(ResourceLoader.class, this);
-		logger.info("[SPRING] 自定义日志【重要】---调用AbstractApplicationContext的refresh方法（prepareBeanFactory）注册可解析的依赖：ApplicationEventPublisher");
+		logger.info("[SPRING] 自定义日志---调用AbstractApplicationContext的refresh方法（prepareBeanFactory）注册可解析的依赖：ApplicationEventPublisher");
 		beanFactory.registerResolvableDependency(ApplicationEventPublisher.class, this);
-		logger.info("[SPRING] 自定义日志【重要】---调用AbstractApplicationContext的refresh方法（prepareBeanFactory）注册可解析的依赖：ApplicationContext");
+		logger.info("[SPRING] 自定义日志---调用AbstractApplicationContext的refresh方法（prepareBeanFactory）注册可解析的依赖：ApplicationContext");
 		beanFactory.registerResolvableDependency(ApplicationContext.class, this);
 
 		// Register early post-processor for detecting inner beans as ApplicationListeners.
-		logger.info("[SPRING] 自定义日志【重要】---调用AbstractApplicationContext的refresh方法（prepareBeanFactory），【添加BeanPostProcessor】ApplicationListenerDetector：它负责自动检测和管理实现了ApplicationListener接口的Bean，确保它们能正确地向Spring应用上下文注册，从而接收应用事件。简而言之，它架起了Bean和事件监听机制之间的桥梁");
+		logger.info("[SPRING] 自定义日志---调用AbstractApplicationContext的refresh方法（prepareBeanFactory），【添加BeanPostProcessor】ApplicationListenerDetector：它负责自动检测和管理实现了ApplicationListener接口的Bean，确保它们能正确地向Spring应用上下文注册，从而接收应用事件。简而言之，它架起了Bean和事件监听机制之间的桥梁");
 		beanFactory.addBeanPostProcessor(new ApplicationListenerDetector(this));
 
 		// Detect a LoadTimeWeaver and prepare for weaving, if found.
 		if (!NativeDetector.inNativeImage() && beanFactory.containsBean(LOAD_TIME_WEAVER_BEAN_NAME)) {
-			logger.info("[SPRING] 自定义日志【重要】---调用AbstractApplicationContext的refresh方法（prepareBeanFactory），【添加BeanPostProcessor】：LoadTimeWeaverAwareProcessor，加载时织入");
+			logger.info("[SPRING] 自定义日志---调用AbstractApplicationContext的refresh方法（prepareBeanFactory），【添加BeanPostProcessor】：LoadTimeWeaverAwareProcessor，加载时织入");
 			beanFactory.addBeanPostProcessor(new LoadTimeWeaverAwareProcessor(beanFactory));
 			// Set a temporary ClassLoader for type matching.
 			beanFactory.setTempClassLoader(new ContextTypeMatchClassLoader(beanFactory.getBeanClassLoader()));
@@ -760,19 +761,19 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 		// Register default environment beans.
 		if (!beanFactory.containsLocalBean(ENVIRONMENT_BEAN_NAME)) {
-			logger.info("[SPRING] 自定义日志【重要】---调用AbstractApplicationContext的refresh方法（prepareBeanFactory），【注册单例Bean】,beanName："+ENVIRONMENT_BEAN_NAME);
+			logger.info("[SPRING] 自定义日志---调用AbstractApplicationContext的refresh方法（prepareBeanFactory），【注册单例Bean】,beanName："+ENVIRONMENT_BEAN_NAME);
 			beanFactory.registerSingleton(ENVIRONMENT_BEAN_NAME, getEnvironment());
 		}
 		if (!beanFactory.containsLocalBean(SYSTEM_PROPERTIES_BEAN_NAME)) {
-			logger.info("[SPRING] 自定义日志【重要】---调用AbstractApplicationContext的refresh方法（prepareBeanFactory），【注册单例Bean】,beanName："+SYSTEM_PROPERTIES_BEAN_NAME);
+			logger.info("[SPRING] 自定义日志---调用AbstractApplicationContext的refresh方法（prepareBeanFactory），【注册单例Bean】,beanName："+SYSTEM_PROPERTIES_BEAN_NAME);
 			beanFactory.registerSingleton(SYSTEM_PROPERTIES_BEAN_NAME, getEnvironment().getSystemProperties());
 		}
 		if (!beanFactory.containsLocalBean(SYSTEM_ENVIRONMENT_BEAN_NAME)) {
-			logger.info("[SPRING] 自定义日志【重要】---调用AbstractApplicationContext的refresh方法（prepareBeanFactory），【注册单例Bean】,beanName："+SYSTEM_ENVIRONMENT_BEAN_NAME);
+			logger.info("[SPRING] 自定义日志---调用AbstractApplicationContext的refresh方法（prepareBeanFactory），【注册单例Bean】,beanName："+SYSTEM_ENVIRONMENT_BEAN_NAME);
 			beanFactory.registerSingleton(SYSTEM_ENVIRONMENT_BEAN_NAME, getEnvironment().getSystemEnvironment());
 		}
 		if (!beanFactory.containsLocalBean(APPLICATION_STARTUP_BEAN_NAME)) {
-			logger.info("[SPRING] 自定义日志【重要】---调用AbstractApplicationContext的refresh方法（prepareBeanFactory），【注册单例Bean】,beanName："+APPLICATION_STARTUP_BEAN_NAME);
+			logger.info("[SPRING] 自定义日志---调用AbstractApplicationContext的refresh方法（prepareBeanFactory），【注册单例Bean】,beanName："+APPLICATION_STARTUP_BEAN_NAME);
 			beanFactory.registerSingleton(APPLICATION_STARTUP_BEAN_NAME, getApplicationStartup());
 		}
 	}
@@ -803,7 +804,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		// (for example, through an @Bean method registered by ConfigurationClassPostProcessor)
 		if (!NativeDetector.inNativeImage() && beanFactory.getTempClassLoader() == null &&
 				beanFactory.containsBean(LOAD_TIME_WEAVER_BEAN_NAME)) {
-			logger.info("[SPRING] 自定义日志【重要】---【添加BeanPostProcessor】：LoadTimeWeaverAwareProcessor");
+			logger.info("[SPRING] 自定义日志---【添加BeanPostProcessor】：LoadTimeWeaverAwareProcessor");
 			beanFactory.addBeanPostProcessor(new LoadTimeWeaverAwareProcessor(beanFactory));
 			beanFactory.setTempClassLoader(new ContextTypeMatchClassLoader(beanFactory.getBeanClassLoader()));
 		}
@@ -941,7 +942,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		this.earlyApplicationEvents = null;
 		if (!CollectionUtils.isEmpty(earlyEventsToProcess)) {
 			for (ApplicationEvent earlyEvent : earlyEventsToProcess) {
-				logger.info("[SPRING] 自定义日志---发布事件（广播）：ApplicationEvent，timestamp："+earlyEvent.getTimestamp());
+				logger.info("[SPRING] 自定义日志---【发布事件广播】ApplicationEvent，timestamp："+earlyEvent.getTimestamp());
 				getApplicationEventMulticaster().multicastEvent(earlyEvent);
 			}
 		}
@@ -1002,6 +1003,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		beanFactory.freezeConfiguration();
 
 		// Instantiate all remaining (non-lazy-init) singletons.
+		logger.info("[SPRING] 自定义日志【非常重要】---调用preInstantiateSingletons：实例化所有单例Bean");
 		beanFactory.preInstantiateSingletons();
 	}
 
@@ -1024,7 +1026,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		getLifecycleProcessor().onRefresh();
 
 		// Publish the final event.
-		logger.info("[SPRING] 自定义日志---发布事件：ContextRefreshedEvent");
+		logger.info("[SPRING] 自定义日志---【发布事件】ContextRefreshedEvent");
 		publishEvent(new ContextRefreshedEvent(this));
 	}
 
@@ -1179,7 +1181,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 			try {
 				// Publish shutdown event.
-				logger.info("[SPRING] 自定义日志---发布事件：ContextClosedEvent");
+				logger.info("[SPRING] 自定义日志---【发布事件】ContextClosedEvent");
 				publishEvent(new ContextClosedEvent(this));
 			}
 			catch (Throwable ex) {
@@ -1582,14 +1584,14 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	@Override
 	public void start() {
 		getLifecycleProcessor().start();
-		logger.info("[SPRING] 自定义日志---发布事件：ContextStartedEvent");
+		logger.info("[SPRING] 自定义日志---【发布事件】ContextStartedEvent");
 		publishEvent(new ContextStartedEvent(this));
 	}
 
 	@Override
 	public void stop() {
 		getLifecycleProcessor().stop();
-		logger.info("[SPRING] 自定义日志---发布事件：ContextStoppedEvent");
+		logger.info("[SPRING] 自定义日志---【发布事件】ContextStoppedEvent");
 		publishEvent(new ContextStoppedEvent(this));
 	}
 

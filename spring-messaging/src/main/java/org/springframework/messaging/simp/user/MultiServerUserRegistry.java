@@ -113,7 +113,7 @@ public class MultiServerUserRegistry implements SimpUserRegistry, SmartApplicati
 
 	@Override
 	public void onApplicationEvent(ApplicationEvent event) {
-		logger.info("[SPRING] 自定义日志---监听到事件：ApplicationEvent，timestamp："+event.getTimestamp());
+		logger.info("[SPRING] 自定义日志---【监听事件】ApplicationEvent，timestamp："+event.getTimestamp());
 		if (this.delegateApplicationEvents) {
 			((SmartApplicationListener) this.localRegistry).onApplicationEvent(event);
 		}

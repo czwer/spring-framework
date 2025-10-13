@@ -441,7 +441,7 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	}
 
 	private Set<BeanDefinition> scanCandidateComponents(String basePackage) {
-		logger.info("[SPRING] 自定义日志---扫描包路径："+basePackage);
+		logger.info("[SPRING] 自定义日志【关键路径-获取Bean定义】---扫描包路径："+basePackage);
 		Set<BeanDefinition> candidates = new LinkedHashSet<>();
 		try {
 			String packageSearchPath = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX +

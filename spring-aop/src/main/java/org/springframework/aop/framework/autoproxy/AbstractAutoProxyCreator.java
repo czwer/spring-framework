@@ -258,7 +258,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 
 	@Override
 	public Object getEarlyBeanReference(Object bean, String beanName) {
-		logger.info("[SPRING] 自定义日志【非常重要】---为解决循环依赖，提前暴露AOP代理的引用："+beanName);
+		logger.info("[SPRING] 自定义日志---为解决循环依赖，提前暴露AOP代理的引用："+beanName);
 		Object cacheKey = getCacheKey(bean.getClass(), beanName);
 		this.earlyBeanReferences.put(cacheKey, bean);
 		return wrapIfNecessary(bean, beanName, cacheKey);
@@ -291,7 +291,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 			Object[] specificInterceptors = getAdvicesAndAdvisorsForBean(beanClass, beanName, targetSource);
 			Object proxy = createProxy(beanClass, beanName, specificInterceptors, targetSource);
 			this.proxyTypes.put(cacheKey, proxy.getClass());
-			logger.info("[SPRING] 自定义日志【非常重要】---实现BeanPostProcessor：在Bean实例化之前尝试返回代理对象："+beanName);
+			logger.info("[SPRING] 自定义日志---实现BeanPostProcessor：在Bean实例化之前尝试返回代理对象："+beanName);
 			return proxy;
 		}
 
@@ -314,7 +314,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		if (bean != null) {
 			Object cacheKey = getCacheKey(bean.getClass(), beanName);
 			if (this.earlyBeanReferences.remove(cacheKey) != bean) {
-				logger.info("[SPRING] 自定义日志【非常重要】---实现BeanPostProcessor：在Bean初始化完成后，自动检查其是否需要被AOP代理。如果需要，则为其创建并返回一个AOP代理对象来替换原始的目标Bean："+beanName);
+				logger.info("[SPRING] 自定义日志---实现BeanPostProcessor：在Bean初始化完成后，自动检查其是否需要被AOP代理。如果需要，则为其创建并返回一个AOP代理对象来替换原始的目标Bean："+beanName);
 				return wrapIfNecessary(bean, beanName, cacheKey);
 			}
 		}

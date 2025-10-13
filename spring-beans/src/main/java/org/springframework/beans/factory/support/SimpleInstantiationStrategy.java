@@ -122,12 +122,12 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
 					}
 				}
 			}
-			logger.info("[SPRING] 自定义日志【重要】---【获取Bean】【创建bean实例】：1，通过构造方法创建实例：" + beanName);
+			logger.info("[SPRING] 自定义日志---【获取Bean】【创建bean实例】：1，通过构造方法创建实例：" + beanName);
 			return BeanUtils.instantiateClass(constructorToUse);
 		}
 		else {
 			// Must generate CGLIB subclass.
-			logger.info("[SPRING] 自定义日志【重要】---【获取Bean】【创建bean实例】：2，通过CGLIB 子类创建实例：" + beanName);
+			logger.info("[SPRING] 自定义日志---【获取Bean】【创建bean实例】：2，通过CGLIB 子类创建实例：" + beanName);
 			return instantiateWithMethodInjection(bd, beanName, owner);
 		}
 	}

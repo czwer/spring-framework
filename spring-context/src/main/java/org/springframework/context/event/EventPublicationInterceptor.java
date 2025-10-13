@@ -16,11 +16,8 @@
 
 package org.springframework.context.event;
 
-import java.lang.reflect.Constructor;
-
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -29,6 +26,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
+
+import java.lang.reflect.Constructor;
 
 /**
  * {@link MethodInterceptor Interceptor} that publishes an
@@ -105,7 +104,7 @@ public class EventPublicationInterceptor
 				this.applicationEventClassConstructor.newInstance(invocation.getThis());
 
 		Assert.state(this.applicationEventPublisher != null, "No ApplicationEventPublisher available");
-		logger.info("[SPRING] 自定义日志---发布事件："+event.getClass().getName()+",timestamp："+event.getTimestamp());
+		logger.info("[SPRING] 自定义日志---【发布事件】"+event.getClass().getName()+",timestamp："+event.getTimestamp());
 		this.applicationEventPublisher.publishEvent(event);
 
 		return retVal;

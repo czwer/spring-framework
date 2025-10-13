@@ -130,6 +130,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 
 	@Override
 	public void registerSingleton(String beanName, Object singletonObject) throws IllegalStateException {
+		logger.info("[SPRING] 自定义日志【关键流程-注册单例bean实例】---beanName："+beanName);
 		Assert.notNull(beanName, "Bean name must not be null");
 		Assert.notNull(singletonObject, "Singleton object must not be null");
 		this.singletonLock.lock();
@@ -148,6 +149,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	 * @param singletonObject the singleton object
 	 */
 	protected void addSingleton(String beanName, Object singletonObject) {
+		logger.info("[SPRING] 自定义日志【关键流程-注册单例bean实例】---beanName："+beanName);
 		Object oldObject = this.singletonObjects.putIfAbsent(beanName, singletonObject);
 		if (oldObject != null) {
 			throw new IllegalStateException("Could not register object [" + singletonObject +
@@ -200,10 +202,8 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	@Nullable
 	protected Object getSingleton(String beanName, boolean allowEarlyReference) {
 		// Quick check for existing instance without full singleton lock.
-		logger.info("[SPRING] 自定义日志---【getSingleton1】尝试从第1级缓存获取-1（完全初始化好的单例Bean）："+beanName);
 		Object singletonObject = this.singletonObjects.get(beanName);
 		if (singletonObject == null && isSingletonCurrentlyInCreation(beanName)) {
-			logger.info("[SPRING] 自定义日志---【getSingleton1】尝试从第2级缓存获取-1（早期曝光的单例对象，已实例化但未初始化）："+beanName);
 			singletonObject = this.earlySingletonObjects.get(beanName);
 			if (singletonObject == null && allowEarlyReference) {
 				if (!this.singletonLock.tryLock()) {
@@ -213,10 +213,8 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 				}
 				try {
 					// Consistent creation of early reference within full singleton lock.
-					logger.info("[SPRING] 自定义日志---【getSingleton1】尝试从第1级缓存获取-2（完全初始化好的单例Bean）："+beanName);
 					singletonObject = this.singletonObjects.get(beanName);
 					if (singletonObject == null) {
-						logger.info("[SPRING] 自定义日志---【getSingleton1】尝试从第2级缓存获取-2（早期曝光的单例对象，已实例化但未初始化）："+beanName);
 						singletonObject = this.earlySingletonObjects.get(beanName);
 						if (singletonObject == null) {
 							logger.info("[SPRING] 自定义日志---【getSingleton1】尝试从第3级缓存获取（单例工厂，用于创建早期引用）："+beanName);
@@ -242,20 +240,24 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 								logger.info("[SPRING] 自定义日志---【getSingleton1】没有ObjectFactory，不能通过单例工厂创建早期引用，未获取到单例："+beanName);
 							}
 						}else {
-							logger.info("[SPRING] 自定义日志---【getSingleton1】第2级缓存中（双重检查），已获取到单例："+beanName);
+							logger.info("[SPRING] 自定义日志---【getSingleton1】第2级缓存中（早期曝光的单例对象，已实例化但未初始化）（双重检查），已获取到单例："+beanName);
 						}
 					}else {
-						logger.info("[SPRING] 自定义日志---【getSingleton1】第1级缓存中（双重检查），已获取到单例："+beanName);
+						logger.info("[SPRING] 自定义日志---【getSingleton1】第1级缓存中（完全初始化好的单例Bean）（双重检查），已获取到单例："+beanName);
 					}
 				}
 				finally {
 					this.singletonLock.unlock();
 				}
 			}else {
-				logger.info("[SPRING] 自定义日志---【getSingleton1】第2级缓存中，已获取到单例："+beanName);
+				if (singletonObject != null){
+					logger.info("[SPRING] 自定义日志---【getSingleton1】第2级缓存中（早期曝光的单例对象，已实例化但未初始化），已获取到单例："+beanName);
+				}
 			}
 		}else {
-			logger.info("[SPRING] 自定义日志---【getSingleton1】第1级缓存中，已获取到单例："+beanName);
+			if (singletonObject != null){
+				logger.info("[SPRING] 自定义日志---【getSingleton1】第1级缓存中（完全初始化好的单例Bean），已获取到单例："+beanName);
+			}
 		}
 		return singletonObject;
 	}

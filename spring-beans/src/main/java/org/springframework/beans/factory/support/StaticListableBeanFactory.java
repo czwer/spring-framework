@@ -116,7 +116,7 @@ public class StaticListableBeanFactory implements ListableBeanFactory {
 
 		if (bean instanceof FactoryBean<?> factoryBean && !BeanFactoryUtils.isFactoryDereference(name)) {
 			try {
-				logger.info("[SPRING] 自定义日志【非常重要】---getBean步骤，调用getObject方法，factory："+factoryBean.getClass().getName()+",beanName："+beanName);
+				logger.info("[SPRING] 自定义日志---getBean步骤，调用getObject方法，factory："+factoryBean.getClass().getName()+",beanName："+beanName);
 				Object exposedObject = factoryBean.getObject();
 				if (exposedObject == null) {
 					throw new BeanCreationException(beanName, "FactoryBean exposed null object");

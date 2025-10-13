@@ -244,7 +244,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 	 */
 	@Override
 	public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) {
-		logger.info("[SPRING] 自定义日志【非常重要】---解析配置类，注册Bean定义");
+		logger.info("[SPRING] 自定义日志---解析配置类，注册Bean定义");
 		int registryId = System.identityHashCode(registry);
 		if (this.registriesPostProcessed.contains(registryId)) {
 			throw new IllegalStateException(
@@ -265,7 +265,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 	 */
 	@Override
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) {
-		logger.info("[SPRING] 自定义日志---ConfigurationClassPostProcessor实现BeanFactoryPostProcessor接口，执行方法postProcessBeanFactory：配置类CGLIB增强，注册特殊后处理器");
+		logger.info("[SPRING] 自定义日志【非常重要】---ConfigurationClassPostProcessor实现BeanFactoryPostProcessor接口，执行方法postProcessBeanFactory：配置类CGLIB增强，注册特殊后处理器");
 		int factoryId = System.identityHashCode(beanFactory);
 		if (this.factoriesPostProcessed.contains(factoryId)) {
 			throw new IllegalStateException(
@@ -277,9 +277,9 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 			// Simply call processConfigurationClasses lazily at this point then.
 			processConfigBeanDefinitions((BeanDefinitionRegistry) beanFactory);
 		}
-		logger.info("[SPRING] 自定义日志【重要】---遍历容器中所有的Bean定义，筛选出需要增强的Full配置类，然后使用ConfigurationClassEnhancer为其生成CGLIB子类");
+		logger.info("[SPRING] 自定义日志---遍历容器中所有的Bean定义，筛选出需要增强的Full配置类，然后使用ConfigurationClassEnhancer为其生成CGLIB子类");
 		enhanceConfigurationClasses(beanFactory);
-		logger.info("[SPRING] 自定义日志【重要】---【添加BeanPostProcessor】：ImportAwareBeanPostProcessor");
+		logger.info("[SPRING] 自定义日志---【添加BeanPostProcessor】：ImportAwareBeanPostProcessor");
 		beanFactory.addBeanPostProcessor(new ImportAwareBeanPostProcessor(beanFactory));
 	}
 
@@ -400,7 +400,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 						registry, this.sourceExtractor, this.resourceLoader, this.environment,
 						this.importBeanNameGenerator, parser.getImportRegistry());
 			}
-			logger.info("[SPRING] 自定义日志【非常重要】---加载Bean定义");
+			logger.info("[SPRING] 自定义日志---加载Bean定义");
 			this.reader.loadBeanDefinitions(configClasses);
 			alreadyParsed.addAll(configClasses);
 			processConfig.tag("classCount", () -> String.valueOf(configClasses.size())).end();

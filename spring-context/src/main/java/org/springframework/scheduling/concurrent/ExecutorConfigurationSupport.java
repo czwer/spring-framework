@@ -16,29 +16,18 @@
 
 package org.springframework.scheduling.concurrent;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
-import java.util.concurrent.RejectedExecutionHandler;
-import java.util.concurrent.RunnableFuture;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.ApplicationListener;
-import org.springframework.context.Lifecycle;
-import org.springframework.context.SmartLifecycle;
+import org.springframework.context.*;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.core.task.VirtualThreadTaskExecutor;
 import org.springframework.lang.Nullable;
+
+import java.util.concurrent.*;
 
 /**
  * Base class for setting up a {@link java.util.concurrent.ExecutorService}
@@ -506,7 +495,7 @@ public abstract class ExecutorConfigurationSupport extends CustomizableThreadFac
 	 */
 	@Override
 	public void onApplicationEvent(ContextClosedEvent event) {
-		logger.info("[SPRING] 自定义日志---监听到事件：ContextClosedEvent，timestamp："+event.getTimestamp());
+		logger.info("[SPRING] 自定义日志---【监听事件】ContextClosedEvent，timestamp："+event.getTimestamp());
 		if (event.getApplicationContext() == this.applicationContext) {
 			if (this.acceptTasksAfterContextClose || this.waitForTasksToCompleteOnShutdown) {
 				// Late shutdown without early stop lifecycle.

@@ -16,8 +16,6 @@
 
 package org.springframework.context.event;
 
-import java.util.Map;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.aop.support.AopUtils;
@@ -28,6 +26,8 @@ import org.springframework.core.ResolvableType;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.ConcurrentReferenceHashMap;
+
+import java.util.Map;
 
 /**
  * {@link GenericApplicationListener} adapter that determines supported event types
@@ -63,7 +63,7 @@ public class GenericApplicationListenerAdapter implements GenericApplicationList
 
 	@Override
 	public void onApplicationEvent(ApplicationEvent event) {
-		logger.info("[SPRING] 自定义日志---监听到事件：ApplicationEvent，timestamp："+event.getTimestamp());
+		logger.info("[SPRING] 自定义日志---【监听事件】ApplicationEvent，timestamp："+event.getTimestamp());
 		this.delegate.onApplicationEvent(event);
 	}
 

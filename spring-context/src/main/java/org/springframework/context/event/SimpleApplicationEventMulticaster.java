@@ -16,12 +16,8 @@
 
 package org.springframework.context.event;
 
-import java.util.concurrent.Executor;
-import java.util.concurrent.RejectedExecutionException;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
@@ -29,6 +25,9 @@ import org.springframework.context.PayloadApplicationEvent;
 import org.springframework.core.ResolvableType;
 import org.springframework.lang.Nullable;
 import org.springframework.util.ErrorHandler;
+
+import java.util.concurrent.Executor;
+import java.util.concurrent.RejectedExecutionException;
 
 /**
  * Simple implementation of the {@link ApplicationEventMulticaster} interface.
@@ -183,7 +182,7 @@ public class SimpleApplicationEventMulticaster extends AbstractApplicationEventM
 	@SuppressWarnings({"rawtypes", "unchecked"})
 	private void doInvokeListener(ApplicationListener listener, ApplicationEvent event) {
 		try {
-			logger.info("[SPRING] 自定义日志---发布事件中（广播）：ApplicationEvent，timestamp："+event.getTimestamp()+",监听者："+listener.getClass().getName());
+			logger.info("[SPRING] 自定义日志---【发布事件广播】：ApplicationEvent，timestamp："+event.getTimestamp()+",监听者："+listener.getClass().getName());
 			listener.onApplicationEvent(event);
 		}
 		catch (ClassCastException ex) {

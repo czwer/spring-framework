@@ -16,21 +16,8 @@
 
 package org.springframework.scheduling.concurrent;
 
-import java.time.Clock;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Future;
-import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationListener;
@@ -45,6 +32,11 @@ import org.springframework.scheduling.support.DelegatingErrorHandlingRunnable;
 import org.springframework.scheduling.support.TaskUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.ErrorHandler;
+
+import java.time.Clock;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.concurrent.*;
 
 /**
  * A simple implementation of Spring's {@link TaskScheduler} interface, using
@@ -382,7 +374,7 @@ public class SimpleAsyncTaskScheduler extends SimpleAsyncTaskExecutor implements
 
 	@Override
 	public void onApplicationEvent(ContextClosedEvent event) {
-		logger.info("[SPRING] 自定义日志---监听到事件：ContextClosedEvent，timestamp："+event.getTimestamp());
+		logger.info("[SPRING] 自定义日志---【监听事件】ContextClosedEvent，timestamp："+event.getTimestamp());
 		if (event.getApplicationContext() == this.applicationContext) {
 			this.triggerExecutor.shutdown();
 			this.fixedDelayExecutor.shutdown();

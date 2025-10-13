@@ -16,17 +16,16 @@
 
 package org.springframework.aop.framework.adapter;
 
+import org.aopalliance.aop.Advice;
+import org.aopalliance.intercept.MethodInterceptor;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.aop.Advisor;
+import org.springframework.aop.support.DefaultPointcutAdvisor;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.aopalliance.aop.Advice;
-import org.aopalliance.intercept.MethodInterceptor;
-
-import org.springframework.aop.Advisor;
-import org.springframework.aop.support.DefaultPointcutAdvisor;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 /**
  * Default implementation of the {@link AdvisorAdapterRegistry} interface.
  * Supports {@link org.aopalliance.intercept.MethodInterceptor},
@@ -49,11 +48,11 @@ public class DefaultAdvisorAdapterRegistry implements AdvisorAdapterRegistry, Se
 	 * Create a new DefaultAdvisorAdapterRegistry, registering well-known adapters.
 	 */
 	public DefaultAdvisorAdapterRegistry() {
-		logger.info("[SPRING] 自定义日志【非常重要】---注册AdvisorAdapter：MethodBeforeAdviceAdapter");
+		logger.info("[SPRING] 自定义日志---注册AdvisorAdapter：MethodBeforeAdviceAdapter");
 		registerAdvisorAdapter(new MethodBeforeAdviceAdapter());
-		logger.info("[SPRING] 自定义日志【非常重要】---注册AdvisorAdapter：AfterReturningAdviceAdapter");
+		logger.info("[SPRING] 自定义日志---注册AdvisorAdapter：AfterReturningAdviceAdapter");
 		registerAdvisorAdapter(new AfterReturningAdviceAdapter());
-		logger.info("[SPRING] 自定义日志【非常重要】---注册AdvisorAdapter：ThrowsAdviceAdapter");
+		logger.info("[SPRING] 自定义日志---注册AdvisorAdapter：ThrowsAdviceAdapter");
 		registerAdvisorAdapter(new ThrowsAdviceAdapter());
 	}
 
@@ -99,7 +98,7 @@ public class DefaultAdvisorAdapterRegistry implements AdvisorAdapterRegistry, Se
 
 	@Override
 	public void registerAdvisorAdapter(AdvisorAdapter adapter) {
-		logger.info("[SPRING] 自定义日志【非常重要】---注册AdvisorAdapter："+adapter.getClass().getName());
+		logger.info("[SPRING] 自定义日志---注册AdvisorAdapter："+adapter.getClass().getName());
 		this.adapters.add(adapter);
 	}
 

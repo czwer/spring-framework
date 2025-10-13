@@ -16,16 +16,9 @@
 
 package org.springframework.web.servlet.resource;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -38,6 +31,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.handler.AbstractUrlHandlerMapping;
 import org.springframework.web.util.UrlPathHelper;
+
+import java.util.*;
 
 /**
  * A central component to use to obtain the public URL path that clients should
@@ -137,7 +132,7 @@ public class ResourceUrlProvider implements ApplicationListener<ContextRefreshed
 
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent event) {
-		logger.info("[SPRING] 自定义日志---监听到事件：ContextRefreshedEvent，timestamp："+event.getTimestamp());
+		logger.info("[SPRING] 自定义日志---【监听事件】ContextRefreshedEvent，timestamp："+event.getTimestamp());
 		if (event.getApplicationContext() == this.applicationContext && isAutodetect()) {
 			this.handlerMap.clear();
 			detectResourceHandlers(this.applicationContext);

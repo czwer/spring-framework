@@ -125,15 +125,15 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 		if (hasBeanFactory()) {
 			destroyBeans();
 			closeBeanFactory();
-			logger.info("[SPRING] 自定义日志【非常重要】---destroyBeans & closeBeanFactory");
+			logger.info("[SPRING] 自定义日志---destroyBeans & closeBeanFactory");
 		}
 		try {
-			logger.info("[SPRING] 自定义日志【非常重要】---创建DefaultListableBeanFactory");
+			logger.info("[SPRING] 自定义日志---创建DefaultListableBeanFactory");
 			DefaultListableBeanFactory beanFactory = createBeanFactory();
 			beanFactory.setSerializationId(getId());
 			beanFactory.setApplicationStartup(getApplicationStartup());
 			customizeBeanFactory(beanFactory);
-			logger.info("[SPRING] 自定义日志【非常重要】---加载bean定义");
+			logger.info("[SPRING] 自定义日志---加载bean定义");
 			loadBeanDefinitions(beanFactory);
 			this.beanFactory = beanFactory;
 		}
@@ -175,7 +175,7 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 			throw new IllegalStateException("BeanFactory not initialized or already closed - " +
 					"call 'refresh' before accessing beans via the ApplicationContext");
 		}
-		logger.info("[SPRING] 自定义日志【非常重要】---返回ConfigurableListableBeanFactory");
+		logger.info("[SPRING] 自定义日志---返回ConfigurableListableBeanFactory");
 		return beanFactory;
 	}
 

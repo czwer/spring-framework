@@ -63,7 +63,7 @@ public interface ApplicationEventPublisher {
 	 * @see org.springframework.context.event.ContextClosedEvent
 	 */
 	default void publishEvent(ApplicationEvent event) {
-		logger2.info("[SPRING] 自定义日志---发布事件中："+event.getClass().getName()+"，timestamp："+event.getTimestamp());
+		logger2.info("[SPRING] 自定义日志---【发布事件】"+event.getClass().getName()+"，timestamp："+event.getTimestamp());
 		publishEvent((Object) event);
 	}
 

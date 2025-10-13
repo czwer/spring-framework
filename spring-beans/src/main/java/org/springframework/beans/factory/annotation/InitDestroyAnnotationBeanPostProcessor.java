@@ -208,7 +208,7 @@ public class InitDestroyAnnotationBeanPostProcessor implements DestructionAwareB
 
 	@Override
 	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
-		logger.info("[SPRING] 自定义日志【非常重要】---实现BeanPostProcessor：处理 @PostConstruct 注解："+beanName);
+		logger.info("[SPRING] 自定义日志---实现BeanPostProcessor：处理 @PostConstruct 注解："+beanName);
 		LifecycleMetadata metadata = findLifecycleMetadata(bean.getClass());
 		try {
 			metadata.invokeInitMethods(bean, beanName);
@@ -230,7 +230,7 @@ public class InitDestroyAnnotationBeanPostProcessor implements DestructionAwareB
 
 	@Override
 	public void postProcessBeforeDestruction(Object bean, String beanName) throws BeansException {
-		logger.info("[SPRING] 自定义日志【非常重要】---处理 @PreDestroy 注解："+beanName);
+		logger.info("[SPRING] 自定义日志---处理 @PreDestroy 注解："+beanName);
 		LifecycleMetadata metadata = findLifecycleMetadata(bean.getClass());
 		try {
 			metadata.invokeDestroyMethods(bean, beanName);

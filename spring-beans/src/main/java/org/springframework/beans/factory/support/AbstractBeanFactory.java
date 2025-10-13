@@ -205,13 +205,14 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	protected <T> T doGetBean(
 			String name, @Nullable Class<T> requiredType, @Nullable Object[] args, boolean typeCheckOnly)
 			throws BeansException {
-		logger.info("[SPRING] 自定义日志【非常重要】---【doGetBean】↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓："+name);
+		logger.info("[SPRING] 自定义日志【关键流程-doGetBean】---"+name);
+		logger.info("[SPRING] 自定义日志---【doGetBean】↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓："+name);
 		if (requiredType != null){
 			logger.info("[SPRING] 自定义日志---【doGetBean】beanName："+name+",beanType："+requiredType.getName());
 		}else {
 			logger.info("[SPRING] 自定义日志---【doGetBean】beanName："+name);
 		}
-		if (name.charAt(0) != BeanFactory.FACTORY_BEAN_PREFIX_CHAR){
+		if (name.charAt(0) == BeanFactory.FACTORY_BEAN_PREFIX_CHAR){
 			logger.info("[SPRING] 自定义日志---【doGetBean】beanName："+name+"是FactoryBean名称");
 		}
 		String beanName = transformedBeanName(name);
@@ -219,8 +220,12 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		Object beanInstance;
 
 		// Eagerly check singleton cache for manually registered singletons.
-		logger.info("[SPRING] 自定义日志---【doGetBean】调用getSingleton方法："+beanName);
 		Object sharedInstance = getSingleton(beanName);
+		if (sharedInstance != null){
+			logger.info("[SPRING] 自定义日志---【doGetBean】调用getSingleton1方法(返回非空)："+beanName);
+		}else {
+			logger.info("[SPRING] 自定义日志---【doGetBean】调用getSingleton1方法(返回空)："+beanName);
+		}
 		if (sharedInstance != null && args == null) {
 			if (logger.isTraceEnabled()) {
 				if (isSingletonCurrentlyInCreation(beanName)) {
@@ -325,7 +330,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
 				// Create bean instance.
 				if (mbd.isSingleton()) {
-					logger.info("[SPRING] 自定义日志---【doGetBean】【作用域：单例Bean】调用getSingleton方法："+beanName);
+					logger.info("[SPRING] 自定义日志---【doGetBean】【作用域：单例Bean】调用getSingleton2方法："+beanName);
 					sharedInstance = getSingleton(beanName, () -> {
 						try {
 							logger.info("[SPRING] 自定义日志---【doGetBean】【作用域：单例Bean】，调用createBean方法："+beanName);
@@ -407,7 +412,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		}
 		logger.info("[SPRING] 自定义日志---【doGetBean】调用adaptBeanInstance方法："+beanName);
 		Object o = adaptBeanInstance(name, beanInstance, requiredType);
-		logger.info("[SPRING] [SPRING] 自定义日志【非常重要】---【doGetBean】↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑："+name);
+		logger.info("[SPRING] [SPRING] 自定义日志---【doGetBean】↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑："+name);
 		return (T) o;
 	}
 
@@ -989,7 +994,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
 	@Override
 	public void addBeanPostProcessor(BeanPostProcessor beanPostProcessor) {
-		logger.info("[SPRING] 自定义日志【重要】---添加一个Bean后置处理器（BeanPostProcessor），它可以在Bean初始化前后执行自定义逻辑：" + beanPostProcessor.getClass().getName());
+		logger.info("[SPRING] 自定义日志---添加一个Bean后置处理器（BeanPostProcessor），它可以在Bean初始化前后执行自定义逻辑：" + beanPostProcessor.getClass().getName());
 		Assert.notNull(beanPostProcessor, "BeanPostProcessor must not be null");
 		synchronized (this.beanPostProcessors) {
 			// Remove from old position, if any

@@ -95,8 +95,8 @@ public abstract class AbstractXmlApplicationContext extends AbstractRefreshableC
 		// Allow a subclass to provide custom initialization of the reader,
 		// then proceed with actually loading the bean definitions.
 		initBeanDefinitionReader(beanDefinitionReader);
-		logger.info("[SPRING] 自定义日志【非常重要】---初始化BeanDefinitionReader");
-		logger.info("[SPRING] 自定义日志【非常重要】---加载Bean定义");
+		logger.info("[SPRING] 自定义日志---初始化BeanDefinitionReader");
+		logger.info("[SPRING] 自定义日志---加载Bean定义");
 		loadBeanDefinitions(beanDefinitionReader);
 	}
 

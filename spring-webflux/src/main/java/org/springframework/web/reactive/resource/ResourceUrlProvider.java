@@ -16,15 +16,8 @@
 
 package org.springframework.web.reactive.resource;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import reactor.core.publisher.Mono;
-
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -38,6 +31,12 @@ import org.springframework.web.reactive.handler.AbstractUrlHandlerMapping;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.util.pattern.PathPattern;
 import org.springframework.web.util.pattern.PathPatternParser;
+import reactor.core.publisher.Mono;
+
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A central component to use to obtain the public URL path that clients should
@@ -93,7 +92,7 @@ public class ResourceUrlProvider implements ApplicationListener<ContextRefreshed
 
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent event) {
-		logger.info("[SPRING] 自定义日志---监听到事件：ContextRefreshedEvent，timestamp："+event.getTimestamp());
+		logger.info("[SPRING] 自定义日志---【监听事件】ContextRefreshedEvent，timestamp："+event.getTimestamp());
 		if (this.applicationContext == event.getApplicationContext() && this.handlerMap.isEmpty()) {
 			detectResourceHandlers(event.getApplicationContext());
 		}

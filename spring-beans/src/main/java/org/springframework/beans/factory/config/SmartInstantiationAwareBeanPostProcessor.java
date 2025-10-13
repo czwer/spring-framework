@@ -16,12 +16,12 @@
 
 package org.springframework.beans.factory.config;
 
-import java.lang.reflect.Constructor;
-
-import org.springframework.beans.BeansException;
-import org.springframework.lang.Nullable;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.BeansException;
+import org.springframework.lang.Nullable;
+
+import java.lang.reflect.Constructor;
 /**
  * Extension of the {@link InstantiationAwareBeanPostProcessor} interface,
  * adding a callback for predicting the eventual type of a processed bean.
@@ -79,7 +79,7 @@ public interface SmartInstantiationAwareBeanPostProcessor extends InstantiationA
 	@Nullable
 	default Constructor<?>[] determineCandidateConstructors(Class<?> beanClass, String beanName)
 			throws BeansException {
-		logger.info("[SPRING] 自定义日志【非常重要】---探测Bean的构造器："+beanName);
+		logger.info("[SPRING] 自定义日志---探测Bean的构造器，空方法："+beanName);
 		return null;
 	}
 

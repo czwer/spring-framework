@@ -16,19 +16,8 @@
 
 package org.springframework.web.socket.messaging;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.security.Principal;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
@@ -40,28 +29,25 @@ import org.springframework.messaging.simp.SimpAttributesContextHolder;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.messaging.simp.broker.OrderedMessageChannelDecorator;
-import org.springframework.messaging.simp.stomp.BufferingStompDecoder;
-import org.springframework.messaging.simp.stomp.StompCommand;
-import org.springframework.messaging.simp.stomp.StompDecoder;
-import org.springframework.messaging.simp.stomp.StompEncoder;
-import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
-import org.springframework.messaging.support.AbstractMessageChannel;
-import org.springframework.messaging.support.ChannelInterceptor;
-import org.springframework.messaging.support.ImmutableMessageChannelInterceptor;
-import org.springframework.messaging.support.MessageBuilder;
-import org.springframework.messaging.support.MessageHeaderAccessor;
-import org.springframework.messaging.support.MessageHeaderInitializer;
+import org.springframework.messaging.simp.stomp.*;
+import org.springframework.messaging.support.*;
 import org.springframework.util.Assert;
 import org.springframework.util.MimeTypeUtils;
-import org.springframework.web.socket.BinaryMessage;
-import org.springframework.web.socket.CloseStatus;
-import org.springframework.web.socket.TextMessage;
-import org.springframework.web.socket.WebSocketMessage;
-import org.springframework.web.socket.WebSocketSession;
+import org.springframework.web.socket.*;
 import org.springframework.web.socket.handler.ConcurrentWebSocketSessionDecorator;
 import org.springframework.web.socket.handler.SessionLimitExceededException;
 import org.springframework.web.socket.handler.WebSocketSessionDecorator;
 import org.springframework.web.socket.sockjs.transport.SockJsSession;
+
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.security.Principal;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * A {@link SubProtocolHandler} for STOMP that supports versions 1.0, 1.1, and 1.2
@@ -346,15 +332,15 @@ public class StompSubProtocolHandler implements SubProtocolHandler, ApplicationE
 						if (this.eventPublisher != null) {
 							Principal user = getUser(session);
 							if (isConnect) {
-								logger.info("[SPRING] 自定义日志---发布事件：SessionConnectEvent");
+								logger.info("[SPRING] 自定义日志---【发布事件】SessionConnectEvent");
 								publishEvent(this.eventPublisher, new SessionConnectEvent(this, message, user));
 							}
 							else if (StompCommand.SUBSCRIBE.equals(command)) {
-								logger.info("[SPRING] 自定义日志---发布事件：SessionSubscribeEvent");
+								logger.info("[SPRING] 自定义日志---【发布事件】SessionSubscribeEvent");
 								publishEvent(this.eventPublisher, new SessionSubscribeEvent(this, message, user));
 							}
 							else if (StompCommand.UNSUBSCRIBE.equals(command)) {
-								logger.info("[SPRING] 自定义日志---发布事件：SessionUnsubscribeEvent");
+								logger.info("[SPRING] 自定义日志---【发布事件】SessionUnsubscribeEvent");
 								publishEvent(this.eventPublisher, new SessionUnsubscribeEvent(this, message, user));
 							}
 						}
@@ -448,7 +434,7 @@ public class StompSubProtocolHandler implements SubProtocolHandler, ApplicationE
 
 	private void publishEvent(ApplicationEventPublisher publisher, ApplicationEvent event) {
 		try {
-			logger.info("[SPRING] 自定义日志---发布事件：ApplicationEvent，timestamp："+event.getTimestamp());
+			logger.info("[SPRING] 自定义日志---【发布事件】ApplicationEvent，timestamp："+event.getTimestamp());
 			publisher.publishEvent(event);
 		}
 		catch (Throwable ex) {
@@ -493,7 +479,7 @@ public class StompSubProtocolHandler implements SubProtocolHandler, ApplicationE
 					SimpAttributes simpAttributes = new SimpAttributes(session.getId(), session.getAttributes());
 					SimpAttributesContextHolder.setAttributes(simpAttributes);
 					Principal user = getUser(session);
-					logger.info("[SPRING] 自定义日志---发布事件：SessionConnectedEvent");
+					logger.info("[SPRING] 自定义日志---【发布事件】SessionConnectedEvent");
 					publishEvent(this.eventPublisher, new SessionConnectedEvent(this, (Message<byte[]>) message, user));
 				}
 				finally {
@@ -685,7 +671,7 @@ public class StompSubProtocolHandler implements SubProtocolHandler, ApplicationE
 			SimpAttributesContextHolder.setAttributes(simpAttributes);
 			if (this.eventPublisher != null) {
 				Principal user = getUser(session);
-				logger.info("[SPRING] 自定义日志---发布事件：SessionDisconnectEvent");
+				logger.info("[SPRING] 自定义日志---【发布事件】SessionDisconnectEvent");
 				publishEvent(this.eventPublisher, new SessionDisconnectEvent(this, message, session.getId(), closeStatus, user));
 			}
 			outputChannel.send(message);

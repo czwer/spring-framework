@@ -16,13 +16,7 @@
 
 package org.springframework.messaging.simp.broker;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Predicate;
-
 import org.apache.commons.logging.Log;
-
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.context.SmartLifecycle;
@@ -38,6 +32,11 @@ import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.InterceptableChannel;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Predicate;
 
 /**
  * Abstract base class for a {@link MessageHandler} that broker messages to
@@ -340,7 +339,7 @@ public abstract class AbstractBrokerMessageHandler
 			if (logger.isInfoEnabled()) {
 				logger.info(this.availableEvent);
 			}
-			logger.info("[SPRING] 自定义日志---发布事件：BrokerAvailabilityEvent");
+			logger.info("[SPRING] 自定义日志---【发布事件】BrokerAvailabilityEvent");
 			this.eventPublisher.publishEvent(this.availableEvent);
 		}
 	}
@@ -351,7 +350,7 @@ public abstract class AbstractBrokerMessageHandler
 			if (logger.isInfoEnabled()) {
 				logger.info(this.notAvailableEvent);
 			}
-			logger.info("[SPRING] 自定义日志---发布事件：BrokerAvailabilityEvent");
+			logger.info("[SPRING] 自定义日志---【发布事件】BrokerAvailabilityEvent");
 			this.eventPublisher.publishEvent(this.notAvailableEvent);
 		}
 	}

@@ -1084,7 +1084,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			for (String beanName : beanNames) {
 				RootBeanDefinition mbd = getMergedLocalBeanDefinition(beanName);
 				if (!mbd.isAbstract() && mbd.isSingleton()) {
-					logger.info("[SPRING] 自定义日志【重要】---提前实例化所有非懒加载的单例Bean：" + beanName);
+					logger.info("[SPRING] 自定义日志【非常重要】---提前实例化所有非懒加载的单例Bean：" + beanName);
 					CompletableFuture<?> future = preInstantiateSingleton(beanName, mbd);
 					if (future != null) {
 						futures.add(future);
@@ -1204,7 +1204,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	@Override
 	public void registerBeanDefinition(String beanName, BeanDefinition beanDefinition)
 			throws BeanDefinitionStoreException {
-		logger.info("[SPRING] 自定义日志【重要】---【注册Bean定义】：beanName：" + beanName+",beanClass："+beanDefinition.getBeanClassName());
+		logger.info("[SPRING] 自定义日志---【注册Bean定义】：beanName：" + beanName+",beanClass："+beanDefinition.getBeanClassName());
 		Assert.hasText(beanName, "Bean name must not be empty");
 		Assert.notNull(beanDefinition, "BeanDefinition must not be null");
 
@@ -1325,7 +1325,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	@Override
 	public void removeBeanDefinition(String beanName) throws NoSuchBeanDefinitionException {
 		Assert.hasText(beanName, "'beanName' must not be empty");
-		logger.info("[SPRING] 自定义日志【重要】---移除指定名称的Bean定义：" + beanName);
+		logger.info("[SPRING] 自定义日志---移除指定名称的Bean定义：" + beanName);
 		BeanDefinition bd = this.beanDefinitionMap.remove(beanName);
 		if (bd == null) {
 			if (logger.isTraceEnabled()) {
@@ -1424,7 +1424,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 	@Override
 	public void registerSingleton(String beanName, Object singletonObject) throws IllegalStateException {
-		logger.info("[SPRING] 自定义日志【重要】---【注册单例Bean】,beanName：" + beanName+",beanClass："+singletonObject.getClass().getName());
+		logger.info("[SPRING] 自定义日志---【注册单例Bean】,beanName：" + beanName+",beanClass："+singletonObject.getClass().getName());
 		super.registerSingleton(beanName, singletonObject);
 		updateManualSingletonNames(set -> set.add(beanName), set -> !this.beanDefinitionMap.containsKey(beanName));
 		clearByTypeCache();
@@ -1432,7 +1432,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 	@Override
 	public void destroySingletons() {
-		logger.info("[SPRING] 自定义日志【重要】---销毁所有已创建的单例Bean");
+		logger.info("[SPRING] 自定义日志---销毁所有已创建的单例Bean");
 		super.destroySingletons();
 		updateManualSingletonNames(Set::clear, set -> !set.isEmpty());
 		clearByTypeCache();
@@ -1440,7 +1440,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 	@Override
 	public void destroySingleton(String beanName) {
-		logger.info("[SPRING] 自定义日志【重要】---销毁单例Bean："+beanName);
+		logger.info("[SPRING] 自定义日志---销毁单例Bean："+beanName);
 		super.destroySingleton(beanName);
 		removeManualSingletonName(beanName);
 		clearByTypeCache();
@@ -1580,27 +1580,27 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 		descriptor.initParameterNameDiscovery(getParameterNameDiscoverer());
 		if (Optional.class == descriptor.getDependencyType()) {
-			logger.info("[SPRING] 自定义日志【重要】---【resolveDependency】依赖的类型是Optional，通过createOptionalDependency解决依赖：" + requestingBeanName);
+			logger.info("[SPRING] 自定义日志---【resolveDependency】依赖的类型是Optional，通过createOptionalDependency解决依赖：" + requestingBeanName);
 			return createOptionalDependency(descriptor, requestingBeanName);
 		}
 		else if (ObjectFactory.class == descriptor.getDependencyType() ||
 				ObjectProvider.class == descriptor.getDependencyType()) {
-			logger.info("[SPRING] 自定义日志【重要】---【resolveDependency】依赖的类型是ObjectFactory或ObjectProvider，通过DependencyObjectProvider解决依赖：" + requestingBeanName);
+			logger.info("[SPRING] 自定义日志---【resolveDependency】依赖的类型是ObjectFactory或ObjectProvider，通过DependencyObjectProvider解决依赖：" + requestingBeanName);
 			return new DependencyObjectProvider(descriptor, requestingBeanName);
 		}
 		else if (jakartaInjectProviderClass == descriptor.getDependencyType()) {
-			logger.info("[SPRING] 自定义日志【重要】---【resolveDependency】依赖的类型是jakartaInjectProviderClass，通过new Jsr330Factory().createDependencyProvider()解决依赖：" + requestingBeanName);
+			logger.info("[SPRING] 自定义日志---【resolveDependency】依赖的类型是jakartaInjectProviderClass，通过new Jsr330Factory().createDependencyProvider()解决依赖：" + requestingBeanName);
 			return new Jsr330Factory().createDependencyProvider(descriptor, requestingBeanName);
 		}
 		else if (descriptor.supportsLazyResolution()) {
 			Object result = getAutowireCandidateResolver().getLazyResolutionProxyIfNecessary(
 					descriptor, requestingBeanName);
 			if (result != null) {
-				logger.info("[SPRING] 自定义日志【重要】---【resolveDependency】支持延迟解决依赖：，通过getAutowireCandidateResolver().getLazyResolutionProxyIfNecessary()解决依赖：" + requestingBeanName);
+				logger.info("[SPRING] 自定义日志---【resolveDependency】支持延迟解决依赖：，通过getAutowireCandidateResolver().getLazyResolutionProxyIfNecessary()解决依赖：" + requestingBeanName);
 				return result;
 			}
 		}
-		logger.info("[SPRING] 自定义日志【重要】---【resolveDependency】doResolveDependency：" + requestingBeanName);
+		logger.info("[SPRING] 自定义日志---【resolveDependency】doResolveDependency：" + requestingBeanName);
 		return doResolveDependency(descriptor, requestingBeanName, autowiredBeanNames, typeConverter);
 	}
 
@@ -1612,10 +1612,10 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		InjectionPoint previousInjectionPoint = ConstructorResolver.setCurrentInjectionPoint(descriptor);
 		try {
 			// Step 1: pre-resolved shortcut for single bean match, for example, from @Autowired
-			logger.info("[SPRING] 自定义日志【重要】---【doResolveDependency依赖解析核心】调用descriptor.resolveShortcut方法：快捷方式解析" + beanName);
+			logger.info("[SPRING] 自定义日志---【doResolveDependency依赖解析核心】调用descriptor.resolveShortcut方法：快捷方式解析" + beanName);
 			Object shortcut = descriptor.resolveShortcut(this);
 			if (shortcut != null) {
-				logger.info("[SPRING] 自定义日志【重要】---【doResolveDependency依赖解析核心】调用descriptor.resolveShortcut方法后，方法结束：" + beanName+",shortcut："+shortcut.getClass().getName());
+				logger.info("[SPRING] 自定义日志---【doResolveDependency依赖解析核心】调用descriptor.resolveShortcut方法后，方法结束：" + beanName+",shortcut："+shortcut.getClass().getName());
 				return shortcut;
 			}
 

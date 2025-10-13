@@ -16,16 +16,15 @@
 
 package org.springframework.transaction.event;
 
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
-import org.springframework.context.event.SourceFilteringListener;
 import org.springframework.core.Ordered;
 import org.springframework.util.Assert;
+
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * {@link TransactionalApplicationListener} adapter that delegates the processing of
@@ -132,7 +131,7 @@ public class TransactionalApplicationListenerAdapter<E extends ApplicationEvent>
 
 	@Override
 	public void onApplicationEvent(E event) {
-		logger.info("[SPRING] 自定义日志---监听到事件："+event.getClass().getName()+"，timestamp："+event.getTimestamp());
+		logger.info("[SPRING] 自定义日志---【监听事件】"+event.getClass().getName()+"，timestamp："+event.getTimestamp());
 		TransactionalApplicationListenerSynchronization.register(event, this, this.callbacks);
 	}
 

@@ -16,12 +16,12 @@
 
 package org.springframework.context.event;
 
-import java.util.function.Consumer;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.core.ResolvableType;
+
+import java.util.function.Consumer;
 
 /**
  * A {@link GenericApplicationListener} implementation that supports a single event type.
@@ -45,7 +45,7 @@ class GenericApplicationListenerDelegate<E extends ApplicationEvent> implements 
 
 	@Override
 	public void onApplicationEvent(ApplicationEvent event) {
-		logger.info("[SPRING] 自定义日志---监听到事件：ApplicationEvent，timestamp："+event.getTimestamp());
+		logger.info("[SPRING] 自定义日志---【监听事件】ApplicationEvent，timestamp："+event.getTimestamp());
 		this.consumer.accept(this.supportedEventType.cast(event));
 	}
 

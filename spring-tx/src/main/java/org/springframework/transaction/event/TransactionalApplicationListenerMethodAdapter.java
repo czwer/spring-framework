@@ -16,16 +16,16 @@
 
 package org.springframework.transaction.event;
 
-import java.lang.reflect.Method;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.event.ApplicationListenerMethodAdapter;
 import org.springframework.context.event.EventListener;
 import org.springframework.context.event.GenericApplicationListener;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.util.Assert;
+
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * {@link GenericApplicationListener} adapter that delegates the processing of
@@ -83,7 +83,7 @@ public class TransactionalApplicationListenerMethodAdapter extends ApplicationLi
 
 	@Override
 	public void onApplicationEvent(ApplicationEvent event) {
-		logger.info("[SPRING] 自定义日志---监听到事件：ApplicationEvent，timestamp："+event.getTimestamp());
+		logger.info("[SPRING] 自定义日志---【监听事件】ApplicationEvent，timestamp："+event.getTimestamp());
 		if (TransactionalApplicationListenerSynchronization.register(event, this, this.callbacks)) {
 			if (logger.isDebugEnabled()) {
 				logger.debug("Registered transaction synchronization for " + event);

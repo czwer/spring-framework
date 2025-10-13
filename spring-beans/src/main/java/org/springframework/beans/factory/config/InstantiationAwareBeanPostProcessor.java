@@ -107,7 +107,7 @@ public interface InstantiationAwareBeanPostProcessor extends BeanPostProcessor {
 	@Nullable
 	default PropertyValues postProcessProperties(PropertyValues pvs, Object bean, String beanName)
 			throws BeansException {
-		logger.info("[SPRING] 自定义日志【非常重要】---处理属性注入（如 @Autowired, @Value, @Resource）："+beanName);
+		logger.info("[SPRING] 自定义日志---处理属性注入（如 @Autowired, @Value, @Resource）："+beanName);
 		return pvs;
 	}
 

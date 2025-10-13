@@ -16,15 +16,14 @@
 
 package org.springframework.transaction.reactive;
 
-import java.util.function.Function;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import reactor.core.publisher.Mono;
-
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.PayloadApplicationEvent;
+import reactor.core.publisher.Mono;
+
+import java.util.function.Function;
 
 /**
  * A delegate for publishing transactional events in a reactive setup.
@@ -71,7 +70,7 @@ public class TransactionalEventPublisher {
 	 * @return the Reactor {@link Mono} for the transactional event publication
 	 */
 	public Mono<Void> publishEvent(Function<TransactionContext, ApplicationEvent> eventCreationFunction) {
-		logger.info("[SPRING] 自定义日志---发布事件：响应式事务事件");
+		logger.info("[SPRING] 自定义日志---【发布事件】响应式事务事件");
 		return TransactionContextManager.currentContext().map(eventCreationFunction)
 				.doOnSuccess(this.eventPublisher::publishEvent).then();
 	}
@@ -86,7 +85,7 @@ public class TransactionalEventPublisher {
 			return Mono.error(new IllegalArgumentException("Cannot publish ApplicationEvent with transactional " +
 					"source - publish payload object or use publishEvent(Function<Object, ApplicationEvent>"));
 		}
-		logger.info("[SPRING] 自定义日志---发布事件：PayloadApplicationEvent");
+		logger.info("[SPRING] 自定义日志---【发布事件】PayloadApplicationEvent");
 		return publishEvent(source -> new PayloadApplicationEvent<>(source, payload));
 	}
 

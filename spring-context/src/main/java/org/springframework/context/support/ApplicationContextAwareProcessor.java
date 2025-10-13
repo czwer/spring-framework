@@ -84,7 +84,7 @@ class ApplicationContextAwareProcessor implements BeanPostProcessor {
 	@Nullable
 	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
 		if (bean instanceof Aware) {
-			logger.info("[SPRING] 自定义日志【非常重要】---实现BeanPostProcessor：负责回调一系列特定的Aware接口："+beanName);
+			logger.info("[SPRING] 自定义日志---实现BeanPostProcessor：负责回调一系列特定的Aware接口："+beanName);
 			invokeAwareInterfaces(bean);
 		}
 		return bean;

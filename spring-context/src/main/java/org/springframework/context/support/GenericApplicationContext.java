@@ -117,7 +117,7 @@ public class GenericApplicationContext extends AbstractApplicationContext implem
 	 * @see #refresh
 	 */
 	public GenericApplicationContext() {
-		logger.info("[SPRING] 自定义日志【非常重要】---GenericApplicationContext构造方法中，创建DefaultListableBeanFactory");
+		logger.info("[SPRING] 自定义日志---GenericApplicationContext构造方法中，创建DefaultListableBeanFactory");
 		this.beanFactory = new DefaultListableBeanFactory();
 	}
 
