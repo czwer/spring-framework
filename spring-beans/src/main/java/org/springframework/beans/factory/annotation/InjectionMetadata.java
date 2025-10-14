@@ -16,6 +16,16 @@
 
 package org.springframework.beans.factory.annotation;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.MutablePropertyValues;
+import org.springframework.beans.PropertyValues;
+import org.springframework.beans.factory.support.RootBeanDefinition;
+import org.springframework.lang.Contract;
+import org.springframework.lang.Nullable;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.ReflectionUtils;
+
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -24,16 +34,6 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
-
-import org.springframework.beans.MutablePropertyValues;
-import org.springframework.beans.PropertyValues;
-import org.springframework.beans.factory.support.RootBeanDefinition;
-import org.springframework.lang.Contract;
-import org.springframework.lang.Nullable;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.ReflectionUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 /**
  * Internal class for managing injection metadata.
  *
@@ -47,7 +47,7 @@ import org.apache.commons.logging.LogFactory;
  * @since 2.5
  */
 public class InjectionMetadata {
-
+	protected final Log logger = LogFactory.getLog(InjectionMetadata.class);
 	/**
 	 * An empty {@code InjectionMetadata} instance with no-op callbacks.
 	 * @since 5.2
@@ -144,6 +144,7 @@ public class InjectionMetadata {
 				(checkedElements != null ? checkedElements : this.injectedElements);
 		if (!elementsToIterate.isEmpty()) {
 			for (InjectedElement element : elementsToIterate) {
+				logger.info("[SPRING] 自定义日志【关键流程-依赖注入】---"+beanName+",注解注入："+element.getMember().getName());
 				element.inject(target, beanName, pvs);
 			}
 		}

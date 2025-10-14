@@ -36,6 +36,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * Abstract bean factory superclass that implements default bean creation,
@@ -1416,7 +1417,6 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * @param bw the BeanWrapper with bean instance
 	 */
 	protected void populateBean(String beanName, RootBeanDefinition mbd, @Nullable BeanWrapper bw) {
-		logger.info("[SPRING] 自定义日志【关键流程-populateBean】---"+beanName);
 		if (bw == null) {
 			if (mbd.hasPropertyValues()) {
 				throw new BeanCreationException(
@@ -1440,7 +1440,6 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				return;
 			}
 		}
-
 		// Give any InstantiationAwareBeanPostProcessors the opportunity to modify the
 		// state of the bean before properties are set. This can be used, for example,
 		// to support styles of field injection.
@@ -1449,12 +1448,11 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			instantiationAware.forEach(i->{logger.info("[SPRING] 自定义日志---【populateBean】存在InstantiationAwareBeanPostProcessor-postProcessAfterInstantiation："+i.getClass().getName()+",beanName："+beanName);});
 			for (InstantiationAwareBeanPostProcessor bp : getBeanPostProcessorCache().instantiationAware) {
 				if (!bp.postProcessAfterInstantiation(bw.getWrappedInstance(), beanName)) {
-					logger.info("[SPRING] 自定义日志---【populateBean】调用InstantiationAwareBeanPostProcessor.postProcessAfterInstantiation方法：false,直接返回，不再继续属性填充-1,InstantiationAwareBeanPostProcessor："+bp.getClass().getName()+",beanName："+beanName);
+					logger.info("[SPRING] 自定义日志---【populateBean】调用InstantiationAwareBeanPostProcessor.postProcessAfterInstantiation方法：false,直接返回，不再继续注入-1："+bp.getClass().getName()+",beanName："+beanName);
 					return;
 				}
 			}
 		}
-
 		PropertyValues pvs = (mbd.hasPropertyValues() ? mbd.getPropertyValues() : null);
 
 		int resolvedAutowireMode = mbd.getResolvedAutowireMode();
@@ -1462,12 +1460,12 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			MutablePropertyValues newPvs = new MutablePropertyValues(pvs);
 			// Add property values based on autowire by name if applicable.
 			if (resolvedAutowireMode == AUTOWIRE_BY_NAME) {
-				logger.info("[SPRING] 自定义日志---【populateBean】按名称自动装配："+beanName);
+				logger.info("[SPRING] 自定义日志【关键流程-依赖注入-populateBean-Setter注入-autowireByName】---按名称自动装配："+beanName);
 				autowireByName(beanName, mbd, bw, newPvs);
 			}
 			// Add property values based on autowire by type if applicable.
 			if (resolvedAutowireMode == AUTOWIRE_BY_TYPE) {
-				logger.info("[SPRING] 自定义日志---【populateBean】按类型自动装配："+beanName);
+				logger.info("[SPRING] 自定义日志【关键流程-依赖注入-populateBean-Setter注入-autowireByType】---按类型自动装配："+beanName);
 				autowireByType(beanName, mbd, bw, newPvs);
 			}
 			pvs = newPvs;
@@ -1482,7 +1480,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				logger.info("[SPRING] 自定义日志---【populateBean】调用InstantiationAwareBeanPostProcessor.postProcessProperties方法："+beanName);
 				PropertyValues pvsToUse = bp.postProcessProperties(pvs, bw.getWrappedInstance(), beanName);
 				if (pvsToUse == null) {
-					logger.info("[SPRING] 自定义日志---【populateBean】调用InstantiationAwareBeanPostProcessor.postProcessAfterInstantiation方法：false,直接返回，不再继续属性填充-1,InstantiationAwareBeanPostProcessor："+bp.getClass().getName()+",beanName："+beanName);
+					logger.info("[SPRING] 自定义日志---【populateBean】调用InstantiationAwareBeanPostProcessor.postProcessAfterInstantiation方法：false,直接返回，不再继续属性填充-1："+bp.getClass().getName()+",beanName："+beanName);
 					return;
 				}
 				pvs = pvsToUse;
@@ -1496,7 +1494,6 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		if (pvs != null) {
-			logger.info("[SPRING] 自定义日志---【populateBean】applyPropertyValues："+beanName);
 			applyPropertyValues(beanName, mbd, bw, pvs);
 		}
 	}
@@ -1704,10 +1701,10 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * @param pvs the new property values
 	 */
 	protected void applyPropertyValues(String beanName, BeanDefinition mbd, BeanWrapper bw, PropertyValues pvs) {
-		logger.info("[SPRING] 自定义日志---applyPropertyValues：调用属性填充"+beanName);
 		if (pvs.isEmpty()) {
 			return;
 		}
+		logger.info("[SPRING] 自定义日志【关键流程-依赖注入-Setter注入】---applyPropertyValues："+beanName+",属性："+Arrays.stream(pvs.getPropertyValues()).map(p->p.getName()).collect(Collectors.joining(",")));
 
 		MutablePropertyValues mpvs = null;
 		List<PropertyValue> original;

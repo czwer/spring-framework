@@ -469,9 +469,9 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 
 	@Override
 	public PropertyValues postProcessProperties(PropertyValues pvs, Object bean, String beanName) {
-		logger.info("[SPRING] 自定义日志---执行实际的注入操作，将依赖注入到字段或方法参数中（调用时机：Bean 实例化后，属性填充前）");
 		InjectionMetadata metadata = findAutowiringMetadata(beanName, bean.getClass(), pvs);
 		try {
+			logger.info("[SPRING] 自定义日志---AutowiredAnnotationBeanPostProcessor.postProcessProperties方法调用inject，beanName："+beanName);
 			metadata.inject(bean, beanName, pvs);
 		}
 		catch (BeanCreationException ex) {
