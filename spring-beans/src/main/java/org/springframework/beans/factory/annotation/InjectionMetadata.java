@@ -271,7 +271,7 @@ public class InjectionMetadata {
 			if (this.isField) {
 				Field field = (Field) this.member;
 				ReflectionUtils.makeAccessible(field);
-				logger.info("[SPRING] 自定义日志【核心】---反射调用：执行实际的注入操作，将依赖注入到字段，类名:"+target.getClass().getName()+"，字段："+field.getName());
+				logger.info("[SPRING] 自定义日志【关键流程-依赖注入-反射-inject】---反射调用：执行实际的注入操作，将依赖注入到字段，类名:"+target.getClass().getName()+"，字段："+field.getName());
 				field.set(target, getResourceToInject(target, requestingBeanName));
 			}
 			else {
@@ -279,7 +279,7 @@ public class InjectionMetadata {
 					Method method = (Method) this.member;
 					ReflectionUtils.makeAccessible(method);
 					method.invoke(target, getResourceToInject(target, requestingBeanName));
-					logger.info("[SPRING] 自定义日志【核心】---反射调用：执行实际的注入操作，将依赖注入到方法，类名"+target.getClass().getName()+"，方法名："+method.getName());
+					logger.info("[SPRING] 自定义日志【关键流程-依赖注入-反射-inject】---反射调用：执行实际的注入操作，将依赖注入到方法，类名"+target.getClass().getName()+"，方法名："+method.getName());
 				}
 				catch (InvocationTargetException ex) {
 					throw ex.getTargetException();

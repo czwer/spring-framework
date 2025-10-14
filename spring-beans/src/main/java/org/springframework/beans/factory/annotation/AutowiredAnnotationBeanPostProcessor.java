@@ -705,6 +705,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 	 * Class representing injection information about an annotated field.
 	 */
 	private class AutowiredFieldElement extends AutowiredElement {
+		protected final Log logger = LogFactory.getLog(AutowiredFieldElement.class);
 
 		private volatile boolean cached;
 
@@ -735,6 +736,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 			}
 			if (value != null) {
 				ReflectionUtils.makeAccessible(field);
+				logger.info("[SPRING] 自定义日志【关键流程-依赖注入-反射-inject】---反射调用：执行实际的注入操作，将依赖注入到字段，beanName:"+beanName+"，字段："+field.getName());
 				field.set(bean, value);
 			}
 		}
@@ -783,7 +785,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 	 * Class representing injection information about an annotated method.
 	 */
 	private class AutowiredMethodElement extends AutowiredElement {
-
+		protected final Log logger = LogFactory.getLog(AutowiredMethodElement.class);
 		private volatile boolean cached;
 
 		@Nullable
@@ -818,6 +820,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 				try {
 					ReflectionUtils.makeAccessible(method);
 					method.invoke(bean, arguments);
+					logger.info("[SPRING] 自定义日志【关键流程-依赖注入-反射-inject】---反射调用：执行实际的注入操作，将依赖注入到方法，beanName:"+beanName+"，方法："+method.getName());
 				}
 				catch (InvocationTargetException ex) {
 					throw ex.getTargetException();

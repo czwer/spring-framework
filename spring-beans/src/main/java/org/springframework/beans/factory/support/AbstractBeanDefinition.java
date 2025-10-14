@@ -35,6 +35,7 @@ import org.springframework.util.StringUtils;
 import java.lang.reflect.Constructor;
 import java.util.*;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * Base class for concrete, full-fledged {@link BeanDefinition} classes,
@@ -983,9 +984,8 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 * Specify property values for this bean, if any.
 	 */
 	public void setPropertyValues(MutablePropertyValues propertyValues) {
-		logger.info("[SPRING] 自定义日志---设置Bean定义中的属性值，为后续基于setter方法的依赖注入提供配置："+getBeanClassName());
 		if (propertyValues != null){
-			propertyValues.getPropertyValueList().forEach( p -> {logger.info("[SPRING] 自定义日志---setPropertyValues："+p.getName());});
+			logger.info("[SPRING] 自定义日志---设置Bean定义中的属性值，为后续基于setter方法的依赖注入提供配置，BeanClassName："+getBeanClassName()+",属性："+propertyValues.getPropertyValueList().stream().map( p -> p.getName()).collect(Collectors.joining(",")));
 		}
 		this.propertyValues = propertyValues;
 	}
