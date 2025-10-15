@@ -510,6 +510,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		}
 
 		// Use original ClassLoader if bean class not locally loaded in overriding class loader
+		// 如果Bean类在覆盖的类加载器中未被本地加载，则使用原始类加载器
 		ClassLoader classLoader = getProxyClassLoader();
 		if (classLoader instanceof SmartClassLoader smartClassLoader && classLoader != beanClass.getClassLoader()) {
 			classLoader = smartClassLoader.getOriginalClassLoader();

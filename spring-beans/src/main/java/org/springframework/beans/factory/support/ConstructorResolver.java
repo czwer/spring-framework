@@ -90,7 +90,6 @@ class ConstructorResolver {
 	@SuppressWarnings("NullAway")
 	public BeanWrapper autowireConstructor(String beanName, RootBeanDefinition mbd,
 			@Nullable Constructor<?>[] chosenCtors, @Nullable Object[] explicitArgs) {
-		logger.info("[SPRING] 自定义日志【关键流程-依赖注入-构造函数注入-autowireConstructor】---【autowireConstructor】:" + beanName);
 		BeanWrapperImpl bw = new BeanWrapperImpl();
 		this.beanFactory.initBeanWrapper(bw);
 		//最终选定的构造函数
@@ -156,6 +155,7 @@ class ConstructorResolver {
 					}
 					//使用无参构造函数创建实例
 					bw.setBeanInstance(instantiate(beanName, mbd, uniqueCandidate, EMPTY_ARGS));
+					logger.info("[SPRING] 自定义日志【关键流程-依赖注入-构造函数注入(无参)-autowireConstructor】---:" + beanName);
 					return bw;
 				}
 			}
@@ -285,7 +285,7 @@ class ConstructorResolver {
 				argsHolderToUse.storeCache(mbd, constructorToUse);
 			}
 		}
-
+		logger.info("[SPRING] 自定义日志【关键流程-依赖注入-构造函数注入(有参)-autowireConstructor】---:" + beanName);
 		Assert.state(argsToUse != null, "Unresolved constructor arguments");
 		bw.setBeanInstance(instantiate(beanName, mbd, constructorToUse, argsToUse));
 		return bw;

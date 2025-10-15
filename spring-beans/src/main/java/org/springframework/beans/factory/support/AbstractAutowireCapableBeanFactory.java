@@ -1860,7 +1860,6 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					(mbd != null ? mbd.getResourceDescription() : null), beanName, ex.getMessage(), ex);
 		}
 		if (mbd == null || !mbd.isSynthetic()) {
-			logger.info("[SPRING] 自定义日志---【initializeBean】调用applyBeanPostProcessorsAfterInitialization方法：【代理入口二】"+beanName);
 			wrappedBean = applyBeanPostProcessorsAfterInitialization(wrappedBean, beanName);
 		}
 
