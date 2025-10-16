@@ -1115,7 +1115,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 */
 	protected void applyMergedBeanDefinitionPostProcessors(RootBeanDefinition mbd, Class<?> beanType, String beanName) {
 		List<MergedBeanDefinitionPostProcessor> mergedDefinition = getBeanPostProcessorCache().mergedDefinition;
-		mergedDefinition.forEach(m->{logger.info("[SPRING] 自定义日志---【applyMergedBeanDefinitionPostProcessors】存在MergedBeanDefinitionPostProcessor："+m.getClass().getName()+",beanName："+beanName);});
+		logger.info("[SPRING] 自定义日志---【applyMergedBeanDefinitionPostProcessors】存在MergedBeanDefinitionPostProcessor："+mergedDefinition.stream().map(m->m.getClass().getName()).collect(Collectors.joining(","))+",当前beanName："+beanName);
 		for (MergedBeanDefinitionPostProcessor processor : getBeanPostProcessorCache().mergedDefinition) {
 			processor.postProcessMergedBeanDefinition(mbd, beanType, beanName);
 		}

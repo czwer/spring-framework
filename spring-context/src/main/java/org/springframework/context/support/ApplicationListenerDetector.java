@@ -58,7 +58,7 @@ class ApplicationListenerDetector implements DestructionAwareBeanPostProcessor, 
 
 	@Override
 	public void postProcessMergedBeanDefinition(RootBeanDefinition beanDefinition, Class<?> beanType, String beanName) {
-		logger.info("[SPRING] 自定义日志---【MergedBeanDefinitionPostProcessor】ApplicationListenerDetector.postProcessMergedBeanDefinition方法调用："+beanName);
+		logger.info("[SPRING] 自定义日志---【MergedBeanDefinitionPostProcessor】ApplicationListenerDetector.postProcessMergedBeanDefinition方法调用："+beanName+",如是ApplicationListener子类，缓存方便后面使用");
 		if (ApplicationListener.class.isAssignableFrom(beanType)) {
 			this.singletonNames.put(beanName, beanDefinition.isSingleton());
 		}

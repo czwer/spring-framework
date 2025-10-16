@@ -291,7 +291,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 
 	@Override
 	public void postProcessMergedBeanDefinition(RootBeanDefinition beanDefinition, Class<?> beanType, String beanName) {
-		logger.info("[SPRING] 自定义日志---【MergedBeanDefinitionPostProcessor】CommonAnnotationBeanPostProcessor.postProcessMergedBeanDefinition方法调用：检查是否有 @PostConstruct, @PreDestroy, @Resource等注解信息等注解，如果有，就创建一个 InjectionMetadata 对象（调用时机：Bean 定义合并后，实例化前）："+beanName);
+		logger.info("[SPRING] 自定义日志---【MergedBeanDefinitionPostProcessor】CommonAnnotationBeanPostProcessor.postProcessMergedBeanDefinition方法调用：检查是否有 @Resource注解信息，如果有，就创建一个 InjectionMetadata 对象（调用时机：Bean 定义合并后，实例化前）："+beanName);
 		super.postProcessMergedBeanDefinition(beanDefinition, beanType, beanName);
 		InjectionMetadata metadata = findResourceMetadata(beanName, beanType, null);
 		metadata.checkConfigMembers(beanDefinition);

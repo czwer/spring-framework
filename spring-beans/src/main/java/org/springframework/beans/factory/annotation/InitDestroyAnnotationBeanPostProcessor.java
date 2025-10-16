@@ -172,7 +172,7 @@ public class InitDestroyAnnotationBeanPostProcessor implements DestructionAwareB
 
 	@Override
 	public void postProcessMergedBeanDefinition(RootBeanDefinition beanDefinition, Class<?> beanClass, String beanName) {
-		logger.info("[SPRING] 自定义日志---【MergedBeanDefinitionPostProcessor】InitDestroyAnnotationBeanPostProcessor.postProcessMergedBeanDefinition方法调用："+beanName);
+		logger.info("[SPRING] 自定义日志---【MergedBeanDefinitionPostProcessor】InitDestroyAnnotationBeanPostProcessor.postProcessMergedBeanDefinition方法调用：检查是否有 @PostConstruct, @PreDestroy注解信息"+beanName);
 		findLifecycleMetadata(beanDefinition, beanClass);
 	}
 

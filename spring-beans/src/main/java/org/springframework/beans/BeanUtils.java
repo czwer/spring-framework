@@ -176,7 +176,7 @@ public abstract class BeanUtils {
 				int parameterCount = ctor.getParameterCount();
 				Assert.isTrue(args.length <= parameterCount, "Can't specify more arguments than constructor parameters");
 				if (parameterCount == 0) {
-					logger.info("[SPRING] 自定义日志---【创建实例】通过【无参构造函数】创建实例，Bean Class:"+ctor.getClass().getName());
+					logger.info("[SPRING] 自定义日志【关键流程-Java反射创建实例】---通过【无参构造函数】创建实例，Bean Class:"+ctor.getClass().getName());
 					return ctor.newInstance();
 				}
 				Class<?>[] parameterTypes = ctor.getParameterTypes();
@@ -190,7 +190,7 @@ public abstract class BeanUtils {
 						argsWithDefaultValues[i] = args[i];
 					}
 				}
-				logger.info("[SPRING] 自定义日志---【创建实例】通过【有参构造函数】创建实例，Bean Class:"+ctor.getClass().getName());
+				logger.info("[SPRING] 自定义日志【关键流程-Java反射创建实例】---通过【有参构造函数】创建实例，Bean Class:"+ctor.getClass().getName());
 				return ctor.newInstance(argsWithDefaultValues);
 			}
 		}
