@@ -1204,7 +1204,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	@Override
 	public void registerBeanDefinition(String beanName, BeanDefinition beanDefinition)
 			throws BeanDefinitionStoreException {
-		logger.info("[SPRING] 自定义日志---【注册Bean定义】：beanName：" + beanName+",beanClass："+beanDefinition.getBeanClassName());
+		logger.info("[SPRING] 自定义日志【关键流程-注册Bean定义】---bean名称：" + beanName+",beanClass名称："+beanDefinition.getBeanClassName()+",BeanDefinition类型："+beanDefinition.getClass().getName());
 		Assert.hasText(beanName, "Bean name must not be empty");
 		Assert.notNull(beanDefinition, "BeanDefinition must not be null");
 
