@@ -244,7 +244,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 	 */
 	@Override
 	public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) {
-		logger.info("[SPRING] 自定义日志---解析配置类，注册Bean定义");
+		logger.info("[SPRING] 自定义日志【关键流程-解析自定义bean】---它负责处理配置类（例如用@Configuration注解的类），并从中解析出更多的Bean定义注册到容器中。");
 		int registryId = System.identityHashCode(registry);
 		if (this.registriesPostProcessed.contains(registryId)) {
 			throw new IllegalStateException(
@@ -332,7 +332,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 	 * {@link Configuration} classes.
 	 */
 	public void processConfigBeanDefinitions(BeanDefinitionRegistry registry) {
-		logger.info("[SPRING] 自定义日志【非常重要】---实际执行配置类解析和注册逻辑的核心方法，@Configuration");
+		logger.info("[SPRING] 自定义日志【关键流程-解析@Configuration配置类加载更多bean】");
 		List<BeanDefinitionHolder> configCandidates = new ArrayList<>();
 		String[] candidateNames = registry.getBeanDefinitionNames();
 
@@ -344,6 +344,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 				}
 			}
 			else if (ConfigurationClassUtils.checkConfigurationClassCandidate(beanDef, this.metadataReaderFactory)) {
+				logger.info("[SPRING] 自定义日志【关键流程-解析到@Configuration配置类】"+beanName);
 				configCandidates.add(new BeanDefinitionHolder(beanDef, beanName));
 			}
 		}
@@ -387,7 +388,6 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 		Set<ConfigurationClass> alreadyParsed = CollectionUtils.newHashSet(configCandidates.size());
 		do {
 			StartupStep processConfig = this.applicationStartup.start("spring.context.config-classes.parse");
-			logger.info("[SPRING] 自定义日志---开始解析启动类包路径中的bean定义");
 			parser.parse(candidates);
 			parser.validate();
 
@@ -450,6 +450,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 	 * @see ConfigurationClassEnhancer
 	 */
 	public void enhanceConfigurationClasses(ConfigurableListableBeanFactory beanFactory) {
+		logger.info("[SPRING] 自定义日志【关键流程-FULL模式的配置类@Configuration生成代理】---代理的主要目的是拦截对@Bean方法的调用，确保返回的是容器中的单例Bean");
 		StartupStep enhanceConfigClasses = this.applicationStartup.start("spring.context.config-classes.enhance");
 		Map<String, AbstractBeanDefinition> configBeanDefs = new LinkedHashMap<>();
 		for (String beanName : beanFactory.getBeanDefinitionNames()) {

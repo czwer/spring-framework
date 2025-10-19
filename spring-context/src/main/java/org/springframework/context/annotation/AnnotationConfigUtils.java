@@ -163,7 +163,7 @@ public abstract class AnnotationConfigUtils {
 		if (!registry.containsBeanDefinition(CONFIGURATION_ANNOTATION_PROCESSOR_BEAN_NAME)) {
 			RootBeanDefinition def = new RootBeanDefinition(ConfigurationClassPostProcessor.class);
 			def.setSource(source);
-			logger.info("[SPRING] 自定义日志---准备注册Bean定义："+CONFIGURATION_ANNOTATION_PROCESSOR_BEAN_NAME);
+			logger.info("[SPRING] 自定义日志【关键流程-注册重要基础Bean-ConfigurationClassPostProcessor】---准备注册Bean定义："+CONFIGURATION_ANNOTATION_PROCESSOR_BEAN_NAME);
 			beanDefs.add(registerPostProcessor(registry, def, CONFIGURATION_ANNOTATION_PROCESSOR_BEAN_NAME));
 			logger.info("[SPRING] 自定义日志---创建应用上下文：配置基础设施：ConfigurationClassPostProcessor（核心作用：是在Spring容器启动时，识别和处理所有用 @Configuration、@ComponentScan、@Import、@Bean 等注解标注的“配置类”，并将这些配置类中定义的Bean注册到Spring容器中");
 		}
