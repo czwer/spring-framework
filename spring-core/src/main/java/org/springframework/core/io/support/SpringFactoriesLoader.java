@@ -16,23 +16,6 @@
 
 package org.springframework.core.io.support;
 
-import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Modifier;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.function.Supplier;
-
 import kotlin.jvm.JvmClassMappingKt;
 import kotlin.reflect.KFunction;
 import kotlin.reflect.KParameter;
@@ -41,18 +24,22 @@ import kotlin.reflect.jvm.KCallablesJvm;
 import kotlin.reflect.jvm.ReflectJvmMapping;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.core.KotlinDetector;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.core.io.UrlResource;
 import org.springframework.core.log.LogMessage;
 import org.springframework.lang.Nullable;
-import org.springframework.util.Assert;
-import org.springframework.util.ClassUtils;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.ConcurrentReferenceHashMap;
-import org.springframework.util.ReflectionUtils;
-import org.springframework.util.StringUtils;
+import org.springframework.util.*;
+
+import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Modifier;
+import java.net.URL;
+import java.util.*;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * General purpose factory loading mechanism for internal use within the framework.
@@ -155,6 +142,7 @@ public class SpringFactoriesLoader {
 	 * @since 6.0
 	 */
 	public <T> List<T> load(Class<T> factoryType, @Nullable ArgumentResolver argumentResolver) {
+		logger.info("[SPRING] 自定义日志---加载类型："+factoryType.getName());
 		return load(factoryType, argumentResolver, null);
 	}
 
@@ -246,6 +234,7 @@ public class SpringFactoriesLoader {
 	 * be loaded or if an error occurs while instantiating any factory
 	 */
 	public static <T> List<T> loadFactories(Class<T> factoryType, @Nullable ClassLoader classLoader) {
+		logger.info("[SPRING] 自定义日志---加载类型："+factoryType.getName());
 		return forDefaultResourceLocation(classLoader).load(factoryType);
 	}
 
@@ -290,6 +279,7 @@ public class SpringFactoriesLoader {
 	 * @see #forDefaultResourceLocation()
 	 */
 	public static SpringFactoriesLoader forDefaultResourceLocation(@Nullable ClassLoader classLoader) {
+		logger.info("[SPRING] 自定义日志---加载资源："+FACTORIES_RESOURCE_LOCATION);
 		return forResourceLocation(FACTORIES_RESOURCE_LOCATION, classLoader);
 	}
 
