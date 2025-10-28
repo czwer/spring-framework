@@ -715,7 +715,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		beanFactory.setBeanClassLoader(getClassLoader());
 		logger.info("[SPRING] 自定义日志---调用AbstractApplicationContext的refresh方法（prepareBeanFactory）设置SPEL表达式解析器：StandardBeanExpressionResolver");
 		beanFactory.setBeanExpressionResolver(new StandardBeanExpressionResolver(beanFactory.getBeanClassLoader()));
-		logger.info("[SPRING] 自定义日志---调用AbstractApplicationContext的refresh方法（prepareBeanFactory）添加属性编辑器注册器：ResourceEditorRegistrar");
+		logger.info("[SPRING] 自定义日志---调用AbstractApplicationContext的refresh方法（prepareBeanFactory）添加资源编辑器注册器：ResourceEditorRegistrar");
 		beanFactory.addPropertyEditorRegistrar(new ResourceEditorRegistrar(this, getEnvironment()));
 
 		// Configure the bean factory with context callbacks.
