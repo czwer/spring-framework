@@ -16,28 +16,8 @@
 
 package org.springframework.context.annotation;
 
-import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.StringJoiner;
-import java.util.function.Predicate;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.beans.factory.BeanDefinitionStoreException;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -71,12 +51,12 @@ import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.core.type.filter.AssignableTypeFilter;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
-import org.springframework.util.ClassUtils;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.util.StringUtils;
+import org.springframework.util.*;
+
+import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.util.*;
+import java.util.function.Predicate;
 
 /**
  * Parses a {@link Configuration} class definition, populating a collection of
@@ -567,10 +547,17 @@ class ConfigurationClassParser {
 			for (SourceClass annotation : sourceClass.getAnnotations()) {
 				String annName = annotation.getMetadata().getClassName();
 				if (!annName.equals(Import.class.getName())) {
+					logger.info("[SPRING] 自定义日志---类:"+sourceClass.getMetadata().getClassName()+"：上存在注解："+annName+"，递归查找是否使用@Import");
 					collectImports(annotation, imports, visited);
+				}else {
+					logger.info("[SPRING] 自定义日志---类:"+sourceClass.getMetadata().getClassName()+"：当前注解含@Import");
 				}
 			}
-			imports.addAll(sourceClass.getAnnotationAttributes(Import.class.getName(), "value"));
+			Collection<SourceClass> value = sourceClass.getAnnotationAttributes(Import.class.getName(), "value");
+			if (!value.isEmpty()){
+				value.forEach(e -> {logger.info("[SPRING] 自定义日志---类:"+sourceClass.getMetadata().getClassName()+"：解析到的@Import值为："+e.getMetadata().getClassName());});
+			}
+			imports.addAll(value);
 		}
 	}
 
