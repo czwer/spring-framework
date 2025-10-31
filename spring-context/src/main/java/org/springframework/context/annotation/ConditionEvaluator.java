@@ -16,10 +16,8 @@
 
 package org.springframework.context.annotation;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
@@ -38,6 +36,10 @@ import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.MultiValueMap;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Internal class used to evaluate {@link Conditional} annotations.
  *
@@ -46,7 +48,7 @@ import org.springframework.util.MultiValueMap;
  * @since 4.0
  */
 class ConditionEvaluator {
-
+	private final Log logger = LogFactory.getLog(ConditionEvaluator.class);
 	private final ConditionContextImpl context;
 
 
@@ -97,6 +99,7 @@ class ConditionEvaluator {
 				requiredPhase = configurationCondition.getConfigurationPhase();
 			}
 			if ((requiredPhase == null || requiredPhase == phase) && !condition.matches(this.context, metadata)) {
+				logger.info("[SPRING] 自定义日志---条件配置不满足："+condition.getClass().getName());
 				return true;
 			}
 		}
@@ -123,6 +126,7 @@ class ConditionEvaluator {
 			}
 		}
 		AnnotationAwareOrderComparator.sort(conditions);
+		conditions.forEach(c ->{logger.info("[SPRING] 自定义日志---收集到Condition："+c.getClass().getName());});
 		return conditions;
 	}
 

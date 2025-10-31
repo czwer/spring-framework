@@ -225,7 +225,10 @@ class ConfigurationClassParser {
 
 	protected void processConfigurationClass(ConfigurationClass configClass, Predicate<String> filter) {
 		if (this.conditionEvaluator.shouldSkip(configClass.getMetadata(), ConfigurationPhase.PARSE_CONFIGURATION)) {
+			logger.info("[SPRING] 自定义日志---条件配置：进行拦截，"+configClass.getMetadata().getClassName());
 			return;
+		}else {
+			logger.info("[SPRING] 自定义日志---条件配置：不拦截，"+configClass.getMetadata().getClassName());
 		}
 
 		ConfigurationClass existingClass = this.configurationClasses.get(configClass);
@@ -547,15 +550,15 @@ class ConfigurationClassParser {
 			for (SourceClass annotation : sourceClass.getAnnotations()) {
 				String annName = annotation.getMetadata().getClassName();
 				if (!annName.equals(Import.class.getName())) {
-					logger.info("[SPRING] 自定义日志---类:"+sourceClass.getMetadata().getClassName()+"：上存在注解："+annName+"，递归查找是否使用@Import");
+					logger.info("[SPRING] 自定义日志---类:" + sourceClass.getMetadata().getClassName() + "：上存在注解：" + annName + "，递归查找是否使用@Import");
 					collectImports(annotation, imports, visited);
-				}else {
-					logger.info("[SPRING] 自定义日志---类:"+sourceClass.getMetadata().getClassName()+"：当前注解含@Import");
 				}
 			}
 			Collection<SourceClass> value = sourceClass.getAnnotationAttributes(Import.class.getName(), "value");
 			if (!value.isEmpty()){
 				value.forEach(e -> {logger.info("[SPRING] 自定义日志---类:"+sourceClass.getMetadata().getClassName()+"：解析到的@Import值为："+e.getMetadata().getClassName());});
+			}else {
+				logger.info("[SPRING] 自定义日志---类:"+sourceClass.getMetadata().getClassName()+"：不含注解@Import");
 			}
 			imports.addAll(value);
 		}
@@ -576,6 +579,7 @@ class ConfigurationClassParser {
 			try {
 				for (SourceClass candidate : importCandidates) {
 					if (candidate.isAssignable(ImportSelector.class)) {
+						logger.info("[SPRING] 自定义日志---@Import方式：实现ImportSelector接口"+candidate.loadClass().getName());
 						// Candidate class is an ImportSelector -> delegate to it to determine imports
 						Class<?> candidateClass = candidate.loadClass();
 						ImportSelector selector = ParserStrategyUtils.instantiateClass(candidateClass, ImportSelector.class,
@@ -594,15 +598,18 @@ class ConfigurationClassParser {
 						}
 					}
 					else if (candidate.isAssignable(ImportBeanDefinitionRegistrar.class)) {
+						logger.info("[SPRING] 自定义日志---@Import方式：实现ImportBeanDefinitionRegistrar接口"+candidate.loadClass().getName());
 						// Candidate class is an ImportBeanDefinitionRegistrar ->
 						// delegate to it to register additional bean definitions
 						Class<?> candidateClass = candidate.loadClass();
+						logger.info("[SPRING] 自定义日志---创建@Import导入的配置类实例："+candidateClass.getName());
 						ImportBeanDefinitionRegistrar registrar =
 								ParserStrategyUtils.instantiateClass(candidateClass, ImportBeanDefinitionRegistrar.class,
 										this.environment, this.resourceLoader, this.registry);
 						configClass.addImportBeanDefinitionRegistrar(registrar, currentSourceClass.getMetadata());
 					}
 					else {
+						logger.info("[SPRING] 自定义日志---@Import方式：普通方式"+candidate.loadClass().getName());
 						// Candidate class not an ImportSelector or ImportBeanDefinitionRegistrar ->
 						// process it as an @Configuration class
 						this.importStack.registerImport(
@@ -838,6 +845,7 @@ class ConfigurationClassParser {
 			for (DeferredImportSelectorGrouping grouping : this.groupings.values()) {
 				Predicate<String> filter = grouping.getCandidateFilter();
 				grouping.getImports().forEach(entry -> {
+					logger.info("[SPRING] 自定义日志---：ImportClassName："+entry.getImportClassName()+",MetadataClassName："+entry.getMetadata().getClassName());
 					ConfigurationClass configurationClass = this.configurationClasses.get(entry.getMetadata());
 					try {
 						processImports(configurationClass, asSourceClass(configurationClass, filter),
