@@ -151,7 +151,7 @@ class ConfigurationClassBeanDefinitionReader {
 
 		BeanDefinitionHolder definitionHolder = new BeanDefinitionHolder(configBeanDef, configBeanName);
 		definitionHolder = AnnotationConfigUtils.applyScopedProxyMode(scopeMetadata, definitionHolder, this.registry);
-		logger.info("[SPRING] 自定义日志---准备注册Bean定义："+definitionHolder.getBeanName());
+		logger.info("[SPRING] 自定义日志---"+configClass.getClass().getName()+":普通方式配置类准备注册Bean定义："+definitionHolder.getBeanName());
 		this.registry.registerBeanDefinition(definitionHolder.getBeanName(), definitionHolder.getBeanDefinition());
 		configClass.setBeanName(configBeanName);
 
@@ -278,7 +278,7 @@ class ConfigurationClassBeanDefinitionReader {
 			logger.trace(String.format("Registering bean definition for @Bean method %s.%s()",
 					configClass.getMetadata().getClassName(), beanName));
 		}
-		logger.info("[SPRING] 自定义日志---准备注册Bean定义："+beanName);
+		logger.info("[SPRING] 自定义日志---"+methodName+":BeanMethod方式准备注册Bean定义："+beanName+",bean类型："+beanDefToRegister.getBeanClassName());
 		this.registry.registerBeanDefinition(beanName, beanDefToRegister);
 	}
 
@@ -378,13 +378,18 @@ class ConfigurationClassBeanDefinitionReader {
 			}
 
 			// TODO SPR-6310: qualify relative path locations as done in AbstractContextLoader.modifyLocations
+			logger.info("[SPRING] 自定义日志---加载Bean定义："+reader.getClass().getName()+"加载资源"+resource);
 			reader.loadBeanDefinitions(resource);
 		});
 	}
 
 	private void loadBeanDefinitionsFromRegistrars(Map<ImportBeanDefinitionRegistrar, AnnotationMetadata> registrars) {
-		registrars.forEach((registrar, metadata) ->
-				registrar.registerBeanDefinitions(metadata, this.registry, this.importBeanNameGenerator));
+		if (registrars.isEmpty()){
+			return;
+		}
+		registrars.forEach((registrar, metadata) ->{
+			logger.info("[SPRING] 自定义日志---加载Bean定义：ImportBeanDefinitionRegistrar："+registrar.getClass().getName());
+			registrar.registerBeanDefinitions(metadata, this.registry, this.importBeanNameGenerator);});
 	}
 
 

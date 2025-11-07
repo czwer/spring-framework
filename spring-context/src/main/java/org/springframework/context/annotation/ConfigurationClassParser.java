@@ -366,7 +366,7 @@ class ConfigurationClassParser {
 			if (methodMetadata.isAnnotated("kotlin.jvm.JvmStatic") && !methodMetadata.isStatic()) {
 				continue;
 			}
-			logger.info("[SPRING] 自定义日志---含注解@Bean（方法）："+sourceClass.getMetadata().getClassName());
+			logger.info("[SPRING] 自定义日志---"+sourceClass.getMetadata().getClassName()+"：含注解@Bean（方法）："+methodMetadata.getMethodName());
 			configClass.addBeanMethod(new BeanMethod(methodMetadata, configClass));
 		}
 
@@ -845,7 +845,7 @@ class ConfigurationClassParser {
 			for (DeferredImportSelectorGrouping grouping : this.groupings.values()) {
 				Predicate<String> filter = grouping.getCandidateFilter();
 				grouping.getImports().forEach(entry -> {
-					logger.info("[SPRING] 自定义日志---：ImportClassName："+entry.getImportClassName()+",MetadataClassName："+entry.getMetadata().getClassName());
+					logger.info("[SPRING] 自定义日志---过滤后的AutoConfiguration："+entry.getImportClassName()+",MetadataClassName："+entry.getMetadata().getClassName());
 					ConfigurationClass configurationClass = this.configurationClasses.get(entry.getMetadata());
 					try {
 						processImports(configurationClass, asSourceClass(configurationClass, filter),
