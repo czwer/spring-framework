@@ -123,6 +123,7 @@ class ConfigurationClassBeanDefinitionReader {
 				this.registry.removeBeanDefinition(beanName);
 			}
 			this.importRegistry.removeImportingClass(configClass.getMetadata().getClassName());
+			logger.info("[SPRING] 自定义日志---"+configClass.getMetadata().getClassName()+":跳过配置类");
 			return;
 		}
 
@@ -134,7 +135,7 @@ class ConfigurationClassBeanDefinitionReader {
 		}
 
 		loadBeanDefinitionsFromImportedResources(configClass.getImportedResources());
-		loadBeanDefinitionsFromRegistrars(configClass.getImportBeanDefinitionRegistrars());
+		loadBeanDefinitionsFromRegistrars(configClass);
 	}
 
 	/**
@@ -383,12 +384,15 @@ class ConfigurationClassBeanDefinitionReader {
 		});
 	}
 
-	private void loadBeanDefinitionsFromRegistrars(Map<ImportBeanDefinitionRegistrar, AnnotationMetadata> registrars) {
+	private void loadBeanDefinitionsFromRegistrars(ConfigurationClass configClass) {
+		Map<ImportBeanDefinitionRegistrar, AnnotationMetadata> registrars = configClass.getImportBeanDefinitionRegistrars();
 		if (registrars.isEmpty()){
 			return;
 		}
+		for (ImportBeanDefinitionRegistrar registrar : registrars.keySet()){
+			logger.info("[SPRING] 自定义日志---"+configClass.getMetadata().getClassName()+":注册Bean定义：ImportBeanDefinitionRegistrar："+registrar.getClass().getName());
+		}
 		registrars.forEach((registrar, metadata) ->{
-			logger.info("[SPRING] 自定义日志---加载Bean定义：ImportBeanDefinitionRegistrar："+registrar.getClass().getName());
 			registrar.registerBeanDefinitions(metadata, this.registry, this.importBeanNameGenerator);});
 	}
 
