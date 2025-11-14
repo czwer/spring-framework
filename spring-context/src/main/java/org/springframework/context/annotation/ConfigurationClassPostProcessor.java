@@ -75,6 +75,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * {@link BeanFactoryPostProcessor} used for bootstrapping processing of
@@ -387,6 +388,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 		Set<BeanDefinitionHolder> candidates = new LinkedHashSet<>(configCandidates);
 		Set<ConfigurationClass> alreadyParsed = CollectionUtils.newHashSet(configCandidates.size());
 		do {
+			logger.info("循环处理配置定义："+candidates.stream().map(beanDefinitionHolder -> beanDefinitionHolder.getBeanDefinition().getBeanClassName()).collect(Collectors.joining(",")));
 			StartupStep processConfig = this.applicationStartup.start("spring.context.config-classes.parse");
 			parser.parse(candidates);
 			parser.validate();
